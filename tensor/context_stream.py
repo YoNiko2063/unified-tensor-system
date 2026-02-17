@@ -26,6 +26,9 @@ if _ECEMATH_SRC not in sys.path:
 
 from tensor.core import UnifiedTensor, LEVEL_NAMES
 from tensor.math_connections import fisher_guided_planning, detect_regime
+from tensor.trajectory import LearningTrajectory
+from tensor.agent_network import PredictiveLayer
+from tensor.domain_fibers import FiberBundle
 
 
 class TensorContextStream:
@@ -33,10 +36,16 @@ class TensorContextStream:
 
     def __init__(self, tensor: UnifiedTensor,
                  output_path: str = '/tmp/tensor_context',
-                 interval: float = 5.0):
+                 interval: float = 5.0,
+                 trajectory: Optional['LearningTrajectory'] = None,
+                 predictive: Optional['PredictiveLayer'] = None,
+                 fiber_bundle: Optional['FiberBundle'] = None):
         self.tensor = tensor
         self.output_path = output_path
         self.interval = interval
+        self.trajectory = trajectory
+        self.predictive = predictive
+        self.fiber_bundle = fiber_bundle
         self._thread: Optional[threading.Thread] = None
         self._shutdown = threading.Event()
 
@@ -116,6 +125,30 @@ class TensorContextStream:
                 payload['golden_resonance_matrix'] = grm.tolist()
         except Exception:
             pass
+
+        # Trajectory fields (L1 extension)
+        if self.trajectory is not None:
+            payload['consonance_velocity'] = {}
+            payload['consonance_acceleration'] = {}
+            for name in payload['consonance']:
+                payload['consonance_velocity'][name] = round(
+                    self.trajectory.consonance_velocity(name), 6)
+                payload['consonance_acceleration'][name] = round(
+                    self.trajectory.consonance_acceleration(name), 6)
+            payload['compounding_subspaces'] = self.trajectory.compounding_subspaces()
+
+        # Predictive layer fields (L3 extension)
+        if self.predictive is not None:
+            payload['ignorance_map'] = {
+                k: round(v, 4)
+                for k, v in self.predictive.ignorance_map().items()}
+            payload['learning_priority'] = self.predictive.learning_priority()
+
+        # Fiber bundle fields (L4 extension)
+        if self.fiber_bundle is not None:
+            payload['fiber_resonance_matrix'] = self.fiber_bundle.fiber_resonance_matrix()
+            payload['universal_patterns_found'] = len(
+                self.fiber_bundle.universal_patterns())
 
         return payload
 

@@ -22,9 +22,15 @@ class TensorObserver:
     """Observe the full tensor state in human/AI-readable formats."""
 
     def __init__(self, tensor: UnifiedTensor,
-                 log_dir: str = 'tensor/logs'):
+                 log_dir: str = 'tensor/logs',
+                 trajectory=None,
+                 predictive=None,
+                 fiber_bundle=None):
         self.tensor = tensor
         self.log_dir = log_dir
+        self.trajectory = trajectory
+        self.predictive = predictive
+        self.fiber_bundle = fiber_bundle
 
     def snapshot_markdown(self, priority_map: list = None) -> str:
         """Full tensor state as markdown."""
@@ -206,6 +212,42 @@ class TensorObserver:
             lines.append('- No critical signals at this time')
 
         lines.append('')
+
+        # Learning trajectory (if available)
+        if self.trajectory is not None and self.trajectory.points:
+            lines.append('## Learning Trajectory')
+            for l_name in sorted(set(
+                k for p in self.trajectory.points
+                for k in p.consonance)):
+                vel = self.trajectory.consonance_velocity(l_name)
+                acc = self.trajectory.consonance_acceleration(l_name)
+                lines.append(
+                    f"- {l_name}: velocity={vel:.6f}, acceleration={acc:.6f}")
+            cs = self.trajectory.compounding_subspaces()
+            if cs:
+                lines.append(f"- Compounding: {', '.join(cs)}")
+            ml = self.trajectory.meta_loss()
+            lines.append(f"- Meta-loss: {ml:.6f}")
+            lines.append('')
+
+        # Ignorance map (if available)
+        if self.predictive is not None and self.predictive.error_history:
+            lines.append('## Ignorance Map')
+            ig = self.predictive.ignorance_map()
+            for l_name, val in sorted(ig.items()):
+                lines.append(f"- {l_name}: {val:.4f}")
+            prio = self.predictive.learning_priority()
+            if prio:
+                lines.append(f"- Learning priority: {', '.join(prio)}")
+            lines.append('')
+
+        # Universal patterns (if available)
+        if self.fiber_bundle is not None and self.fiber_bundle.fibers:
+            n_universal = len(self.fiber_bundle.universal_patterns())
+            lines.append(f'## Domain Fibers')
+            lines.append(f"- Universal patterns found: {n_universal}")
+            lines.append('')
+
         return '\n'.join(lines)
 
     def to_agent_context(self) -> str:

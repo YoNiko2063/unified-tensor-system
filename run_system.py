@@ -19,6 +19,7 @@ import sys
 import time
 import signal
 import threading
+import numpy as np
 
 _ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _ROOT)
@@ -32,6 +33,14 @@ from tensor.neural_bridge import NeuralBridge
 from tensor.realtime_feed import RealtimeFeed
 from tensor.gsd_bridge import GSDBridge
 from tensor.context_stream import TensorContextStream
+from tensor.trajectory import LearningTrajectory
+from tensor.agent_network import AgentNetwork, AgentNode
+from tensor.domain_fibers import FiberBundle
+from tensor.agents.structural_agent import StructuralAgent
+from tensor.agents.resonance_agent import ResonanceAgent
+from tensor.agents.validity_agent import ValidityAgent
+from tensor.agents.validator_agent import ValidatorAgent
+from tensor.agents.hardware_agent import HardwareAgent
 
 
 class SystemRunner:
@@ -46,7 +55,36 @@ class SystemRunner:
 
         # Build tensor
         self.tensor = UnifiedTensor(n_levels=4, max_nodes='auto')
-        self.observer = TensorObserver(self.tensor)
+
+        # Learning trajectory (L1)
+        self.trajectory = LearningTrajectory(window=500)
+        self._trajectory_path = os.path.join(_ROOT, 'tensor', 'logs', 'trajectory.json')
+
+        # Load persisted trajectory
+        if os.path.isfile(self._trajectory_path):
+            try:
+                self.trajectory.load(self._trajectory_path)
+                print(f"[Trajectory] Loaded {len(self.trajectory.points)} points")
+            except Exception:
+                pass
+
+        # Fiber bundle (L4)
+        self.fiber_bundle = FiberBundle()
+
+        # Agent network (L2)
+        self.agent_network = AgentNetwork(
+            tensor=self.tensor, trajectory=self.trajectory)
+        self.agent_network.predictive.trajectory = self.trajectory
+        for agent_cls in [StructuralAgent, ResonanceAgent, ValidityAgent,
+                          ValidatorAgent, HardwareAgent]:
+            self.agent_network.add_agent(agent_cls())
+
+        self.observer = TensorObserver(
+            self.tensor,
+            trajectory=self.trajectory,
+            predictive=self.agent_network.predictive,
+            fiber_bundle=self.fiber_bundle,
+        )
 
     def _setup_l3_hardware(self):
         """Profile hardware and populate L3."""
@@ -113,10 +151,63 @@ class SystemRunner:
 
     def start_context_stream(self):
         """Start TensorContextStream (Thread 4): publishes JSON to /tmp/tensor_context every 5s."""
-        stream = TensorContextStream(self.tensor, interval=5.0)
+        stream = TensorContextStream(
+            self.tensor, interval=5.0,
+            trajectory=self.trajectory,
+            predictive=self.agent_network.predictive,
+            fiber_bundle=self.fiber_bundle,
+        )
         stream.start()
         self._components['context_stream'] = stream
         print("[Context] TensorContextStream started: /tmp/tensor_context every 5s")
+
+    def start_agent_network(self):
+        """Start AgentNetwork (Thread 5): field-reading agents in a loop."""
+        def _agent_loop():
+            while not self._shutdown.is_set():
+                try:
+                    result = self.agent_network.run_cycle()
+                    if result and result.get('status') != 'idle':
+                        print(f"[AgentNet] {result.get('agent', '?')}: "
+                              f"{result.get('status', '?')} "
+                              f"delta={result.get('actual_delta', 0):.4f}")
+                except Exception as e:
+                    print(f"[AgentNet] Error: {e}")
+                self._shutdown.wait(5)
+
+        t = threading.Thread(target=_agent_loop, daemon=True, name='agent-network')
+        t.start()
+        print(f"[AgentNet] Started with {len(self.agent_network.agents)} agents")
+
+    def start_trajectory_recorder(self):
+        """Start trajectory recording (Thread 6): record from /tmp/tensor_context every 30s."""
+        import json
+
+        def _trajectory_loop():
+            while not self._shutdown.is_set():
+                try:
+                    with open('/tmp/tensor_context') as f:
+                        ctx = json.load(f)
+                    self.trajectory.record(ctx)
+
+                    # Update fiber bundle from tensor subspace bases
+                    from tensor.core import LEVEL_NAMES
+                    for level_idx, basis in self.tensor.subspace_bases.items():
+                        domain_map = {0: 'finance', 1: 'biology',
+                                      2: 'ece', 3: 'hardware'}
+                        domain = domain_map.get(level_idx)
+                        if domain and basis is not None:
+                            self.fiber_bundle.add_fiber(
+                                domain, basis.Q if hasattr(basis, 'Q') else
+                                np.eye(2))
+                except (FileNotFoundError, Exception):
+                    pass
+                self._shutdown.wait(30)
+
+        t = threading.Thread(target=_trajectory_loop, daemon=True,
+                             name='trajectory-recorder')
+        t.start()
+        print("[Trajectory] Recording every 30s")
 
     def start_explorer(self):
         """Start configuration explorer in background thread.
@@ -213,8 +304,15 @@ class SystemRunner:
         if explore or run_all:
             self.start_explorer()
 
+        # Start trajectory recorder (Thread 6) — always on
+        self.start_trajectory_recorder()
+
         if improve or run_all:
             self.start_improve()
+
+        # Start agent network (Thread 5) — runs alongside GSD as primary
+        if run_all:
+            self.start_agent_network()
 
         # Snapshot loop
         print(f"\n[System] Snapshot every {self.snapshot_interval}s. Ctrl+C to stop.")
@@ -247,6 +345,14 @@ class SystemRunner:
         if ctx_stream:
             ctx_stream.stop()
             print("[Context] TensorContextStream stopped")
+
+        # Persist trajectory
+        try:
+            os.makedirs(os.path.dirname(self._trajectory_path), exist_ok=True)
+            self.trajectory.save(self._trajectory_path)
+            print(f"[Trajectory] Saved {len(self.trajectory.points)} points")
+        except Exception as e:
+            print(f"[Trajectory] Save error: {e}")
 
         # Final snapshot
         self.observer.log_snapshot()

@@ -18,6 +18,9 @@ _IMPORTS = [
     ('tensor.realtime_feed',    'RealtimeFeed'),
     ('tensor.neural_bridge',    'NeuralBridge'),
     ('tensor.scraper_bridge',   'ScraperBridge'),
+    ('tensor.trajectory',       'LearningTrajectory'),
+    ('tensor.agent_network',    'AgentNetwork'),
+    ('tensor.domain_fibers',    'FiberBundle'),
 ]
 
 for _mod, _cls in _IMPORTS:
