@@ -46,9 +46,10 @@ class UnifiedTensor:
     actual node count (<= max_nodes), padded with zeros.
     """
 
-    def __init__(self, max_nodes: int = 64, n_levels: int = 4,
+    def __init__(self, max_nodes: any = 64, n_levels: int = 4,
                  history_len: int = 100):
-        self.max_nodes = max_nodes
+        self._auto_nodes = (max_nodes == 'auto')
+        self.max_nodes = 0 if self._auto_nodes else int(max_nodes)
         self.n_levels = n_levels
         self.history_len = history_len
 
@@ -82,6 +83,12 @@ class UnifiedTensor:
     def _pad_matrix(self, M: np.ndarray) -> np.ndarray:
         """Pad matrix to max_nodes x max_nodes with zeros."""
         n = M.shape[0]
+        if n > self.max_nodes:
+            raise ValueError(
+                f"MNA size {n} exceeds max_nodes {self.max_nodes}. "
+                f"Initialize UnifiedTensor(max_nodes={n}) or use "
+                f"max_nodes='auto'"
+            )
         if n == self.max_nodes:
             return M.copy()
         padded = np.zeros((self.max_nodes, self.max_nodes))
@@ -96,6 +103,12 @@ class UnifiedTensor:
     def update_level(self, level: int, mna: MNASystem, t: float):
         """Insert MNA matrices into T[level, :n, :n, t_idx]."""
         self._validate_level(level)
+
+        # Auto-size max_nodes from the first MNA inserted
+        if self._auto_nodes and self.max_nodes == 0:
+            self.max_nodes = mna.n_total
+        elif self._auto_nodes and mna.n_total > self.max_nodes:
+            self.max_nodes = mna.n_total
 
         self._mna[level] = mna
         t_idx = self._t_idx[level]
