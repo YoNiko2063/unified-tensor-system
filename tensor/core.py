@@ -416,6 +416,11 @@ class UnifiedTensor:
 
         return snapshot
 
+    def get_state(self, level: int) -> Optional[np.ndarray]:
+        """Get state vector at level, or None if not set."""
+        self._validate_level(level)
+        return self._state[level].copy() if self._state[level] is not None else None
+
     def set_state(self, level: int, x: np.ndarray):
         """Set state vector at level."""
         self._validate_level(level)

@@ -6,6 +6,9 @@ updates tensor L1, and supports coarsen/lift chains across levels.
 """
 import sys
 import os
+import json
+import time
+import threading
 import numpy as np
 from typing import Optional, List, Tuple
 
@@ -172,6 +175,80 @@ class NeuralBridge:
             coarse, fine = levels[i], levels[i + 1]
             x = self.tensor.lift_from(coarse, fine, x)
         return x
+
+    def run_continuous(self, interval_seconds: float = 60.0,
+                       max_iterations: int = 0,
+                       log_dir: str = 'tensor/logs'):
+        """Run continuous L1 updates driven by L0 market signals.
+
+        Every interval_seconds:
+          1. Read L0 state as input u(t) for neural_ode
+          2. Run forward pass
+          3. Update tensor L1
+          4. Trigger coarsen chain L2->L1->L0
+          5. Log L1 state
+
+        Args:
+            interval_seconds: Seconds between updates
+            max_iterations: 0 = run until stopped
+            log_dir: Where to write neural_state.jsonl
+        """
+        self._continuous_running = True
+        os.makedirs(log_dir, exist_ok=True)
+        log_path = os.path.join(log_dir, 'neural_state.jsonl')
+        iteration = 0
+
+        def loop():
+            nonlocal iteration
+            while self._continuous_running:
+                if max_iterations > 0 and iteration >= max_iterations:
+                    break
+
+                t = time.time()
+
+                # Get L0 state as input signal
+                l0_state = self.tensor.get_state(0)
+                if l0_state is not None:
+                    # Use L0 state as driving input (scaled to neuron count)
+                    n = min(len(l0_state), self.n_neurons)
+                    v0 = np.zeros(self.n_neurons)
+                    v0[:n] = l0_state[:n] * 0.1  # Scale down market signals
+                else:
+                    v0 = self._last_state if self._last_state is not None else None
+
+                # Forward pass
+                self.forward(v0=v0, t0=t, dt=0.01, steps=10)
+
+                # Update tensor L1
+                self.update_tensor(t=t, run_forward=False)
+
+                # Log state
+                log_entry = {
+                    'iteration': iteration,
+                    'timestamp': t,
+                    'state_norm': float(np.linalg.norm(self._last_state)),
+                    'state_mean': float(np.mean(self._last_state)),
+                    'state_max': float(np.max(np.abs(self._last_state))),
+                }
+                try:
+                    with open(log_path, 'a') as f:
+                        f.write(json.dumps(log_entry) + '\n')
+                except OSError:
+                    pass
+
+                iteration += 1
+                time.sleep(interval_seconds)
+
+        self._continuous_thread = threading.Thread(
+            target=loop, daemon=True, name='neural-continuous')
+        self._continuous_thread.start()
+        return self._continuous_thread
+
+    def stop_continuous(self):
+        """Stop the continuous update loop."""
+        self._continuous_running = False
+        if hasattr(self, '_continuous_thread'):
+            self._continuous_thread.join(timeout=2)
 
     @property
     def state(self) -> Optional[np.ndarray]:

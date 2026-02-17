@@ -152,6 +152,21 @@ class TensorObserver:
                         f"- {a}↔{b} resonance LOW ({val:.2f}): structural mismatch")
                 break
 
+        # Hardware-code alignment signal
+        code_hw_resonance = None
+        if 2 in populated and 3 in populated:
+            code_hw_resonance = self.tensor.cross_level_resonance(2, 3)
+            if code_hw_resonance < 0.5:
+                lines.append(
+                    f"- SIGNAL: code structure misaligned with hardware geometry "
+                    f"(resonance={code_hw_resonance:.2f}). "
+                    f"Recommend: run bootstrap to restructure toward "
+                    f"hardware-consonant patterns.")
+            elif code_hw_resonance > 0.8:
+                lines.append(
+                    f"- SIGNAL: code is hardware-optimal for this machine "
+                    f"(resonance={code_hw_resonance:.2f}).")
+
         if not any(line.startswith('- ') for line in lines[-5:]):
             lines.append('- No critical signals at this time')
 
