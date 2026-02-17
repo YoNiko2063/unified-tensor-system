@@ -41,17 +41,24 @@ from tensor.agents.resonance_agent import ResonanceAgent
 from tensor.agents.validity_agent import ValidityAgent
 from tensor.agents.validator_agent import ValidatorAgent
 from tensor.agents.hardware_agent import HardwareAgent
+from tensor.ficuts_updater import FICUTSUpdater
 
 
 class SystemRunner:
     """Orchestrates all tensor subsystems."""
 
     def __init__(self, snapshot_interval: int = 60,
-                 dev_agent_root: str = 'dev-agent'):
+                 dev_agent_root: str = 'dev-agent',
+                 ficuts_path: str = None):
         self.snapshot_interval = snapshot_interval
         self.dev_agent_root = os.path.join(_ROOT, dev_agent_root)
         self._shutdown = threading.Event()
         self._components = {}
+        self._start_time = None
+
+        # FICUTS self-modifying journal (Task 5.2)
+        _fp = ficuts_path or os.path.join(_ROOT, 'FICUTS.md')
+        self.ficuts = FICUTSUpdater(_fp) if os.path.isfile(_fp) else None
 
         # Build tensor
         self.tensor = UnifiedTensor(n_levels=4, max_nodes='auto')
@@ -281,6 +288,11 @@ class SystemRunner:
         print("UNIFIED TENSOR SYSTEM")
         print("=" * 60)
 
+        self._start_time = time.time()
+        if self.ficuts:
+            self.ficuts.update_system_status('RUNNING')
+            self.ficuts.update_field('System Uptime', '0h 0m')
+
         # Always set up L3
         self._setup_l3_hardware()
 
@@ -316,11 +328,17 @@ class SystemRunner:
 
         # Snapshot loop
         print(f"\n[System] Snapshot every {self.snapshot_interval}s. Ctrl+C to stop.")
+        _cycle = 0
         try:
             while not self._shutdown.is_set():
                 self._shutdown.wait(self.snapshot_interval)
                 if not self._shutdown.is_set():
                     self.print_snapshot()
+                    _cycle += 1
+                    # Update uptime every 100 cycles (Task 5.2)
+                    if self.ficuts and _cycle % 100 == 0 and self._start_time:
+                        uptime_h = (time.time() - self._start_time) / 3600
+                        self.ficuts.update_field('System Uptime', f'{uptime_h:.1f}h')
         except KeyboardInterrupt:
             pass
 
@@ -356,6 +374,8 @@ class SystemRunner:
 
         # Final snapshot
         self.observer.log_snapshot()
+        if self.ficuts:
+            self.ficuts.update_system_status('GRACEFUL_SHUTDOWN')
         print("[System] Final state logged. Goodbye.")
 
 
