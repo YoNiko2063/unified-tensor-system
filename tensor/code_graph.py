@@ -41,6 +41,8 @@ class ModuleInfo:
     n_functions: int = 0
     n_classes: int = 0
     lines: int = 0
+    defined_functions: List[str] = field(default_factory=list)
+    defined_classes: List[str] = field(default_factory=list)
 
 
 def _cyclomatic_complexity(tree: ast.AST) -> int:
@@ -110,6 +112,14 @@ def _count_definitions(tree: ast.AST) -> Tuple[int, int]:
     return n_func, n_class
 
 
+def _extract_definitions(tree: ast.AST) -> Tuple[List[str], List[str]]:
+    """Extract names of functions and classes defined in a module."""
+    funcs = [n.name for n in ast.walk(tree)
+             if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    classes = [n.name for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
+    return funcs, classes
+
+
 class CodeGraph:
     """Represents codebase as MNA-equivalent circuit graph."""
 
@@ -159,6 +169,7 @@ class CodeGraph:
             bases = _extract_class_bases(tree)
             complexity = _cyclomatic_complexity(tree)
             n_func, n_class = _count_definitions(tree)
+            defined_funcs, defined_classes = _extract_definitions(tree)
 
             graph.modules[mod_name] = ModuleInfo(
                 path=fpath, name=mod_name,
@@ -166,6 +177,8 @@ class CodeGraph:
                 class_bases=bases, complexity=complexity,
                 n_functions=n_func, n_classes=n_class,
                 lines=lines,
+                defined_functions=defined_funcs,
+                defined_classes=defined_classes,
             )
 
         # Assign node IDs
@@ -180,15 +193,27 @@ class CodeGraph:
         """Build typed edges from parsed module info."""
         self._edges = []
         mod_names = set(self.modules.keys())
-        # Also build a map of short names for matching
+        # Short module name map (for import resolution)
         short_to_full: Dict[str, List[str]] = {}
         for name in mod_names:
             short = name.split('.')[-1]
             short_to_full.setdefault(short, []).append(name)
 
+        # Definition→module map: function/class name → modules that define it.
+        # Used for call and inheritance resolution. Note: ambiguous names
+        # (e.g. to_mna defined in 3 modules) create edges to ALL defining
+        # modules — not precise dependency tracking, but produces a connected
+        # graph needed for meaningful FIM/eigenvalue analysis.
+        def_to_module: Dict[str, List[str]] = {}
+        for name, info in self.modules.items():
+            for func_name in info.defined_functions:
+                def_to_module.setdefault(func_name, []).append(name)
+            for class_name in info.defined_classes:
+                def_to_module.setdefault(class_name, []).append(name)
+
         for mod_name, info in self.modules.items():
-            # Import edges (capacitive)
-            for imp in info.imports:
+            # Import edges (capacitive) — deduplicated per module
+            for imp in set(info.imports):
                 targets = short_to_full.get(imp, [])
                 if not targets and imp in mod_names:
                     targets = [imp]
@@ -196,21 +221,23 @@ class CodeGraph:
                     if target != mod_name:
                         self._edges.append((mod_name, target, 'import', 1.0))
 
-            # Call edges (resistive) — weighted by caller complexity
+            # Call edges (resistive) — resolved through definition map
             call_targets: Set[str] = set()
             for call in info.function_calls:
-                targets = short_to_full.get(call, [])
+                targets = def_to_module.get(call, [])
                 for t in targets:
                     if t != mod_name and t not in call_targets:
                         call_targets.add(t)
                         weight = max(1.0, info.complexity / 10.0)
                         self._edges.append((mod_name, t, 'call', weight))
 
-            # Inheritance edges (inductive)
+            # Inheritance edges (inductive) — resolved through definition map
+            inherit_targets: Set[str] = set()
             for base in info.class_bases:
-                targets = short_to_full.get(base, [])
+                targets = def_to_module.get(base, [])
                 for t in targets:
-                    if t != mod_name:
+                    if t != mod_name and t not in inherit_targets:
+                        inherit_targets.add(t)
                         self._edges.append((mod_name, t, 'inheritance', 1.0))
 
     def to_mna(self) -> MNASystem:

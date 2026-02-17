@@ -66,25 +66,42 @@ def fisher_guided_planning(tensor: UnifiedTensor, level: int = 2,
     G = mna.G
     n = mna.n_total
 
+    # Normalize G so FIM eigenvalues are O(1), not O(scale^{-4}).
+    # Without this, 1e-6 diagonal loading dominates and FIM is uniform.
+    # Clamp diagonal to min 1% of mean to prevent near-zero self-conductance
+    # nodes from producing 1/ε² blowup in the FIM.
+    scale = np.abs(G.diagonal()).mean()
+    if scale > 1e-12:
+        G_work = G / scale
+        diag_min = 0.01
+        d = G_work.diagonal().copy()
+        d[d < diag_min] = diag_min
+        np.fill_diagonal(G_work, d)
+    else:
+        G_work = G.copy()
+
     # Sensitivity function: how state changes with G perturbations
     # J_ij = ∂v_i/∂G_jj (diagonal sensitivity)
     def sensitivity_func(theta):
-        # theta = diagonal of G; J = -G^{-1} (from G·v = u, dv/dG = -G^{-1})
-        G_pert = G.copy()
+        # theta = diagonal of G_work; J = -G^{-1} (from G·v = u, dv/dG = -G^{-1})
+        G_pert = G_work.copy()
         np.fill_diagonal(G_pert, theta)
-        try:
-            G_inv = np.linalg.inv(G_pert + 1e-10 * np.eye(n))
-        except np.linalg.LinAlgError:
-            G_inv = np.linalg.pinv(G_pert)
+        # Use truncated SVD pseudoinverse to suppress near-singular modes.
+        # This keeps FIM eigenvalues bounded even when G has rank-deficient blocks.
+        U, s, Vt = np.linalg.svd(G_pert)
+        s_inv = np.where(s > 1e-3, 1.0 / s, 0.0)
+        G_inv = (Vt.T * s_inv) @ U.T
         return -G_inv  # (n_states, n_params)
 
-    theta = np.diag(G)
+    theta = np.diag(G_work)
     fisher = FisherInformation(sensitivity_func, n_params=n)
     result = fisher.compute(theta)
 
-    # Priority: nodes with highest FIM eigenvalues
+    # Priority: nodes with highest FIM diagonal (per-node information content).
+    # FIM_ii = how much information node i contributes to the total Fisher info.
     top_k = min(top_k, n)
-    priority = np.argsort(-result.eigenvalues)[:top_k]
+    fim_diag = np.diag(result.fisher_matrix)
+    priority = np.argsort(-fim_diag)[:top_k]
 
     cond = result.eigenvalues[0] / max(result.eigenvalues[-1], 1e-30)
 
@@ -477,3 +494,47 @@ def check_feed_health(tensor: UnifiedTensor,
         regime=regime,
         warnings=warnings,
     )
+
+
+# ═══════════════════════════════════════════════════════════
+# UNIFIED CLASS INTERFACE
+# ═══════════════════════════════════════════════════════════
+
+class MathConnections:
+    """Unified interface to all math→tensor connections."""
+
+    def __init__(self, tensor: 'UnifiedTensor'):
+        self.tensor = tensor
+
+    def fisher_guided_planning(self, level: int = 2, top_k: int = 5) -> FisherGuidance:
+        return fisher_guided_planning(self.tensor, level=level, top_k=top_k)
+
+    def detect_regime(self, level: int = 2, history_window: int = 5) -> RegimeStatus:
+        return detect_regime(self.tensor, level=level, history_window=history_window)
+
+    @staticmethod
+    def stochastic_robustness_check(G: np.ndarray, score_fn, n_paths: int = 20,
+                                    noise_level: float = 0.05,
+                                    seed: int = 42) -> RobustnessResult:
+        return stochastic_robustness_check(G, score_fn, n_paths=n_paths,
+                                           noise_level=noise_level, seed=seed)
+
+    def neural_prediction_error(self, actual_state: np.ndarray,
+                                level: int = 1) -> PredictionErrorReport:
+        return neural_prediction_error(self.tensor, actual_state, level=level)
+
+    def snn_firing_activation(self, tau: float = 1.0, gamma: float = 0.5,
+                              theta_base: float = 0.0) -> FiringActivation:
+        return snn_firing_activation(self.tensor, tau=tau, gamma=gamma,
+                                     theta_base=theta_base)
+
+    @staticmethod
+    def ground_truth_pytest(test_dir: str = 'tests',
+                            baseline_pass_rate: float = 1.0) -> TestJumpEvent:
+        return ground_truth_pytest(test_dir=test_dir,
+                                   baseline_pass_rate=baseline_pass_rate)
+
+    def check_feed_health(self, feed_status: Optional[dict] = None,
+                          max_staleness: float = 60.0) -> FeedHealth:
+        return check_feed_health(self.tensor, feed_status=feed_status,
+                                 max_staleness=max_staleness)

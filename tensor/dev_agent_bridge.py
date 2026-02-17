@@ -125,10 +125,10 @@ class DevAgentBridge:
 
             w = _sigmoid(F + H)
 
-            # Boost for hotspots
+            # Boost for hotspots (multiplicative to dominate base weight spread)
             if proposal in self._hotspots or any(
                     proposal == h.split('.')[-1] for h in self._hotspots):
-                w = min(1.0, w + 0.15)
+                w = min(1.0, w * 1.4 + 0.1)
 
             # Boost for circular import involvement
             if proposal in self._cycle_modules or any(
