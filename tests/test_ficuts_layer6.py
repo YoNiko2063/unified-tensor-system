@@ -3,7 +3,7 @@ Tests for FICUTS Layer 6: Web Ingestion
 """
 
 import pytest
-from tensor.web_ingestion import ArticleParser
+from tensor.web_ingestion import ArticleParser, ResearchConceptExtractor
 
 
 SAMPLE_HTML = """
@@ -102,3 +102,100 @@ def test_article_parser_empty_html():
     assert result['sections'] == []
     assert result['hyperlinks'] == []
     assert result['code_blocks'] == []
+
+
+# ── Task 6.2: ResearchConceptExtractor ────────────────────────────────────────
+
+CONCEPT_ARTICLE = {
+    'sections': [
+        {'text': 'We use exponential decay with tau = 5ms in our Neural Network model.'},
+        {'text': 'The learning rate alpha = 0.01 was chosen empirically.'},
+        {'text': 'Fisher Information Matrix helps bound parameter uncertainty.'},
+    ],
+    'code_blocks': [
+        r'\frac{dV}{dt} = -\frac{V}{\tau}',
+        r'y = A e^{-\lambda t}',
+        'plain code without latex',
+    ],
+}
+
+
+def test_concept_extractor_equations():
+    extractor = ResearchConceptExtractor()
+    result = extractor.extract(CONCEPT_ARTICLE)
+    # Both LaTeX blocks should be captured; plain code should not
+    assert len(result['equations']) == 2
+    assert any('frac' in eq for eq in result['equations'])
+    assert any('lambda' in eq for eq in result['equations'])
+
+
+def test_concept_extractor_parameters():
+    extractor = ResearchConceptExtractor()
+    result = extractor.extract(CONCEPT_ARTICLE)
+    assert len(result['parameters']) >= 2
+    symbols = [p['symbol'] for p in result['parameters']]
+    # 'tau' or 'alpha' (case-insensitive match) must be among them
+    lowered = [s.lower() for s in symbols]
+    assert 'tau' in lowered or 'alpha' in lowered
+
+
+def test_concept_extractor_parameter_values():
+    extractor = ResearchConceptExtractor()
+    result = extractor.extract(CONCEPT_ARTICLE)
+    values = {p['symbol'].lower(): p['value'] for p in result['parameters']}
+    if 'tau' in values:
+        assert values['tau'] == 5.0
+    if 'alpha' in values:
+        assert values['alpha'] == 0.01
+
+
+def test_concept_extractor_technical_terms():
+    extractor = ResearchConceptExtractor()
+    result = extractor.extract(CONCEPT_ARTICLE)
+    assert len(result['technical_terms']) > 0
+    # "Neural Network" and "Fisher Information Matrix" are Title Case
+    joined = ' '.join(result['technical_terms'])
+    assert 'Neural Network' in joined or 'Fisher Information' in joined
+
+
+def test_concept_extractor_has_experiment_false():
+    extractor = ResearchConceptExtractor()
+    result = extractor.extract(CONCEPT_ARTICLE)
+    # No experimental indicators in CONCEPT_ARTICLE
+    assert result['has_experiment'] is False
+
+
+def test_concept_extractor_has_experiment_true():
+    extractor = ResearchConceptExtractor()
+    article = {
+        'sections': [{'text': 'We measured the voltage across each node.'}],
+        'code_blocks': [],
+    }
+    result = extractor.extract(article)
+    assert result['has_experiment'] is True
+
+
+def test_concept_extractor_no_equations():
+    extractor = ResearchConceptExtractor()
+    result = extractor.extract({'sections': [], 'code_blocks': ['just text']})
+    assert result['equations'] == []
+
+
+def test_concept_extractor_no_params():
+    extractor = ResearchConceptExtractor()
+    result = extractor.extract({'sections': [{'text': 'No assignments here.'}], 'code_blocks': []})
+    assert result['parameters'] == []
+
+
+def test_concept_extractor_deduplicates_terms():
+    extractor = ResearchConceptExtractor()
+    article = {
+        'sections': [
+            {'text': 'Fisher Information Matrix is great. Fisher Information Matrix again.'},
+        ],
+        'code_blocks': [],
+    }
+    result = extractor.extract(article)
+    terms = result['technical_terms']
+    # set-dedup should produce only one entry for "Fisher Information Matrix"
+    assert terms.count('Fisher Information Matrix') <= 1

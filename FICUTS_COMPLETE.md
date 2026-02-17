@@ -2,9 +2,9 @@
 
 **Version:** 2.0.0  
 **Last Updated:** 2026-02-17T23:45:00Z  
-**Last Updated By:** Claude Code (Task 6.1)
+**Last Updated By:** Claude Code (Task 6.2)
 **Status:** READY_FOR_EXECUTION  
-**Current Phase:** Layer 6 (Web Ingestion) — Task 6.2 next
+**Current Phase:** Layer 6 (Web Ingestion) — Task 6.3 next
 **Universals Discovered:** 0  
 **System Uptime:** 0h 0m  
 
@@ -317,7 +317,7 @@ def test_article_parser():
 
 ---
 
-#### Task 6.2: Research Concept Extractor `[ ]`
+#### Task 6.2: Research Concept Extractor `[✓]`
 
 **What:** Extract equations (LaTeX), parameters (Greek letters + values), technical terms
 

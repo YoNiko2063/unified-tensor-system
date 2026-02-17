@@ -7,8 +7,10 @@ Classes:
   - WebIngestionLoop:        Continuous RSS ingestion + dedup (Task 6.3)
 """
 
+import re
+
 from bs4 import BeautifulSoup
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 class ArticleParser:
@@ -87,3 +89,97 @@ class ArticleParser:
             children_depths = [depth(c) for c in elem.children if hasattr(c, 'name')]
             return 1 + max(children_depths) if children_depths else 0
         return depth(soup)
+
+
+class ResearchConceptExtractor:
+    """
+    Extract mathematical/scientific concepts from parsed articles.
+
+    Extracts:
+    - Equations (LaTeX patterns: \\frac, \\int, \\partial, etc.)
+    - Parameters (τ = 5ms, α = 0.01, etc.)
+    - Technical terms (Title Case phrases)
+    - Experimental indicators (procedure, measured, etc.)
+    """
+
+    # Greek letter names to match in English
+    _GREEK = (
+        r'[α-ωΑ-Ω]'
+        r'|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa'
+        r'|lambda|mu|nu|xi|rho|sigma|tau|upsilon|phi|chi|psi|omega'
+    )
+
+    # LaTeX markers that identify an equation
+    _LATEX_INDICATORS = [
+        r'\frac', r'\int', r'\sum', r'\partial', r'\Delta',
+        r'\nabla', r'\lambda', r'\infty', r'\cdot', r'\times',
+    ]
+
+    def extract(self, article: Dict) -> Dict:
+        return {
+            'equations': self._extract_equations(article),
+            'parameters': self._extract_parameters(article),
+            'technical_terms': self._extract_technical_terms(article),
+            'has_experiment': self._detect_experiment(article),
+        }
+
+    def _extract_equations(self, article: Dict) -> List[str]:
+        """Find LaTeX or math patterns in code blocks."""
+        equations = []
+        for code in article.get('code_blocks', []):
+            if any(ind in code for ind in self._LATEX_INDICATORS):
+                eq = ' '.join(code.split())
+                equations.append(eq)
+        return equations
+
+    def _extract_parameters(self, article: Dict) -> List[Dict]:
+        """
+        Find parameter assignments like:
+        - τ = 5ms
+        - learning rate α = 0.01
+        - sigma = 2.5
+        """
+        params = []
+        text = ' '.join(s['text'] for s in article.get('sections', []))
+
+        # pattern: greek_symbol = number [optional units]
+        pattern = (
+            rf'({self._GREEK})'          # symbol
+            r'\s*=\s*'
+            r'([0-9]+(?:\.[0-9]+)?(?:e[+-]?[0-9]+)?)'   # value
+            r'\s*([a-zA-Z]*)'            # optional units
+        )
+
+        for match in re.finditer(pattern, text, re.IGNORECASE):
+            symbol = match.group(1)
+            try:
+                value = float(match.group(2))
+            except ValueError:
+                continue
+            units = match.group(3) or None
+            context = text[max(0, match.start() - 50):match.end() + 50]
+            params.append({
+                'symbol': symbol,
+                'value': value,
+                'units': units,
+                'context': context,
+            })
+
+        return params
+
+    def _extract_technical_terms(self, article: Dict) -> List[str]:
+        """Heuristic: Title Case multi-word phrases (2-4 words)."""
+        text = ' '.join(s['text'] for s in article.get('sections', []))
+        pattern = r'\b([A-Z][a-z]+(?: [A-Z][a-z]+){1,3})\b'
+        terms = re.findall(pattern, text)
+        return list(set(terms))
+
+    def _detect_experiment(self, article: Dict) -> bool:
+        """Does article describe experimental procedure?"""
+        indicators = [
+            'we measured', 'experiment', 'experimental setup',
+            'procedure', 'method', 'methodology',
+            'data collection', 'results', 'we observed',
+        ]
+        text = ' '.join(s['text'] for s in article.get('sections', [])).lower()
+        return any(ind in text for ind in indicators)
