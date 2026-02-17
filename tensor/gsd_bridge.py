@@ -8,6 +8,7 @@ import os
 import sys
 import time
 import json
+import subprocess
 import numpy as np
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
@@ -209,38 +210,122 @@ Guided by tensor L2 free energy minimization.
 
         return tasks
 
+    def _find_dev_agent_cli(self) -> Optional[str]:
+        """Locate the dev-agent CLI executable."""
+        candidates = [
+            os.path.join(self.dev_agent_root, 'run.py'),
+            os.path.join(self.dev_agent_root, 'dev-agent', 'run.py'),
+            os.path.join(self.dev_agent_root, 'app.py'),
+        ]
+        for c in candidates:
+            if os.path.isfile(c):
+                return c
+        return None
+
     def execute_phase(self, phase: int) -> PhaseResult:
-        """Execute all tasks in a phase via bootstrap mechanism.
+        """Execute all tasks in a phase via dev-agent CLI.
 
-        After each task:
-          1. Re-parse affected files via CodeGraph
-          2. Update tensor L2
-          3. Run CodeValidator on changed files
-          4. Measure consonance improvement
+        For each task:
+          1. Snapshot consonance as plain float BEFORE mutation
+          2. Invoke dev-agent via subprocess with task JSON
+          3. Re-parse affected files via CodeGraph
+          4. Update tensor L2
+          5. Snapshot consonance as plain float AFTER mutation
+          6. If consonance degraded: git checkout modified path
         """
-        # Get consonance before
-        sig_before = self.tensor.harmonic_signature(2)
-        cons_before = sig_before.consonance_score
+        # Snapshot phase-level consonance before any task runs
+        cons_phase_start = float(self.tensor.harmonic_signature(2).consonance_score)
 
-        # Run one bootstrap step (simulated execution)
-        result = self._bootstrapper.run_bootstrap_step()
+        tasks = self._phases.get(phase, [])
+        files_changed = []
+        tasks_completed = 0
+        tasks_failed = 0
 
-        # Get consonance after
-        sig_after = self.tensor.harmonic_signature(2)
-        cons_after = sig_after.consonance_score
+        dev_agent_cli = self._find_dev_agent_cli()
+
+        for task_info in tasks:
+            # Snapshot per-task consonance as plain float before subprocess
+            cons_before = float(self.tensor.harmonic_signature(2).consonance_score)
+
+            task_json = json.dumps({
+                'xml': task_info.get('xml', ''),
+                'module': task_info.get('module', ''),
+                'phase': phase,
+            })
+
+            # Try dev-agent CLI if available, else fall back to bootstrap
+            if dev_agent_cli is not None:
+                try:
+                    result = subprocess.run(
+                        [sys.executable, dev_agent_cli, '--task', task_json],
+                        capture_output=True, text=True, timeout=300,
+                        cwd=self.dev_agent_root,
+                    )
+                    if result.returncode != 0:
+                        print(f"[GSD] dev-agent returned {result.returncode}: "
+                              f"{result.stderr[:200]}")
+                except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+                    print(f"[GSD] dev-agent invocation failed: {e}")
+            else:
+                # Fall back to bootstrap step
+                self._bootstrapper.run_bootstrap_step()
+
+            # Re-parse codebase and update L2
+            cg = CodeGraph.from_directory(self.dev_agent_root, max_files=500)
+            new_mna = cg.to_mna()
+            self.tensor.update_level(2, new_mna, t=time.time())
+
+            # Snapshot per-task consonance as plain float after update_level
+            cons_after = float(self.tensor.harmonic_signature(2).consonance_score)
+            cons_delta = cons_after - cons_before
+
+            # Track growth regime from L2 harmonic signature
+            sig_after = self.tensor.harmonic_signature(2)
+            growth_count = getattr(sig_after, 'growth_regime_count', 0)
+
+            module_name = task_info.get('module', '')
+
+            if cons_delta > 0:
+                tasks_completed += 1
+                files_changed.append(module_name)
+                print(f"[GSD] Task '{module_name}': consonance "
+                      f"{cons_before:.4f}->{cons_after:.4f} (+{cons_delta:.4f}) KEPT "
+                      f"growth_regime={growth_count}")
+            else:
+                # Revert: git checkout modified path
+                mod_info = cg.modules.get(module_name)
+                if mod_info is not None:
+                    try:
+                        subprocess.run(
+                            ['git', 'checkout', mod_info.path],
+                            capture_output=True, timeout=30,
+                            cwd=self.dev_agent_root,
+                        )
+                        print(f"[GSD] Task '{module_name}': consonance "
+                              f"{cons_before:.4f}->{cons_after:.4f} ({cons_delta:.4f}) REVERTED "
+                              f"growth_regime={growth_count}")
+                    except (subprocess.TimeoutExpired, FileNotFoundError):
+                        pass
+                tasks_failed += 1
+
+        # Final consonance and growth regime snapshot as plain floats
+        cons_final = float(self.tensor.harmonic_signature(2).consonance_score)
+        sig_final = self.tensor.harmonic_signature(2)
+        growth_final = getattr(sig_final, 'growth_regime_count', 0)
 
         phase_result = PhaseResult(
             phase=phase,
-            tasks_completed=len(result.files_changed) if result.files_changed else 1,
-            tasks_failed=0 if result.improved else 1,
-            consonance_before=cons_before,
-            consonance_after=cons_after,
-            files_changed=result.files_changed,
+            tasks_completed=tasks_completed,
+            tasks_failed=tasks_failed,
+            consonance_before=cons_phase_start,
+            consonance_after=cons_final,
+            files_changed=files_changed,
         )
         self._phase_results[phase] = phase_result
 
-        print(f"[GSD] Phase {phase}: consonance {cons_before:.4f}->{cons_after:.4f} "
-              f"{'APPROVED' if cons_after >= cons_before else 'DEGRADED'}")
+        print(f"[GSD] Phase {phase}: consonance {cons_phase_start:.4f}->{cons_final:.4f} "
+              f"{'APPROVED' if cons_final >= cons_phase_start else 'DEGRADED'} "
+              f"growth_regime={growth_final}")
 
         return phase_result
 

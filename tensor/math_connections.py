@@ -45,6 +45,7 @@ class FisherGuidance:
     eigenvalues: np.ndarray
     priority_indices: List[int]  # Node indices sorted by information content
     condition_number: float
+    phi_weights: np.ndarray = None  # φ-decay weights: [1.0, 0.618, 0.382, ...]
 
 
 def fisher_guided_planning(tensor: UnifiedTensor, level: int = 2,
@@ -105,11 +106,18 @@ def fisher_guided_planning(tensor: UnifiedTensor, level: int = 2,
 
     cond = result.eigenvalues[0] / max(result.eigenvalues[-1], 1e-30)
 
+    # φ-weighted priorities: Fibonacci decay = biological attention distribution
+    PHI = 1.6180339887
+    k_pri = len(priority)
+    phi_weights = np.array([PHI ** (-i) for i in range(k_pri)])
+    phi_weights = phi_weights / phi_weights.sum()  # Normalize to sum=1
+
     return FisherGuidance(
         high_info_directions=result.eigenvectors[:, :top_k],
         eigenvalues=result.eigenvalues,
         priority_indices=priority.tolist(),
         condition_number=float(cond),
+        phi_weights=phi_weights,
     )
 
 

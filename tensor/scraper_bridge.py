@@ -165,17 +165,60 @@ class ScraperBridge:
             'text_length': len(text),
         }
 
-    def inject(self, article_dict: dict):
+    def _snapshot_l0_eigenvalues(self) -> np.ndarray:
+        """Snapshot current L0 eigenvalues for validity computation."""
+        mna = self.tensor._mna.get(0)
+        if mna is None:
+            return np.array([0.0])
+        return np.sort(np.abs(np.linalg.eigvalsh(mna.G)))[::-1]
+
+    def inject(self, article_dict: dict) -> dict:
         """Inject a parsed article's sentiment into the market graph.
 
         Updates sentiment on matching tickers in the MarketGraph.
+        Computes validity score: signals that move flow without moving
+        structure = low validity. Uses φ-based validity weighting.
+
+        Returns dict with validity score per ticker.
         """
+        PHI = 1.6180339887
+
+        # Snapshot L0 eigenvalues before injection
+        eigvals_before = self._snapshot_l0_eigenvalues()
+
+        # Save old sentiments before any changes
+        old_sentiments = {}
         for ticker, sent in article_dict.get('ticker_sentiments', {}).items():
             if ticker in self._known_tickers:
-                # Blend with existing sentiment (exponential moving average)
-                old = self.mg.tickers[ticker].sentiment
+                old_sentiments[ticker] = self.mg.tickers[ticker].sentiment
+
+        # Apply raw sentiment to measure structural effect
+        for ticker, sent in article_dict.get('ticker_sentiments', {}).items():
+            if ticker in self._known_tickers:
+                old = old_sentiments[ticker]
                 self.mg.tickers[ticker].sentiment = float(
                     np.clip(0.7 * old + 0.3 * sent, -1.0, 1.0))
+
+        # Re-measure L0 eigenvalues after injection
+        mna_after = self.mg.to_mna()
+        eigvals_after = np.sort(np.abs(np.linalg.eigvalsh(mna_after.G)))[::-1]
+
+        # Compute eigenvalue delta (structural change)
+        n_common = min(len(eigvals_before), len(eigvals_after))
+        eigenvalue_delta = np.linalg.norm(
+            eigvals_after[:n_common] - eigvals_before[:n_common])
+
+        # Compute validity per ticker and log it
+        validity_scores = {}
+        for ticker, sent in article_dict.get('ticker_sentiments', {}).items():
+            if ticker in self._known_tickers:
+                old = old_sentiments[ticker]
+                sentiment_delta = abs(sent - old)
+                validity = max(0.0, PHI - sentiment_delta / max(eigenvalue_delta, 1e-9))
+                validity_scores[ticker] = round(float(validity), 4)
+
+        article_dict['validity_scores'] = validity_scores
+        return validity_scores
 
     def batch_inject(self, html_list: List[str], t: float = 0.0) -> dict:
         """Parse multiple articles, inject all, and update tensor L0 once.

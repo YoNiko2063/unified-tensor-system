@@ -28,6 +28,10 @@ from core.sparse_solver import (
     HarmonicSignature, CorrectedLifter, HarmonicEnsemblePredictor,
     consonance_score_from_ratios,
 )
+from tensor.subspace import (
+    SubspaceBasis, assign_subspace, golden_resonance,
+    golden_resonance_matrix as _golden_resonance_matrix,
+)
 
 _CONDITION_THRESHOLD = 1e12
 
@@ -75,6 +79,8 @@ class UnifiedTensor:
         self._lifters: Dict[Tuple[int, int], CorrectedLifter] = {}
         # State vectors per level (latest)
         self._state: Dict[int, Optional[np.ndarray]] = {l: None for l in range(n_levels)}
+        # Subspace bases per level (orthogonal subspace learning)
+        self.subspace_bases: Dict[int, SubspaceBasis] = {}
 
     def _validate_level(self, level: int):
         if level < 0 or level >= self.n_levels:
@@ -121,6 +127,10 @@ class UnifiedTensor:
         # Compute and cache harmonic signature
         sig = compute_harmonic_signature(mna.G, k=min(mna.n_total, 10))
         self._signatures[level][t_idx] = sig
+
+        # Assign orthogonal subspaces via spectral clustering
+        n_clusters = max(1, int(np.sqrt(mna.n_total)))
+        self.subspace_bases[level] = assign_subspace(mna.G, n_clusters)
 
         # Advance time index (circular buffer)
         self._t_idx[level] = (t_idx + 1) % self.history_len
@@ -398,6 +408,7 @@ class UnifiedTensor:
                     'consonance_score': round(sig.consonance_score, 4),
                     'stability_verdict': sig.stability_verdict,
                     'predicted_resolution': sig.predicted_resolution,
+                    'growth_regime_count': getattr(sig, 'growth_regime_count', 0),
                 },
                 'eigenvalue_gap': round(gap, 4),
                 'phase_transition_risk': round(risk, 4),
@@ -415,6 +426,14 @@ class UnifiedTensor:
             snapshot['levels'][l] = level_info
 
         return snapshot
+
+    def golden_resonance_matrix(self) -> np.ndarray:
+        """Return L×L pairwise golden resonance scores between levels.
+
+        Each score measures how close the angle between subspaces is to
+        cos⁻¹(1/φ) ≈ 51.8° — the golden angle. Score > 0.8 = well-coupled.
+        """
+        return _golden_resonance_matrix(self.subspace_bases)
 
     def get_state(self, level: int) -> Optional[np.ndarray]:
         """Get state vector at level, or None if not set."""

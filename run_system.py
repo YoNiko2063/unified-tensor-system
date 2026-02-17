@@ -31,6 +31,7 @@ from tensor.hardware_profiler import HardwareProfiler
 from tensor.neural_bridge import NeuralBridge
 from tensor.realtime_feed import RealtimeFeed
 from tensor.gsd_bridge import GSDBridge
+from tensor.context_stream import TensorContextStream
 
 
 class SystemRunner:
@@ -109,6 +110,13 @@ class SystemRunner:
         t = threading.Thread(target=_gsd_loop, daemon=True, name='gsd-loop')
         t.start()
         print("[L2] GSD improvement loop started (3 phases per cycle, 60s cooldown)")
+
+    def start_context_stream(self):
+        """Start TensorContextStream (Thread 4): publishes JSON to /tmp/tensor_context every 5s."""
+        stream = TensorContextStream(self.tensor, interval=5.0)
+        stream.start()
+        self._components['context_stream'] = stream
+        print("[Context] TensorContextStream started: /tmp/tensor_context every 5s")
 
     def start_explorer(self):
         """Start configuration explorer in background thread.
@@ -196,6 +204,9 @@ class SystemRunner:
         if run_all:
             self.start_neural()
 
+        # Start context stream (always on — continuous ambient signaling)
+        self.start_context_stream()
+
         # Initial snapshot
         self.print_snapshot()
 
@@ -231,6 +242,11 @@ class SystemRunner:
         if neural:
             neural.stop_continuous()
             print("[L1] Neural bridge stopped")
+
+        ctx_stream = self._components.get('context_stream')
+        if ctx_stream:
+            ctx_stream.stop()
+            print("[Context] TensorContextStream stopped")
 
         # Final snapshot
         self.observer.log_snapshot()

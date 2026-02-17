@@ -7,6 +7,7 @@ import os
 import sys
 import json
 import time
+import numpy as np
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -61,32 +62,49 @@ class TensorObserver:
 
         # Level status table
         lines.append('## Level Status')
-        lines.append('| Level | Nodes | Gap | Risk | Key | Verdict |')
-        lines.append('|-------|-------|-----|------|-----|---------|')
+        lines.append('| Level | Nodes | Gap | Risk | Key | Verdict | φ-Growth |')
+        lines.append('|-------|-------|-----|------|-----|---------|----------|')
         for l in range(self.tensor.n_levels):
             info = snap['levels'][l]
             name = info['name']
             if not info.get('populated'):
-                lines.append(f'| L{l} {name} | — | — | — | — | empty |')
+                lines.append(f'| L{l} {name} | — | — | — | — | empty | — |')
             else:
                 sig = info['harmonic_signature']
+                growth_count = sig.get('growth_regime_count', 0)
                 lines.append(
                     f"| L{l} {name} | {info['n_nodes']} | "
                     f"{info['eigenvalue_gap']:.2f} | "
                     f"{info['phase_transition_risk']:.2f} | "
                     f"{sig['dominant_interval']} | "
-                    f"{sig['stability_verdict']} |"
+                    f"{sig['stability_verdict']} | "
+                    f"{growth_count} |"
                 )
+                # WARNING: eigenvalue gap collapse detection
+                if info['eigenvalue_gap'] < 0.05:
+                    mna = self.tensor._mna.get(l)
+                    if mna is not None:
+                        G_active = mna.G[:mna.n_total, :mna.n_total]
+                        eigvals = np.sort(np.abs(np.linalg.eigvalsh(G_active)))[::-1]
+                        # Find contributing node indices (highest diagonal G)
+                        diag = np.abs(np.diag(G_active))
+                        contrib_indices = np.argsort(-diag)[:5].tolist()
+                        lines.append(
+                            f"| | **WARNING**: L{l} gap={info['eigenvalue_gap']:.4f} < 0.05 | "
+                            f"Contributing nodes: {contrib_indices} | | | |"
+                        )
         lines.append('')
 
-        # Cross-level resonance
-        pairs = []
-        for l in populated:
-            for r in info.get('cross_level_resonance', {}).items():
-                pass  # handled below
+        # Cross-level resonance (golden angle based when subspace data available)
         lines.append('## Cross-Level Resonance')
-        lines.append('| Pair | Resonance | Interpretation |')
-        lines.append('|------|-----------|----------------|')
+        golden_mat = self.tensor.golden_resonance_matrix()
+        use_golden = golden_mat.size > 0 and golden_mat.sum() > 0
+        if use_golden:
+            lines.append('| Pair | Golden Resonance | Harmonic Resonance | Interpretation |')
+            lines.append('|------|-----------------|-------------------|----------------|')
+        else:
+            lines.append('| Pair | Resonance | Interpretation |')
+            lines.append('|------|-----------|----------------|')
         seen = set()
         for l in populated:
             res_map = snap['levels'][l].get('cross_level_resonance', {})
@@ -101,9 +119,26 @@ class TensorObserver:
                     interp = 'Moderate alignment'
                 else:
                     interp = 'Structural mismatch'
-                lines.append(
-                    f'| {pair_key[0]} ↔ {pair_key[1]} | {res_val:.4f} | {interp} |'
-                )
+                if use_golden:
+                    # Find other level index
+                    other_idx = None
+                    for idx, name in LEVEL_NAMES.items():
+                        if name == other_name:
+                            other_idx = idx
+                            break
+                    golden_val = golden_mat[l, other_idx] if (
+                        other_idx is not None and l < golden_mat.shape[0]
+                        and other_idx < golden_mat.shape[1]) else 0.0
+                    if golden_val > 0.8:
+                        interp = 'Golden angle aligned'
+                    lines.append(
+                        f'| {pair_key[0]} ↔ {pair_key[1]} | {golden_val:.4f} | '
+                        f'{res_val:.4f} | {interp} |'
+                    )
+                else:
+                    lines.append(
+                        f'| {pair_key[0]} ↔ {pair_key[1]} | {res_val:.4f} | {interp} |'
+                    )
         lines.append('')
 
         # Improvement priorities (L2)

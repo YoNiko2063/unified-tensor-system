@@ -291,6 +291,15 @@ class CodeGraph:
         G += diag_load * np.eye(n)
         C += diag_load * np.eye(n)
 
+        # Fix L2 eigenvalue gap collapse: if gap < 0.01, add φ-scaled perturbation
+        PHI = 1.6180339887
+        eigvals = np.sort(np.abs(np.linalg.eigvalsh(G)))[::-1]
+        if len(eigvals) >= 2 and abs(eigvals[0]) > 1e-30:
+            gap = (eigvals[0] - eigvals[1]) / eigvals[0]
+            if gap < 0.01:
+                perturbation = PHI * 1e-4 * np.abs(G.diagonal()).mean()
+                G += perturbation * np.eye(n)
+
         node_map = {i: i for i in range(n)}
         return MNASystem(
             C=C, G=G, n_nodes=n, n_branches=0, n_total=n,
