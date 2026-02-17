@@ -1,0 +1,937 @@
+ent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.0000 REVERTED
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 896000: 351,376 points stored, best=0.8675
+[Explorer] Step 896500: 415,376 points stored, best=0.8675
+============================================================
+# Tensor State 
+ 2026-02-17 17:06:03 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[Explorer] Step 897000: 479,376 points stored, best=0.8675
+[Explorer] Step 897500: 293,392 points stored, best=0.8675
+[System] Shutting down...
+[L0] Feed stopped
+[Explorer] Shutdown: saved 327,696 points
+[L1] Neural bridge stopped
+[Context] TensorContextStream stopped
+[System] Final state logged. Goodbye.
+[System] Shutting down...
+[L0] Feed stopped
+[L1] Neural bridge stopped
+[Context] TensorContextStream stopped
+[System] Final state logged. Goodbye.
+============================================================
+UNIFIED TENSOR SYSTEM
+============================================================
+[L3] Hardware profiled: AMD Ryzen 7 250 w/ Radeon 780M Graphics, 8c/16t, 44.8GB RAM
+[L0] Market feed started: 10 tickers (mock)
+[L1] Neural bridge started: 16 neurons, 5s interval
+[Context] TensorContextStream started: /tmp/tensor_context every 5s
+============================================================
+# Tensor State 
+ 2026-02-17 17:06:21 UTC
+## System Health
+- Overall consonance: 0.5434
+- Dominant key: minor_third
+- Phase risk: **HIGH** (max=0.73)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 
+ | empty | 
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+============================================================
+[Explorer] Background thread started
+[GSD] === Cycle 1 ===
+[GSD] Starting autonomous improvement cycle
+[L2] GSD improvement loop started (3 phases per cycle, 60s cooldown)
+[System] Snapshot every 120s. Ctrl+C to stop.
+[Explorer] Resumed 327,696 previously solved points
+[Explorer] Precomputing manifold...
+Precomputing 5000 configurations with 14 workers...
+  500/5000 (10%)
+  1000/5000 (20%)
+  1500/5000 (30%)
+  2000/5000 (40%)
+  2500/5000 (50%)
+  3000/5000 (60%)
+  3500/5000 (70%)
+  4000/5000 (80%)
+  4500/5000 (90%)
+  5000/5000 (100%)
+[System] Shutting down...
+[L0] Feed stopped
+[L1] Neural bridge stopped
+[Context] TensorContextStream stopped
+[System] Final state logged. Goodbye.
+Precomputed 5,000 configs in 7.3s (79MB RAM)
+[Explorer] Running indefinitely (checkpoints every 500 steps)
+[GSD] Phase 1/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 500: 391,696 points stored, best=0.8675
+[Explorer] Step 1000: 455,696 points stored, best=0.8675
+[Explorer] Step 1500: 269,712 points stored, best=0.8675
+[Explorer] Step 2000: 333,712 points stored, best=0.8675
+[Explorer] Step 2500: 397,712 points stored, best=0.8675
+[Explorer] Step 3000: 461,712 points stored, best=0.8675
+[GSD] === Cycle 2 ===
+[GSD] Starting autonomous improvement cycle
+[GSD] Phase 1/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[Explorer] Step 3500: 275,728 points stored, best=0.8675
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 4000: 339,728 points stored, best=0.8675
+[Explorer] Step 4500: 403,728 points stored, best=0.8675
+============================================================
+# Tensor State 
+ 2026-02-17 17:08:21 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[Explorer] Step 5000: 467,728 points stored, best=0.8675
+[Explorer] Step 5500: 281,744 points stored, best=0.8675
+[Explorer] Step 6000: 345,744 points stored, best=0.8675
+[Explorer] Step 6500: 409,744 points stored, best=0.8675
+[GSD] === Cycle 3 ===
+[GSD] Starting autonomous improvement cycle
+[GSD] Phase 1/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[Explorer] Step 7000: 473,744 points stored, best=0.8675
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 7500: 287,760 points stored, best=0.8675
+[Explorer] Step 8000: 351,760 points stored, best=0.8675
+[Explorer] Step 8500: 415,760 points stored, best=0.8675
+[Explorer] Step 9000: 479,760 points stored, best=0.8675
+[Explorer] Step 9500: 293,776 points stored, best=0.8675
+[Explorer] Step 10000: 357,776 points stored, best=0.8675
+[GSD] === Cycle 4 ===
+[GSD] Starting autonomous improvement cycle
+[Explorer] Step 10500: 421,776 points stored, best=0.8675
+============================================================
+# Tensor State 
+ 2026-02-17 17:10:25 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[GSD] Phase 1/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 11000: 485,776 points stored, best=0.8675
+[Explorer] Step 11500: 299,792 points stored, best=0.8675
+[Explorer] Step 12000: 363,792 points stored, best=0.8675
+[Explorer] Step 12500: 427,792 points stored, best=0.8675
+[Explorer] Step 13000: 491,792 points stored, best=0.8675
+[Explorer] Step 13500: 305,808 points stored, best=0.8675
+[Explorer] Step 14000: 369,808 points stored, best=0.8675
+[GSD] === Cycle 5 ===
+[GSD] Starting autonomous improvement cycle
+[GSD] Phase 1/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[Explorer] Step 14500: 433,808 points stored, best=0.8675
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 15000: 497,808 points stored, best=0.8675
+[Explorer] Step 15500: 311,824 points stored, best=0.8675
+[Explorer] Step 16000: 375,824 points stored, best=0.8675
+============================================================
+# Tensor State 
+ 2026-02-17 17:12:29 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[Explorer] Step 16500: 439,824 points stored, best=0.8675
+[Explorer] Step 17000: 253,840 points stored, best=0.8675
+[Explorer] Step 17500: 317,840 points stored, best=0.8675
+[Explorer] Step 18000: 381,840 points stored, best=0.8675
+[GSD] === Cycle 6 ===
+[GSD] Starting autonomous improvement cycle
+[GSD] Phase 1/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[Explorer] Step 18500: 445,840 points stored, best=0.8675
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 19000: 259,856 points stored, best=0.8675
+[Explorer] Step 19500: 323,856 points stored, best=0.8675
+[Explorer] Step 20000: 387,856 points stored, best=0.8675
+[Explorer] Step 20500: 451,856 points stored, best=0.8675
+[Explorer] Step 21000: 265,872 points stored, best=0.8675
+[Explorer] Step 21500: 329,872 points stored, best=0.8675
+[Explorer] Step 22000: 393,872 points stored, best=0.8675
+[Explorer] Step 22500: 457,872 points stored, best=0.8675
+[Explorer] Step 23000: 271,888 points stored, best=0.8675
+[GSD] === Cycle 7 ===
+[GSD] Starting autonomous improvement cycle
+[GSD] Phase 1/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+============================================================
+# Tensor State 
+ 2026-02-17 17:14:36 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[Explorer] Step 23500: 335,888 points stored, best=0.8675
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[Explorer] Step 24000: 399,888 points stored, best=0.8675
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 24500: 463,888 points stored, best=0.8675
+[GSD] === Cycle 8 ===
+[GSD] Starting autonomous improvement cycle
+============================================================
+# Tensor State 
+ 2026-02-17 17:16:55 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[GSD] Phase 1/3
+[Explorer] Step 25000: 277,904 points stored, best=0.8675
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[Explorer] Step 25500: 341,904 points stored, best=0.8675
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[Explorer] Step 26000: 405,904 points stored, best=0.8675
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+============================================================
+[GSD] Phase 3/3
+# Tensor State 
+ 2026-02-17 17:19:40 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[Explorer] Step 26500: 469,904 points stored, best=0.8675
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 27000: 283,920 points stored, best=0.8675
+[Explorer] Step 27500: 347,920 points stored, best=0.8675
+[Explorer] Step 28000: 411,920 points stored, best=0.8675
+[GSD] === Cycle 9 ===
+[GSD] Starting autonomous improvement cycle
+[GSD] Phase 1/3
+============================================================
+# Tensor State 
+ 2026-02-17 17:22:09 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[Explorer] Step 28500: 475,920 points stored, best=0.8675
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[Explorer] Step 29000: 289,936 points stored, best=0.8675
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 29500: 353,936 points stored, best=0.8675
+[Explorer] Step 30000: 417,936 points stored, best=0.8675
+[Explorer] Step 30500: 481,936 points stored, best=0.8675
+[Explorer] Step 31000: 295,952 points stored, best=0.8675
+[Explorer] Step 31500: 359,952 points stored, best=0.8675
+[Explorer] Step 32000: 423,952 points stored, best=0.8675
+[GSD] === Cycle 10 ===
+[GSD] Starting autonomous improvement cycle
+[GSD] Phase 1/3
+============================================================
+# Tensor State 
+ 2026-02-17 17:24:14 UTC
+## System Health
+- Overall consonance: 0.5819
+- Dominant key: unison
+- Phase risk: **HIGH** (max=0.75)
+## Level Status
+| Level | Nodes | Gap | Risk | Key | Verdict | 
+-Growth |
+|-------|-------|-----|------|-----|---------|----------|
+| L0 market | 10 | 0.03 | 0.73 | unison | stable | 0 |
+| | **WARNING**: L0 gap=0.0319 < 0.05 | Contributing nodes: [0, 5, 2, 7, 8] | | | |
+| L1 neural | 16 | 0.18 | 0.68 | minor_third | stable | 0 |
+| L2 code | 489 | 0.00 | 0.75 | unison | stable | 0 |
+| | **WARNING**: L2 gap=0.0025 < 0.05 | Contributing nodes: [450, 90, 83, 463, 149] | | | |
+| L3 hardware | 8 | 0.89 | 0.49 | octave | transitioning | 0 |
+## Cross-Level Resonance
+| Pair | Golden Resonance | Harmonic Resonance | Interpretation |
+|------|-----------------|-------------------|----------------|
+| market 
+ neural | 0.8234 | 0.7879 | Golden angle aligned |
+| code 
+ market | 0.8501 | 0.9024 | Golden angle aligned |
+| hardware 
+ market | 0.8418 | 0.5965 | Golden angle aligned |
+| code 
+ neural | 0.8186 | 0.7359 | Golden angle aligned |
+| hardware 
+ neural | 0.8305 | 0.5931 | Golden angle aligned |
+| code 
+ hardware | 0.7856 | 0.4777 | Structural mismatch |
+## Active Signals
+- **MARKET phase risk 0.73**: unison dominant, verdict=stable
+- market eigenvalue gap narrowing (0.032): phase transition imminent
+- neural eigenvalue gap narrowing (0.183): phase transition imminent
+- **CODE phase risk 0.75**: unison dominant, verdict=stable
+- code eigenvalue gap narrowing (0.003): phase transition imminent
+- SIGNAL: code structure misaligned with hardware geometry (resonance=0.48). Recommend: run bootstrap to restructure toward hardware-consonant patterns.
+============================================================
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.cli.router': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 1: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 1 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 2/3
+[Explorer] Step 32500: 487,952 points stored, best=0.8675
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor a
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split auto
+[GSD] Task 'autoimprover-repo.src.dev_agent.ui.simple_tui': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 2: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 2 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Phase 3/3
+[GSD] Task count: 2
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Refactor s
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] dev-agent returned 2: usage: dev-agent [-h] [--repo REPO]
+                 {serve,chat,tick,expand,review,merge,status} ...
+dev-agent: error: argument cmd: invalid choice: '{"xml": "<task type=\\"auto\\">\\n  <n>Split src.
+[GSD] Task 'src.dev_agent.run_self_threads_step': consonance 0.6977->0.6977 (0.0000) REVERTED growth_regime=0
+[GSD] Phase 3: consonance 0.6977->0.6977 APPROVED growth_regime=0
+[GSD] Tasks completed: 0, failed: 2
+[GSD] Phase 3 verification: PASS (consonance_ok=True, resonance_ok=True)
+[GSD] Autonomous cycle complete
+[Explorer] Step 33000: 301,968 points stored, best=0.8675
+[Explorer] Step 33500: 365,968 points stored, best=0.8675
+[Explorer] Step 34000: 429,968 points stored, best=0.8675
+[Explorer] Step 34500: 493,968 points stored, best=0.8675
+[Explorer] Step 35000: 307,984 points stored, best=0.8675
+[Explorer] Step 35500: 371,984 points stored, best=0.8675
+[Explorer] Step 36000: 435,984 points stored, best=0.8675
+[Explorer] Step 36500: 499,984 points stored,

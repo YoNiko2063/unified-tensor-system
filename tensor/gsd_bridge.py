@@ -8,9 +8,11 @@ import os
 import sys
 import time
 import json
+import uuid
 import subprocess
 import numpy as np
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,10 +23,15 @@ _ECEMATH_SRC = os.path.join(_ROOT, 'ecemath', 'src')
 if _ECEMATH_SRC not in sys.path:
     sys.path.insert(0, _ECEMATH_SRC)
 
+_DEV_AGENT_SRC = Path(_ROOT, 'dev-agent/src').resolve()
+if str(_DEV_AGENT_SRC) not in sys.path:
+    sys.path.insert(0, str(_DEV_AGENT_SRC))
+
 from tensor.core import UnifiedTensor
 from tensor.code_graph import CodeGraph
 from tensor.code_validator import CodeValidator
 from tensor.bootstrap import BootstrapOrchestrator
+from tensor.math_connections import fisher_guided_planning
 
 
 @dataclass
@@ -197,7 +204,15 @@ Guided by tensor L2 free energy minimization.
                     f'</task>'
                 )
 
-        self._phases[phase] = [{'xml': t, 'module': name, 'fe': fe} for t in tasks]
+        # Compute φ-weight for this phase's priority index
+        guidance = fisher_guided_planning(self.tensor, level=2)
+        task_index = phase - 1
+        phi_weight = float(guidance.phi_weights[task_index]) if (
+            guidance.phi_weights is not None and task_index < len(guidance.phi_weights)
+        ) else 0.0
+
+        self._phases[phase] = [{'xml': t, 'module': name, 'fe': fe,
+                                 'phi_weight': phi_weight} for t in tasks]
 
         # Write plan file
         os.makedirs(self.planning_dir, exist_ok=True)
@@ -241,34 +256,55 @@ Guided by tensor L2 free energy minimization.
         tasks_completed = 0
         tasks_failed = 0
 
-        dev_agent_cli = self._find_dev_agent_cli()
-
-        for task_info in tasks:
-            # Snapshot per-task consonance as plain float before subprocess
+        for task_idx, task_info in enumerate(tasks):
+            # Snapshot per-task consonance as plain float before execution
             cons_before = float(self.tensor.harmonic_signature(2).consonance_score)
 
-            task_json = json.dumps({
-                'xml': task_info.get('xml', ''),
-                'module': task_info.get('module', ''),
-                'phase': phase,
-            })
+            module_name = task_info.get('module', '')
+            phi_weight = task_info.get('phi_weight', 0.0)
 
-            # Try dev-agent CLI if available, else fall back to bootstrap
-            if dev_agent_cli is not None:
-                try:
-                    result = subprocess.run(
-                        [sys.executable, dev_agent_cli, '--task', task_json],
-                        capture_output=True, text=True, timeout=300,
-                        cwd=self.dev_agent_root,
-                    )
-                    if result.returncode != 0:
-                        print(f"[GSD] dev-agent returned {result.returncode}: "
-                              f"{result.stderr[:200]}")
-                except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
-                    print(f"[GSD] dev-agent invocation failed: {e}")
-            else:
-                # Fall back to bootstrap step
-                self._bootstrapper.run_bootstrap_step()
+            # Build autonomy proposal for dev-agent
+            from dev_agent.autonomy.autonomy_loop import run_autonomy_tick
+
+            proposal_id = f"tensor-gsd-{uuid.uuid4().hex[:8]}"
+            proposal = {
+                "artifact_type": "proposal",
+                "schema_version": "1.1",
+                "proposal_id": proposal_id,
+                "proposal_class": "adaptive",
+                "title": f"Tensor-guided improvement: {module_name}",
+                "derived_from": {
+                    "intent_version": "tensor_fisher_guided",
+                    "failure_aggregate": "tensor_gsd_bridge"
+                },
+                "justification": {
+                    "evidence": (f"FIM priority module: {module_name}, "
+                                 f"phi_weight: {phi_weight:.4f}, "
+                                 f"consonance: {cons_before:.4f}"),
+                    "aggregate_refs": ["tensor:l2_eigenvalue", "tensor:fisher_fim"]
+                },
+                "scope": {
+                    "modules": [module_name.replace('.', '/')],
+                    "invariants_unchanged": [
+                        "no_execution_without_approval",
+                        "read_only_introspection"
+                    ]
+                },
+                "risk": {
+                    "level": "low",
+                    "rollback": "git revert"
+                },
+                "status": "approved"
+            }
+            proposal_path = Path('dev-agent/logs/proposals') / f"{proposal_id}.json"
+            proposal_path.write_text(json.dumps(proposal, indent=2))
+
+            try:
+                result = run_autonomy_tick(project_root=Path('dev-agent').resolve())
+                success = result.get('status') not in ('error', 'failed')
+            except Exception as e:
+                print(f"[GSD] autonomy_tick error: {e}")
+                success = False
 
             # Re-parse codebase and update L2
             cg = CodeGraph.from_directory(self.dev_agent_root, max_files=500)
@@ -282,8 +318,6 @@ Guided by tensor L2 free energy minimization.
             # Track growth regime from L2 harmonic signature
             sig_after = self.tensor.harmonic_signature(2)
             growth_count = getattr(sig_after, 'growth_regime_count', 0)
-
-            module_name = task_info.get('module', '')
 
             if cons_delta > 0:
                 tasks_completed += 1
