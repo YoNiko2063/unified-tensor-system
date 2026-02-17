@@ -87,27 +87,83 @@ class SystemRunner:
         print("[L1] Neural bridge started: 16 neurons, 5s interval")
 
     def start_improve(self):
-        """Start L2 GSD improvement cycle."""
+        """Start L2 GSD improvement cycle in a background thread (loops forever)."""
         gsd_root = os.path.join(_ROOT, 'external', 'get-shit-done')
         if not os.path.isdir(gsd_root):
             gsd_root = _ROOT
         gsd = GSDBridge(self.tensor, gsd_root, self.dev_agent_root)
         self._components['gsd'] = gsd
-        print("[L2] GSD improvement cycle starting...")
-        gsd.run_autonomous_cycle(max_phases=3)
+
+        def _gsd_loop():
+            cycle = 0
+            while not self._shutdown.is_set():
+                cycle += 1
+                print(f"\n[GSD] === Cycle {cycle} ===")
+                try:
+                    gsd.run_autonomous_cycle(max_phases=3)
+                except Exception as e:
+                    print(f"[GSD] Cycle {cycle} error: {e}")
+                # Cool down between cycles
+                self._shutdown.wait(60)
+
+        t = threading.Thread(target=_gsd_loop, daemon=True, name='gsd-loop')
+        t.start()
+        print("[L2] GSD improvement loop started (3 phases per cycle, 60s cooldown)")
 
     def start_explorer(self):
-        """Start configuration explorer targeting NAND."""
-        try:
-            from tensor.explorer import ConfigurationExplorer, ExplorationTarget
-            explorer = ConfigurationExplorer(self.tensor)
-            target = ExplorationTarget.logic_gate('NAND')
-            result = explorer.explore(target, n_configs=50, batch_size=10)
-            self._components['explorer'] = explorer
-            print(f"[Explorer] NAND search: best={result.best_score:.4f}, "
-                  f"configs={result.configs_evaluated}")
-        except Exception as e:
-            print(f"[Explorer] Skipped: {e}")
+        """Start configuration explorer in background thread.
+
+        Precomputes manifold, loads any previous checkpoint (resuming from
+        already-solved points), then explores forever. All results —
+        including poor predictions — are checkpointed to disk so future
+        generations can reuse them as precomputed ground truth.
+        """
+        def _explorer_loop():
+            try:
+                from tensor.explorer import ConfigurationExplorer, ExplorerConfig
+                config = ExplorerConfig(
+                    target='nand',
+                    n_precompute=5000,
+                    batch_size=128,
+                    checkpoint_interval=500,
+                    stats_interval=60.0,
+                    log_dir=os.path.join(_ROOT, 'tensor', 'logs'),
+                )
+                explorer = ConfigurationExplorer(config)
+
+                # Resume from previous checkpoint if it exists
+                if explorer.load_checkpoint():
+                    prev = explorer.results.count
+                    print(f"[Explorer] Resumed {prev:,} previously solved points")
+                else:
+                    print("[Explorer] No checkpoint found, starting fresh")
+
+                # Precompute manifold grid
+                print("[Explorer] Precomputing manifold...")
+                explorer.precompute(progress=True)
+
+                self._components['explorer'] = explorer
+
+                # Run forever — all points stored, all checkpointed
+                print("[Explorer] Running indefinitely (checkpoints every 500 steps)")
+                while not self._shutdown.is_set():
+                    explorer.run_step()
+                    if explorer._step % config.checkpoint_interval == 0:
+                        explorer._checkpoint()
+                        print(f"[Explorer] Step {explorer._step}: "
+                              f"{explorer.results.count:,} points stored, "
+                              f"best={explorer.results.best_score:.4f}")
+
+                # Final checkpoint on shutdown
+                explorer._checkpoint()
+                print(f"[Explorer] Shutdown: saved {explorer.results.count:,} points")
+
+            except Exception as e:
+                print(f"[Explorer] Error: {e}")
+
+        t = threading.Thread(target=_explorer_loop, daemon=True, name='explorer')
+        t.start()
+        print("[Explorer] Background thread started")
 
     def print_snapshot(self):
         """Print current tensor state."""
