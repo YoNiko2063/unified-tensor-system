@@ -5,10 +5,14 @@ is met, acts, and the tensor validates. No coordinator. No job queue.
 The field is the governance.
 
 Includes PredictiveLayer (L3) and MetaLoss integration (L5).
+
+FICUTS Layer 4:
+  - Task 4.1: RLock (_state_lock) protecting agent reads/writes in run_cycle
 """
 import json
 import subprocess
 import sys
+import threading
 import time
 import numpy as np
 from collections import defaultdict
@@ -132,6 +136,7 @@ class AgentNetwork:
         self._apply_fn: Optional[Callable] = None
         self._revert_fn: Optional[Callable] = None
         self._cycle_count = 0
+        self._state_lock = threading.RLock()   # Task 4.1: protect agent state
 
     def add_agent(self, agent: AgentNode):
         self.agents.append(agent)
@@ -153,22 +158,30 @@ class AgentNetwork:
             return {}
 
     def run_cycle(self) -> Optional[dict]:
-        """One agent network cycle: read context, fire, arbitrate, apply, validate."""
-        self._cycle_count += 1
+        """One agent network cycle: read context, fire, arbitrate, apply, validate.
+
+        Task 4.1: atomic read of agent state, no lock during slow operations,
+        atomic write of agent state on completion.
+        """
+        with self._state_lock:
+            self._cycle_count += 1
+            cycle = self._cycle_count
+
         context = self._read_context()
         if not context:
             return None
 
-        # Record trajectory
+        # Record trajectory (trajectory has its own write lock)
         if self.trajectory is not None:
             self.trajectory.record(context)
 
-        # Find firing agents
-        firing = [a for a in self.agents if a.should_fire(context)]
+        # Atomic read: snapshot which agents should fire
+        with self._state_lock:
+            firing = [a for a in self.agents if a.should_fire(context)]
         if not firing:
-            return {'status': 'idle', 'cycle': self._cycle_count}
+            return {'status': 'idle', 'cycle': cycle}
 
-        # Each firing agent generates a proposal
+        # No lock during proposal generation (can be slow/LLM calls)
         proposals = []
         for a in firing:
             p = a.generate_change(context)
@@ -176,52 +189,47 @@ class AgentNetwork:
             proposals.append((a, p))
 
         # Arbitrate: highest predicted_meta_delta * influence wins
-        winner_agent, winner_proposal = max(
-            proposals,
-            key=lambda ap: ap[0].predict_meta_delta(
-                ap[1], self.trajectory) * ap[0].influence
-        )
+        with self._state_lock:
+            winner_agent, winner_proposal = max(
+                proposals,
+                key=lambda ap: ap[0].predict_meta_delta(
+                    ap[1], self.trajectory) * ap[0].influence
+            )
+            cons_before = context.get('consonance', {}).get(
+                winner_agent.level, 0.0)
 
-        # Snapshot consonance before
-        cons_before = context.get('consonance', {}).get(
-            winner_agent.level, 0.0)
-
-        # Apply change
-        success = False
+        # Apply change (outside lock — external operation)
         if self._apply_fn is not None:
-            success = self._apply_fn(winner_proposal)
+            self._apply_fn(winner_proposal)
 
-        # Read new context for consonance after
+        # Read new context
         context_after = self._read_context()
         cons_after = context_after.get('consonance', {}).get(
             winner_agent.level, cons_before)
         delta = cons_after - cons_before
 
-        # Update influence
-        winner_agent.update_influence(winner_proposal.predicted_delta, delta)
+        # Atomic write: update agent state
+        with self._state_lock:
+            winner_agent.update_influence(winner_proposal.predicted_delta, delta)
+            self.predictive.record_prediction(
+                winner_agent.level,
+                winner_proposal.predicted_delta,
+                delta)
 
-        # Record prediction
-        self.predictive.record_prediction(
-            winner_agent.level,
-            winner_proposal.predicted_delta,
-            delta)
+            if delta <= 0 and self._revert_fn is not None:
+                self._revert_fn(winner_proposal)
 
-        # Revert if degraded
-        if delta <= 0 and self._revert_fn is not None:
-            self._revert_fn(winner_proposal)
-
-        # Adjust poll intervals based on learning priority
-        if self._cycle_count % 10 == 0:
-            priorities = self.predictive.learning_priority()
-            for agent in self.agents:
-                if agent.level in priorities[:2]:
-                    agent.poll_interval = max(2.0, agent.poll_interval * 0.8)
-                else:
-                    agent.poll_interval = min(30.0, agent.poll_interval * 1.1)
+            if cycle % 10 == 0:
+                priorities = self.predictive.learning_priority()
+                for agent in self.agents:
+                    if agent.level in priorities[:2]:
+                        agent.poll_interval = max(2.0, agent.poll_interval * 0.8)
+                    else:
+                        agent.poll_interval = min(30.0, agent.poll_interval * 1.1)
 
         return {
             'status': 'applied' if delta > 0 else 'reverted',
-            'cycle': self._cycle_count,
+            'cycle': cycle,
             'agent': winner_agent.role,
             'predicted_delta': winner_proposal.predicted_delta,
             'actual_delta': delta,

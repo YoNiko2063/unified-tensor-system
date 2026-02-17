@@ -8,6 +8,10 @@ FICUTS Layer 1:
   - Task 1.1: lyapunov_energy() — explicit conserved quantity
   - Task 1.2: meta_loss_stable() — damped acceleration with penalty
   - Task 1.3: Write-ahead journal (WAL) + atomic checkpoint
+
+FICUTS Layer 4:
+  - Task 4.1: RLock thread safety on all self.points mutations
+  - Task 4.2: Hierarchical memory compression (keep 30% recent + 10% sampled old)
 """
 import json
 import threading
@@ -41,11 +45,18 @@ class TrajectoryPoint:
 
 class LearningTrajectory:
     def __init__(self, window: int = 500,
-                 journal_path: Optional[str] = None):
+                 journal_path: Optional[str] = None,
+                 max_points: Optional[int] = None,
+                 compression_ratio: float = 0.1):
         self.points: List[TrajectoryPoint] = []
         self.window = window
-        self._write_lock = threading.Lock()
+        self._write_lock = threading.RLock()   # Task 4.1: RLock (reentrant)
         self.checkpoint_interval = 100
+        self.metadata: Dict[str, Any] = {'compressions': 0}  # Task 4.2
+
+        # Task 4.2: hierarchical compression params
+        self._max_points = max_points
+        self._compression_ratio = compression_ratio
 
         # WAL setup (Task 1.3)
         self._journal = None
@@ -70,12 +81,16 @@ class LearningTrajectory:
                 for row in tensor_context.get('golden_resonance_matrix', [])
             ],
         )
-        # Lyapunov energy computed from current points before appending (Task 1.1)
+        # Lyapunov energy from current state before appending (Task 1.1)
         point.metadata['lyapunov_energy'] = self.lyapunov_energy()
 
         with self._write_lock:
             self.points.append(point)
-            if len(self.points) > self.window:
+
+            # Task 4.2: hierarchical compression when max_points is set
+            if self._max_points is not None and len(self.points) > self._max_points:
+                self._compress()
+            elif len(self.points) > self.window:
                 self.points = self.points[-self.window:]
 
             # WAL: append immediately then flush (Task 1.3)
@@ -134,6 +149,27 @@ class LearningTrajectory:
                 penalty += abs(E_curr - E_prev) * 10
 
         return -accel + penalty
+
+    # ── Task 1.3: Write-Ahead Journal ────────────────────────────────────────
+
+    # ── Task 4.2: Hierarchical Memory Compression ────────────────────────────
+
+    def _compress(self):
+        """Keep 30% recent + compression_ratio of old (uniform sub-sample).
+
+        Called inside _write_lock.
+        """
+        n_recent = int(self._max_points * 0.3)
+        n_compressed = max(1, int(self._max_points * self._compression_ratio))
+        recent = self.points[-n_recent:]
+        old = self.points[:-n_recent]
+        if len(old) > n_compressed:
+            step = max(1, len(old) // n_compressed)
+            compressed = old[::step]
+        else:
+            compressed = old
+        self.points = list(compressed) + list(recent)
+        self.metadata['compressions'] += 1
 
     # ── Task 1.3: Write-Ahead Journal ────────────────────────────────────────
 
