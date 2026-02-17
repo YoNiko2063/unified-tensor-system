@@ -2,8 +2,14 @@
 Tests for FICUTS Layer 6: Web Ingestion
 """
 
+import json
+import shutil
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
-from tensor.web_ingestion import ArticleParser, ResearchConceptExtractor
+from tensor.web_ingestion import ArticleParser, ResearchConceptExtractor, WebIngestionLoop
 
 
 SAMPLE_HTML = """
@@ -199,3 +205,96 @@ def test_concept_extractor_deduplicates_terms():
     terms = result['technical_terms']
     # set-dedup should produce only one entry for "Fisher Information Matrix"
     assert terms.count('Fisher Information Matrix') <= 1
+
+
+# ── Task 6.3: WebIngestionLoop ─────────────────────────────────────────────────
+
+MINIMAL_HTML = """
+<html>
+  <title>Mock Paper</title>
+  <h1>Mock Title</h1>
+  <p>We measured tau = 3ms in the circuit.</p>
+  <pre>\\frac{dV}{dt} = -V</pre>
+</html>
+"""
+
+
+@pytest.fixture
+def tmp_loop(tmp_path):
+    """WebIngestionLoop backed by a temp directory."""
+    return WebIngestionLoop(storage_dir=str(tmp_path / 'ingested'))
+
+
+def _mock_response(html: str, status: int = 200):
+    resp = MagicMock()
+    resp.text = html
+    resp.status_code = status
+    resp.raise_for_status = MagicMock()
+    return resp
+
+
+def test_ingestion_stores_article(tmp_loop):
+    with patch('requests.get', return_value=_mock_response(MINIMAL_HTML)):
+        result = tmp_loop.ingest_url('http://example.com/paper1')
+    assert result is True
+    assert tmp_loop.get_ingested_count() == 1
+
+
+def test_ingestion_deduplication(tmp_loop):
+    with patch('requests.get', return_value=_mock_response(MINIMAL_HTML)):
+        tmp_loop.ingest_url('http://example.com/paper1')
+        second = tmp_loop.ingest_url('http://example.com/paper1')
+    assert second is False
+    assert tmp_loop.get_ingested_count() == 1
+
+
+def test_ingestion_seen_urls_persisted(tmp_path):
+    """Seen URLs survive loop reconstruction."""
+    storage = str(tmp_path / 'ingested')
+    loop1 = WebIngestionLoop(storage_dir=storage)
+    with patch('requests.get', return_value=_mock_response(MINIMAL_HTML)):
+        loop1.ingest_url('http://example.com/paper1')
+
+    loop2 = WebIngestionLoop(storage_dir=storage)
+    with patch('requests.get', return_value=_mock_response(MINIMAL_HTML)):
+        result = loop2.ingest_url('http://example.com/paper1')
+    assert result is False  # still deduplicated after reload
+
+
+def test_ingestion_stored_json_structure(tmp_loop):
+    with patch('requests.get', return_value=_mock_response(MINIMAL_HTML)):
+        tmp_loop.ingest_url('http://example.com/paper1')
+
+    files = [f for f in Path(tmp_loop.storage_dir).glob('*.json')
+              if f.name != 'seen_urls.json']
+    assert len(files) == 1
+    data = json.loads(files[0].read_text())
+    assert 'url' in data
+    assert 'article' in data
+    assert 'concepts' in data
+    assert 'ingested_at' in data
+    assert data['article']['title'] == 'Mock Paper'
+
+
+def test_ingestion_http_error_returns_false(tmp_loop):
+    resp = MagicMock()
+    resp.raise_for_status = MagicMock(side_effect=Exception("404"))
+    with patch('requests.get', return_value=resp):
+        result = tmp_loop.ingest_url('http://example.com/bad')
+    assert result is False
+    assert tmp_loop.get_ingested_count() == 0
+
+
+def test_fetch_feed_bad_url_returns_empty(tmp_loop):
+    """_fetch_feed must not raise on a bad/unreachable feed URL."""
+    # feedparser itself is lenient; passing a garbage URL returns empty entries
+    urls = tmp_loop._fetch_feed('not-a-real-feed://nowhere')
+    assert isinstance(urls, list)
+
+
+def test_ingestion_multiple_urls(tmp_loop):
+    urls = [f'http://example.com/paper{i}' for i in range(5)]
+    with patch('requests.get', return_value=_mock_response(MINIMAL_HTML)):
+        for url in urls:
+            tmp_loop.ingest_url(url)
+    assert tmp_loop.get_ingested_count() == 5

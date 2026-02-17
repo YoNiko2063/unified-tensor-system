@@ -7,8 +7,14 @@ Classes:
   - WebIngestionLoop:        Continuous RSS ingestion + dedup (Task 6.3)
 """
 
+import hashlib
+import json
 import re
+import time
+from pathlib import Path
 
+import feedparser
+import requests
 from bs4 import BeautifulSoup
 from typing import Dict, List, Optional
 
@@ -183,3 +189,105 @@ class ResearchConceptExtractor:
         ]
         text = ' '.join(s['text'] for s in article.get('sections', [])).lower()
         return any(ind in text for ind in indicators)
+
+
+class WebIngestionLoop:
+    """
+    Continuously ingest from web sources:
+    - RSS feeds (arXiv cs.AI, cs.LG, physics, etc.)
+    - News aggregators
+    - Research blogs
+
+    Deduplicate by URL, parse, extract concepts, store.
+    """
+
+    def __init__(self, storage_dir: str = 'tensor/data/ingested'):
+        self.parser = ArticleParser()
+        self.extractor = ResearchConceptExtractor()
+        self.storage_dir = Path(storage_dir)
+        self.storage_dir.mkdir(parents=True, exist_ok=True)
+
+        # Load seen URLs
+        self.seen_file = self.storage_dir / 'seen_urls.json'
+        if self.seen_file.exists():
+            self.seen_urls = set(json.loads(self.seen_file.read_text()))
+        else:
+            self.seen_urls = set()
+
+    def ingest_url(self, url: str) -> bool:
+        """
+        Fetch single URL, parse, extract, store.
+
+        Returns: True if successfully ingested, False if duplicate or error.
+        """
+        if url in self.seen_urls:
+            return False  # duplicate
+
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+
+            article = self.parser.parse(response.text, url)
+            concepts = self.extractor.extract(article)
+
+            self._store_ingested(url, article, concepts)
+
+            self.seen_urls.add(url)
+            self._save_seen_urls()
+
+            print(f"[WebIngestion] Ingested: {url}")
+            return True
+
+        except Exception as e:
+            print(f"[WebIngestion] Failed {url}: {e}")
+            return False
+
+    def run_continuous(self, feed_urls: List[str], interval_seconds: int = 3600):
+        """
+        Continuously ingest from RSS feeds.
+
+        feed_urls: List of RSS feed URLs (e.g. arXiv RSS)
+        interval_seconds: How often to check feeds (default 1 hour)
+        """
+        print(f"[WebIngestion] Starting continuous loop with {len(feed_urls)} feeds")
+
+        while True:
+            for feed_url in feed_urls:
+                articles = self._fetch_feed(feed_url)
+                print(f"[WebIngestion] Found {len(articles)} articles in {feed_url}")
+                for article_url in articles:
+                    self.ingest_url(article_url)
+
+            print(f"[WebIngestion] Sleeping {interval_seconds}s until next check")
+            time.sleep(interval_seconds)
+
+    def _fetch_feed(self, feed_url: str) -> List[str]:
+        """Parse RSS/Atom feed, return article URLs."""
+        try:
+            feed = feedparser.parse(feed_url)
+            return [entry.link for entry in feed.entries if hasattr(entry, 'link')]
+        except Exception as e:
+            print(f"[WebIngestion] Feed parse error {feed_url}: {e}")
+            return []
+
+    def _store_ingested(self, url: str, article: Dict, concepts: Dict):
+        """Store parsed article + extracted concepts as JSON."""
+        url_hash = hashlib.md5(url.encode()).hexdigest()[:12]
+        filename = self.storage_dir / f"{url_hash}.json"
+
+        data = {
+            'url': url,
+            'article': article,
+            'concepts': concepts,
+            'ingested_at': time.time(),
+        }
+        filename.write_text(json.dumps(data, indent=2))
+
+    def _save_seen_urls(self):
+        """Persist seen URLs to disk."""
+        self.seen_file.write_text(json.dumps(list(self.seen_urls)))
+
+    def get_ingested_count(self) -> int:
+        """Count how many articles are stored (excludes seen_urls.json)."""
+        return len([f for f in self.storage_dir.glob('*.json')
+                    if f.name != 'seen_urls.json'])
