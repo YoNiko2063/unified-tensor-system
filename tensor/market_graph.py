@@ -215,6 +215,94 @@ class MarketGraph:
         """Set Markov chain transition rate matrix for regime switching."""
         self._regime_Q = Q.copy()
 
+    @classmethod
+    def from_trading_pipeline(cls, steps_output: dict) -> 'MarketGraph':
+        """Build MarketGraph from trading bot STEP_REGISTRY output format.
+
+        Expected keys (all optional):
+          'tickers': list of {symbol, sector, price, momentum, volatility}
+          'correlations': list of {ticker_a, ticker_b, correlation}
+          'sentiment_scores': dict {symbol: score}
+          'sector_weights': dict {sector: weight}
+          'articles': list of {ticker, sentiment} (aggregated per ticker)
+        """
+        mg = cls()
+
+        # Tickers
+        for t in steps_output.get('tickers', []):
+            mg.add_ticker(
+                symbol=t['symbol'],
+                sector=t.get('sector', ''),
+                price=t.get('price', 100.0),
+                momentum=t.get('momentum', 0.0),
+                volatility=t.get('volatility', 0.01),
+            )
+
+        # Correlations
+        for c in steps_output.get('correlations', []):
+            mg.set_correlation(c['ticker_a'], c['ticker_b'], c['correlation'])
+
+        # Sentiment scores
+        for symbol, score in steps_output.get('sentiment_scores', {}).items():
+            if symbol in mg.tickers:
+                mg.tickers[symbol].sentiment = float(np.clip(score, -1.0, 1.0))
+
+        # Article sentiments (aggregate by ticker)
+        article_sents: Dict[str, List[float]] = {}
+        for art in steps_output.get('articles', []):
+            ticker = art.get('ticker', '')
+            sent = art.get('sentiment', 0.0)
+            article_sents.setdefault(ticker, []).append(sent)
+        for ticker, sents in article_sents.items():
+            if ticker in mg.tickers:
+                mg.tickers[ticker].sentiment = float(
+                    np.clip(np.mean(sents), -1.0, 1.0))
+
+        return mg
+
+    @classmethod
+    def mock_live(cls, n_tickers: int = 10, seed: int = 42) -> 'MarketGraph':
+        """Generate deterministic mock market data for testing.
+
+        Creates n_tickers with realistic sectors, correlations, and volatility.
+        Fully deterministic via seed.
+        """
+        rng = np.random.default_rng(seed)
+
+        sectors = ['tech', 'fin', 'health', 'energy', 'consumer']
+        symbols = [
+            'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META',
+            'JPM', 'GS', 'BAC', 'JNJ', 'PFE',
+            'XOM', 'CVX', 'WMT', 'COST', 'TSLA',
+            'NVDA', 'AMD', 'NFLX', 'DIS', 'V',
+        ][:n_tickers]
+
+        mg = cls()
+        for i, sym in enumerate(symbols):
+            sector = sectors[i % len(sectors)]
+            mg.add_ticker(
+                symbol=sym,
+                sector=sector,
+                price=float(50 + rng.random() * 400),
+                momentum=float(rng.standard_normal() * 0.02),
+                volatility=float(0.005 + rng.random() * 0.04),
+                sentiment=float(rng.standard_normal() * 0.3),
+            )
+
+        # Add correlations: same-sector pairs get higher correlation
+        sym_list = list(mg.tickers.keys())
+        for i in range(len(sym_list)):
+            for j in range(i + 1, len(sym_list)):
+                a, b = sym_list[i], sym_list[j]
+                same_sector = mg.tickers[a].sector == mg.tickers[b].sector
+                base = 0.6 if same_sector else 0.1
+                corr = base + rng.random() * 0.3
+                corr = min(corr, 0.99)
+                if rng.random() < 0.3:
+                    mg.set_correlation(a, b, float(corr))
+
+        return mg
+
     @property
     def n_tickers(self) -> int:
         return len(self.tickers)
