@@ -260,3 +260,81 @@ class FunctionBasisToHDV:
             usage += self.get_domain_mask(domain).astype(int)
 
         return set(np.where(usage >= 2)[0].tolist())
+
+
+# ── Task 8.4 ──────────────────────────────────────────────────────────────────
+
+def populate_library_from_arxiv(
+    ingested_dir: str = 'tensor/data/ingested',
+    library_path: str = 'tensor/data/function_library.json',
+    max_papers: Optional[int] = None,
+) -> FunctionBasisLibrary:
+    """
+    Populate the function library from already-ingested arXiv papers.
+
+    Reads paper URLs from tensor/data/ingested/*.json, downloads each paper's
+    LaTeX source from arXiv's /e-print/ endpoint, extracts equations, and adds
+    them to the FunctionBasisLibrary.
+
+    This bridges the gap between:
+      Layer 6 (web ingestion — stores paper metadata) and
+      Layer 8 (function basis — needs real equations)
+
+    Args:
+        ingested_dir: directory containing *.json ingested paper files
+        library_path: path to save the populated function library
+        max_papers:   cap on papers processed (None = all)
+
+    Returns:
+        Populated FunctionBasisLibrary instance.
+    """
+    from tensor.arxiv_pdf_parser import ArxivPDFSourceParser
+
+    parser = ArxivPDFSourceParser(rate_limit_seconds=1.5)
+    library = FunctionBasisLibrary(library_path)
+    storage = Path(ingested_dir)
+
+    paper_files = [
+        f for f in storage.glob('*.json')
+        if f.name != 'seen_urls.json'
+    ]
+    if max_papers is not None:
+        paper_files = paper_files[:max_papers]
+
+    print(f"[Library] Processing {len(paper_files)} ingested papers")
+
+    success, failed = 0, 0
+    for paper_file in paper_files:
+        try:
+            data = json.loads(paper_file.read_text())
+        except Exception:
+            continue
+
+        url = data.get('url', '')
+        if 'arxiv.org' not in url:
+            failed += 1
+            continue
+
+        title = data.get('article', {}).get('title', '')
+        domain = library._infer_domain(url, title)
+
+        result = parser.parse_arxiv_paper(url)
+        if result and result['equations']:
+            for eq_latex in result['equations']:
+                library._add_equation(
+                    paper_id=result['paper_id'],
+                    latex=eq_latex,
+                    domain=domain,
+                )
+            success += 1
+            if success % 10 == 0:
+                library._save_library()
+                print(f"[Library] {success} papers parsed, "
+                      f"{len(library.library)} functions")
+        else:
+            failed += 1
+
+    library._save_library()
+    print(f"[Library] Complete: {success} parsed, {failed} failed, "
+          f"{len(library.library)} total functions")
+    return library
