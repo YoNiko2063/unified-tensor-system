@@ -1,0 +1,441 @@
+{
+  "url": "https://arxiv.org/abs/2602.14189",
+  "article": {
+    "url": "https://arxiv.org/abs/2602.14189",
+    "title": "[2602.14189] Knowing When Not to Answer: Abstention-Aware Scientific Reasoning",
+    "sections": [
+      {
+        "level": 2,
+        "text": "quick links",
+        "position": 0
+      },
+      {
+        "level": 1,
+        "text": "Computer Science > Computation and Language",
+        "position": 1
+      },
+      {
+        "level": 1,
+        "text": "Title:Knowing When Not to Answer: Abstention-Aware Scientific Reasoning",
+        "position": 2
+      },
+      {
+        "level": 2,
+        "text": "Submission history",
+        "position": 3
+      },
+      {
+        "level": 2,
+        "text": "Access Paper:",
+        "position": 4
+      },
+      {
+        "level": 3,
+        "text": "References & Citations",
+        "position": 5
+      },
+      {
+        "level": 2,
+        "text": "BibTeX formatted citation",
+        "position": 6
+      },
+      {
+        "level": 3,
+        "text": "Bookmark",
+        "position": 7
+      },
+      {
+        "level": 1,
+        "text": "Bibliographic and Citation Tools",
+        "position": 8
+      },
+      {
+        "level": 1,
+        "text": "Code, Data and Media Associated with this Article",
+        "position": 9
+      },
+      {
+        "level": 1,
+        "text": "Demos",
+        "position": 10
+      },
+      {
+        "level": 1,
+        "text": "Recommenders and Search Tools",
+        "position": 11
+      },
+      {
+        "level": 1,
+        "text": "arXivLabs: experimental projects with community collaborators",
+        "position": 12
+      }
+    ],
+    "hyperlinks": [
+      {
+        "href": "#content",
+        "text": "Skip to main content",
+        "outbound": false
+      },
+      {
+        "href": "https://www.cornell.edu/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about/ourmembers.html",
+        "text": "member institutions",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about/donate.html",
+        "text": "Donate",
+        "outbound": true
+      },
+      {
+        "href": "/IgnoreMe",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs/recent",
+        "text": "cs",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help",
+        "text": "Help",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/advanced",
+        "text": "Advanced Search",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://www.cornell.edu/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/login",
+        "text": "Login",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help",
+        "text": "Help Pages",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about",
+        "text": "About",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Abdaljalil,+S",
+        "text": "Samir Abdaljalil",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Serpedin,+E",
+        "text": "Erchin Serpedin",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Kurban,+H",
+        "text": "Hasan Kurban",
+        "outbound": true
+      },
+      {
+        "href": "/pdf/2602.14189",
+        "text": "View PDF",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/html/2602.14189v1",
+        "text": "HTML (experimental)",
+        "outbound": true
+      },
+      {
+        "href": "https://github.com/sabdaljalil2000/ai4science",
+        "text": "this https URL",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/abs/2602.14189",
+        "text": "arXiv:2602.14189",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/abs/2602.14189v1",
+        "text": "arXiv:2602.14189v1",
+        "outbound": true
+      },
+      {
+        "href": "https://doi.org/10.48550/arXiv.2602.14189",
+        "text": "https://doi.org/10.48550/arXiv.2602.14189",
+        "outbound": true
+      },
+      {
+        "href": "/show-email/312990da/2602.14189",
+        "text": "view email",
+        "outbound": true
+      },
+      {
+        "href": "/pdf/2602.14189",
+        "text": "View PDF",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/html/2602.14189v1",
+        "text": "HTML (experimental)",
+        "outbound": true
+      },
+      {
+        "href": "/src/2602.14189",
+        "text": "TeX Source",
+        "outbound": true
+      },
+      {
+        "href": "http://creativecommons.org/licenses/by/4.0/",
+        "text": "view license",
+        "outbound": true
+      },
+      {
+        "href": "/prevnext?id=2602.14189&function=prev&context=cs.CL",
+        "text": "<\u00a0prev",
+        "outbound": true
+      },
+      {
+        "href": "/prevnext?id=2602.14189&function=next&context=cs.CL",
+        "text": "next\u00a0>",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs.CL/new",
+        "text": "new",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs.CL/recent",
+        "text": "recent",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs.CL/2026-02",
+        "text": "2026-02",
+        "outbound": true
+      },
+      {
+        "href": "/abs/2602.14189?context=cs",
+        "text": "cs",
+        "outbound": true
+      },
+      {
+        "href": "/abs/2602.14189?context=cs.AI",
+        "text": "cs.AI",
+        "outbound": true
+      },
+      {
+        "href": "https://ui.adsabs.harvard.edu/abs/arXiv:2602.14189",
+        "text": "NASA ADS",
+        "outbound": true
+      },
+      {
+        "href": "https://scholar.google.com/scholar_lookup?arxiv_id=2602.14189",
+        "text": "Google Scholar",
+        "outbound": true
+      },
+      {
+        "href": "https://api.semanticscholar.org/arXiv:2602.14189",
+        "text": "Semantic Scholar",
+        "outbound": true
+      },
+      {
+        "href": "http://www.bibsonomy.org/BibtexHandler?requTask=upload&url=https://arxiv.org/abs/2602.14189&description=Knowing When Not to Answer: Abstention-Aware Scientific Reasoning",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://reddit.com/submit?url=https://arxiv.org/abs/2602.14189&title=Knowing When Not to Answer: Abstention-Aware Scientific Reasoning",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/labs/showcase.html#arxiv-bibliographic-explorer",
+        "text": "What is the Explorer?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.connectedpapers.com/about",
+        "text": "What is Connected Papers?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.litmaps.co/",
+        "text": "What is Litmaps?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.scite.ai/",
+        "text": "What are Smart Citations?",
+        "outbound": true
+      },
+      {
+        "href": "https://alphaxiv.org/",
+        "text": "What is alphaXiv?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.catalyzex.com",
+        "text": "What is CatalyzeX?",
+        "outbound": true
+      },
+      {
+        "href": "https://dagshub.com/",
+        "text": "What is DagsHub?",
+        "outbound": true
+      },
+      {
+        "href": "http://gotit.pub/faq",
+        "text": "What is GotitPub?",
+        "outbound": true
+      },
+      {
+        "href": "https://huggingface.co/huggingface",
+        "text": "What is Huggingface?",
+        "outbound": true
+      },
+      {
+        "href": "https://paperswithcode.com/",
+        "text": "What is Papers with Code?",
+        "outbound": true
+      },
+      {
+        "href": "https://sciencecast.org/welcome",
+        "text": "What is ScienceCast?",
+        "outbound": true
+      },
+      {
+        "href": "https://replicate.com/docs/arxiv/about",
+        "text": "What is Replicate?",
+        "outbound": true
+      },
+      {
+        "href": "https://huggingface.co/docs/hub/spaces",
+        "text": "What is Spaces?",
+        "outbound": true
+      },
+      {
+        "href": "https://txyz.ai",
+        "text": "What is TXYZ.AI?",
+        "outbound": true
+      },
+      {
+        "href": "https://influencemap.cmlab.dev/",
+        "text": "What are Influence Flowers?",
+        "outbound": true
+      },
+      {
+        "href": "https://core.ac.uk/services/recommender",
+        "text": "What is CORE?",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/labs/index.html",
+        "text": "Learn more about arXivLabs",
+        "outbound": true
+      },
+      {
+        "href": "/auth/show-endorsers/2602.14189",
+        "text": "Which authors of this paper are endorsers?",
+        "outbound": true
+      },
+      {
+        "href": "javascript:setMathjaxCookie()",
+        "text": "Disable MathJax",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/mathjax.html",
+        "text": "What is MathJax?",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about",
+        "text": "About",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help",
+        "text": "Help",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/contact.html",
+        "text": "Contact",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/subscribe",
+        "text": "Subscribe",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/license/index.html",
+        "text": "Copyright",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/policies/privacy_policy.html",
+        "text": "Privacy Policy",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/web_accessibility.html",
+        "text": "Web Accessibility Assistance",
+        "outbound": true
+      },
+      {
+        "href": "https://status.arxiv.org",
+        "text": "arXiv Operational Status",
+        "outbound": true
+      }
+    ],
+    "code_blocks": [],
+    "emphasis_map": {
+      "bold_count": 3,
+      "italic_count": 16,
+      "quote_count": 1
+    },
+    "dom_depth": 17
+  },
+  "concepts": {
+    "equations": [],
+    "parameters": [],
+    "technical_terms": [
+      "Access Paper",
+      "Citation Tools Code",
+      "Search Tools",
+      "Media Associated",
+      "Language Title",
+      "Computer Science",
+      "Bookmark Bibliographic",
+      "Article Demos Recommenders",
+      "Aware Scientific Reasoning Submission",
+      "Knowing When Not"
+    ],
+    "has_experiment": true
+  },
+  "ingested_at": 1771372906.748848
+}

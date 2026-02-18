@@ -1,0 +1,852 @@
+{
+  "repo_url": "explosion/spaCy",
+  "summary": "This document provides an introduction to spaCy, an industrial-strength Natural Language Processing (NLP) library implemented in Python and Cython. It explains the core architecture, key components, and fundamental design principles that make spaCy a powerful tool for processing and analyzing human language.",
+  "file_tree": [
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CONTRIBUTOR_AGREEMENT.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/01_bugs.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/02_docs.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors",
+      "type": "dir"
+    },
+    {
+      "path": ".github/contributors/0x2b3bfa0.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/5hirish.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ALSchwalm.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/AMArostegui.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/AlJohri.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Arvindcheenu.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/AyushExel.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Azagh3l.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Baciccin.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Bharat123rox.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/BigstickCarpet.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/BramVanroy.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/BreakBB.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Bri-Will.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Brixjohn.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Cinnamy.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/DeNeutoy.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/DimaBryuhanov.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Dobita21.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/DoomCoder.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/DuyguA.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/EARL_GREYT.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Eleni170.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/EmilStenstrom.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/F0rge1cE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/FallakAsad.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/GiorgioPorgio.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Gizzio.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/GuiGel.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Hazoom.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/HiromuHota.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ICLRandD.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/IsaacHaze.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/JKhakpour.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Jan-711.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/JannisTriesToCode.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Jette16.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/KKsharma99.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/KennethEnevoldsen.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Kimahriman.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/LRAbbade.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Loghijiaha.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Lucaterre.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/MartinoMensio.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/MateuszOlko.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/MathiasDesch.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/MiniLau.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/MisterKeefe.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Mlawrence95.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/NSchrading.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/NirantK.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Nuccy90.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Olamyy.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Pantalaymon.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Pavle992.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/PeterGilles.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/PluieElectrique.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Poluglottos.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/PolyglotOpenstreetmap.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/R1j1t.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/RvanNieuwpoort.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/SamEdwardes.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/SamuelLKane.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Schibsted.png",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Stannislav.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/Tiljander.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/YohannesDatasci.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ZeeD.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aajanki.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aaronkub.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aashishg.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/abchapman93.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/abhi18av.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/adrianeboyd.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/adrienball.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ajrader.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/akki2825.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/akornilo.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/alexcombessie.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/alexvy86.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aliiae.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/alldefector.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/alvaroabascar.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/alvations.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ameyuuno.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/amitness.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/amperinet.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aniruddha-adhikary.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ansgar-t.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aongko.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aristorinjuang.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/armsp.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/aryaprabhudesai.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/askhogan.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/avadhpatel.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/avi197.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/avramandrei.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/azarezade.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/b1uec0in.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bbieniek.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bdewilde.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/beatesi.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bellabie.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bintay.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bittlingmayer.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bjascob.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bodak.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/boena.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/borijang.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bratao.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/broaddeep.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bryant1410.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/bsweileh.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/btrungchi.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/calumcalder.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/cbilgili.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/cclauss.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/cedar101.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/celikomer.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ceteri.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/charlax.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/chezou.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/chopeen.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/chrisdubois.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/cicorias.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/clarus.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/clippered.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/connorbrinton.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/coryhurst.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/cristianasp.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/d99kris.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/danielhers.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/danielkingai2.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/danielruf.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/danielvasic.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/dardoria.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/darindf.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/delzac.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/demfier.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/demongolem.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/dhpollack.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/dhruvrnaik.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/doug-descombaz.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/drndos.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/dvsrepo.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/elbaulp.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/elben10",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/emulbreh.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/enerrio.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/er-raoniz.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/erip.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/estr4ng7d.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ezorita.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/fgaim.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/filipecaixeta.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/fizban99.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/florijanstamenkovic.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/fonfonx.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/forest1988.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/foufaster.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/frascuchon.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/free-variation.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/fsonntag.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/fucking-signup.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/gandersen101.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/gavrieltal.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/giannisdaras.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/graue70.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/graus.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/greenriverrus.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/grivaz.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/gtoffoli.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/guerda.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/gustavengstrom.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/henry860916.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/hertelm.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/himkt.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/hiroshi-matsuda-rit.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/hlasse.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/holubvl3.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/honnibal.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/howl-anderson.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/hugovk.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/iann0036.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/idealley.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/idoshr.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/iechevarria.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ilivans.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/ines.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/intrafindBreno.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/contributors/isaric.md",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "Makefile",
+    "README.md",
+    "examples/README.md",
+    "examples/training/README.md",
+    "extra/DEVELOPER_DOCS/README.md",
+    "extra/example_data/ner_example_data/README.md",
+    "extra/example_data/textcat_example_data/README.md",
+    "pyproject.toml",
+    "setup.py"
+  ],
+  "dependencies": [
+    "requires",
+    "\"setuptools\",",
+    "\"cython",
+    "\"cymem",
+    "\"preshed",
+    "\"murmurhash",
+    "\"thinc",
+    "\"numpy",
+    "]",
+    "build-backend",
+    "build",
+    "skip",
+    "test-skip",
+    "archs",
+    "build-frontend",
+    "config-settings",
+    "dependency-versions",
+    "environment",
+    "environment-pass",
+    "build-verbosity"
+  ],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "bin",
+      "examples",
+      "extra",
+      "licenses",
+      "spacy"
+    ],
+    "language": "Python",
+    "star_count": 33215
+  }
+}

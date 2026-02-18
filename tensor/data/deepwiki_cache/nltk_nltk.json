@@ -1,0 +1,821 @@
+{
+  "repo_url": "nltk/nltk",
+  "summary": "This document provides a comprehensive overview of the Natural Language Toolkit (NLTK), covering its purpose, architecture, core components, and how to get started with the library. For specific installation instructions, seeInstallation and Setup. For detailed architecture information, seeArchitecture Overview.",
+  "file_tree": [
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/labeler.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/cffconvert.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/labeler.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "type": "file"
+    },
+    {
+      "path": "AUTHORS.md",
+      "type": "file"
+    },
+    {
+      "path": "CITATION.cff",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "ChangeLog",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE.txt",
+      "type": "file"
+    },
+    {
+      "path": "MANIFEST.in",
+      "type": "file"
+    },
+    {
+      "path": "Makefile",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "RELEASE-HOWTO.txt",
+      "type": "file"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "file"
+    },
+    {
+      "path": "nltk",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/VERSION",
+      "type": "file"
+    },
+    {
+      "path": "nltk/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/app/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/chartparser_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/chunkparser_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/collocations_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/concordance_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/nemo_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/rdparser_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/srparser_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/wordfreq_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/app/wordnet_app.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/book.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/ccg",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/ccg/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/ccg/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/ccg/chart.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/ccg/combinator.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/ccg/lexicon.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/ccg/logic.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chat",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/chat/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chat/eliza.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chat/iesha.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chat/rude.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chat/suntsu.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chat/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chat/zen.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chunk",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/chunk/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chunk/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chunk/named_entity.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chunk/regexp.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/chunk/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/classify/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/decisiontree.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/maxent.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/megam.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/naivebayes.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/positivenaivebayes.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/rte_classify.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/scikitlearn.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/senna.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/svm.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/tadm.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/textcat.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/classify/weka.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/cli.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/cluster",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/cluster/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/cluster/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/cluster/em.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/cluster/gaac.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/cluster/kmeans.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/cluster/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/collections.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/collocations.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/compat.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/corpus/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/europarl_raw.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/corpus/reader/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/aligned.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/bcp47.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/bnc.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/bracket_parse.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/categorized_sents.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/chasen.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/childes.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/chunked.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/cmudict.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/comparative_sents.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/conll.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/crubadan.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/dependency.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/framenet.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/ieer.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/indian.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/ipipan.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/knbc.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/lin.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/markdown.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/mte.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/nkjp.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/nombank.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/nps_chat.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/opinion_lexicon.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/panlex_lite.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/panlex_swadesh.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/pl196x.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/plaintext.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/ppattach.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/propbank.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/pros_cons.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/reviews.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/rte.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/semcor.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/senseval.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/sentiwordnet.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/sinica_treebank.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/string_category.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/switchboard.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/tagged.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/timit.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/toolbox.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/twitter.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/udhr.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/verbnet.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/wordlist.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/wordnet.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/xmldocs.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/reader/ycoe.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/corpus/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/data.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/decorators.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/downloader.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/draw",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/draw/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/draw/cfg.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/draw/dispersion.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/draw/table.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/draw/tree.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/draw/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/featstruct.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/grammar.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/help.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/inference/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference/discourse.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference/mace.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference/nonmonotonic.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference/prover9.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference/resolution.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/inference/tableau.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/internals.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/jsontags.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/langnames.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lazyimport.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/lm/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm/counter.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm/models.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm/preprocessing.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm/smoothing.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm/util.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/lm/vocabulary.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/metrics/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/agreement.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/aline.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/artstein_poesio_example.txt",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/association.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/confusionmatrix.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/distance.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/paice.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/scores.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/segmentation.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/metrics/spearman.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/misc",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/misc/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/misc/babelfish.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/misc/chomsky.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/misc/minimalset.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/misc/sort.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/misc/wordfinder.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/parse",
+      "type": "dir"
+    },
+    {
+      "path": "nltk/parse/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/parse/api.py",
+      "type": "file"
+    },
+    {
+      "path": "nltk/parse/bllip.py",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "Makefile",
+    "README.md",
+    "nltk/test/Makefile"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "nltk"
+    ],
+    "language": "Python",
+    "star_count": 14508
+  }
+}

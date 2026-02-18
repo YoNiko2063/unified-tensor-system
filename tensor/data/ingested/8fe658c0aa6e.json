@@ -1,0 +1,572 @@
+{
+  "url": "https://arxiv.org/abs/2602.14130",
+  "article": {
+    "url": "https://arxiv.org/abs/2602.14130",
+    "title": "[2602.14130] Algebraic Quantum Intelligence: A New Framework for Reproducible Machine Creativity",
+    "sections": [
+      {
+        "level": 2,
+        "text": "quick links",
+        "position": 0
+      },
+      {
+        "level": 1,
+        "text": "Computer Science > Artificial Intelligence",
+        "position": 1
+      },
+      {
+        "level": 1,
+        "text": "Title:Algebraic Quantum Intelligence: A New Framework for Reproducible Machine Creativity",
+        "position": 2
+      },
+      {
+        "level": 2,
+        "text": "Submission history",
+        "position": 3
+      },
+      {
+        "level": 2,
+        "text": "Access Paper:",
+        "position": 4
+      },
+      {
+        "level": 3,
+        "text": "References & Citations",
+        "position": 5
+      },
+      {
+        "level": 2,
+        "text": "BibTeX formatted citation",
+        "position": 6
+      },
+      {
+        "level": 3,
+        "text": "Bookmark",
+        "position": 7
+      },
+      {
+        "level": 1,
+        "text": "Bibliographic and Citation Tools",
+        "position": 8
+      },
+      {
+        "level": 1,
+        "text": "Code, Data and Media Associated with this Article",
+        "position": 9
+      },
+      {
+        "level": 1,
+        "text": "Demos",
+        "position": 10
+      },
+      {
+        "level": 1,
+        "text": "Recommenders and Search Tools",
+        "position": 11
+      },
+      {
+        "level": 1,
+        "text": "arXivLabs: experimental projects with community collaborators",
+        "position": 12
+      }
+    ],
+    "hyperlinks": [
+      {
+        "href": "#content",
+        "text": "Skip to main content",
+        "outbound": false
+      },
+      {
+        "href": "https://www.cornell.edu/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about/ourmembers.html",
+        "text": "member institutions",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about/donate.html",
+        "text": "Donate",
+        "outbound": true
+      },
+      {
+        "href": "/IgnoreMe",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs/recent",
+        "text": "cs",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help",
+        "text": "Help",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/advanced",
+        "text": "Advanced Search",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://www.cornell.edu/",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/login",
+        "text": "Login",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help",
+        "text": "Help Pages",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about",
+        "text": "About",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Yano,+K",
+        "text": "Kazuo Yano",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Lee,+J",
+        "text": "Jonghyeok Lee",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Ishitomi,+T",
+        "text": "Tae Ishitomi",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Kawaguchi,+H",
+        "text": "Hironobu Kawaguchi",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Koyama,+A",
+        "text": "Akira Koyama",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Ota,+M",
+        "text": "Masakuni Ota",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Ota,+Y",
+        "text": "Yuki Ota",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Sato,+N",
+        "text": "Nobuo Sato",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Shimada,+K",
+        "text": "Keita Shimada",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Takematsu,+S",
+        "text": "Sho Takematsu",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Tobinai,+A",
+        "text": "Ayaka Tobinai",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Tsuji,+S",
+        "text": "Satomi Tsuji",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Yanagi,+K",
+        "text": "Kazunori Yanagi",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Yano,+K",
+        "text": "Keiko Yano",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Harada,+M",
+        "text": "Manabu Harada",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Matsuda,+Y",
+        "text": "Yuki Matsuda",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Matsumoto,+K",
+        "text": "Kazunori Matsumoto",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Matsumura,+K",
+        "text": "Kenichi Matsumura",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Matsuo,+H",
+        "text": "Hamae Matsuo",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Miyazaki,+Y",
+        "text": "Yumi Miyazaki",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Murai,+K",
+        "text": "Kotaro Murai",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Ohshita,+T",
+        "text": "Tatsuya Ohshita",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Seki,+M",
+        "text": "Marie Seki",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Tanoue,+S",
+        "text": "Shun Tanoue",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Terakado,+T",
+        "text": "Tatsuki Terakado",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Ichimaru,+Y",
+        "text": "Yuko Ichimaru",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Saito,+M",
+        "text": "Mirei Saito",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Otsuka,+A",
+        "text": "Akihiro Otsuka",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/search/cs?searchtype=author&query=Ara,+K",
+        "text": "Koji Ara",
+        "outbound": true
+      },
+      {
+        "href": "/pdf/2602.14130",
+        "text": "View PDF",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/html/2602.14130v1",
+        "text": "HTML (experimental)",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/abs/2602.14130",
+        "text": "arXiv:2602.14130",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/abs/2602.14130v1",
+        "text": "arXiv:2602.14130v1",
+        "outbound": true
+      },
+      {
+        "href": "https://doi.org/10.48550/arXiv.2602.14130",
+        "text": "https://doi.org/10.48550/arXiv.2602.14130",
+        "outbound": true
+      },
+      {
+        "href": "/show-email/3aae3d67/2602.14130",
+        "text": "view email",
+        "outbound": true
+      },
+      {
+        "href": "/pdf/2602.14130",
+        "text": "View PDF",
+        "outbound": true
+      },
+      {
+        "href": "https://arxiv.org/html/2602.14130v1",
+        "text": "HTML (experimental)",
+        "outbound": true
+      },
+      {
+        "href": "/src/2602.14130",
+        "text": "TeX Source",
+        "outbound": true
+      },
+      {
+        "href": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "text": "view license",
+        "outbound": true
+      },
+      {
+        "href": "/prevnext?id=2602.14130&function=prev&context=cs.AI",
+        "text": "<\u00a0prev",
+        "outbound": true
+      },
+      {
+        "href": "/prevnext?id=2602.14130&function=next&context=cs.AI",
+        "text": "next\u00a0>",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs.AI/new",
+        "text": "new",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs.AI/recent",
+        "text": "recent",
+        "outbound": true
+      },
+      {
+        "href": "/list/cs.AI/2026-02",
+        "text": "2026-02",
+        "outbound": true
+      },
+      {
+        "href": "/abs/2602.14130?context=cs",
+        "text": "cs",
+        "outbound": true
+      },
+      {
+        "href": "/abs/2602.14130?context=cs.CL",
+        "text": "cs.CL",
+        "outbound": true
+      },
+      {
+        "href": "/abs/2602.14130?context=cs.LG",
+        "text": "cs.LG",
+        "outbound": true
+      },
+      {
+        "href": "https://ui.adsabs.harvard.edu/abs/arXiv:2602.14130",
+        "text": "NASA ADS",
+        "outbound": true
+      },
+      {
+        "href": "https://scholar.google.com/scholar_lookup?arxiv_id=2602.14130",
+        "text": "Google Scholar",
+        "outbound": true
+      },
+      {
+        "href": "https://api.semanticscholar.org/arXiv:2602.14130",
+        "text": "Semantic Scholar",
+        "outbound": true
+      },
+      {
+        "href": "http://www.bibsonomy.org/BibtexHandler?requTask=upload&url=https://arxiv.org/abs/2602.14130&description=Algebraic Quantum Intelligence: A New Framework for Reproducible Machine Creativity",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://reddit.com/submit?url=https://arxiv.org/abs/2602.14130&title=Algebraic Quantum Intelligence: A New Framework for Reproducible Machine Creativity",
+        "text": "",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/labs/showcase.html#arxiv-bibliographic-explorer",
+        "text": "What is the Explorer?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.connectedpapers.com/about",
+        "text": "What is Connected Papers?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.litmaps.co/",
+        "text": "What is Litmaps?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.scite.ai/",
+        "text": "What are Smart Citations?",
+        "outbound": true
+      },
+      {
+        "href": "https://alphaxiv.org/",
+        "text": "What is alphaXiv?",
+        "outbound": true
+      },
+      {
+        "href": "https://www.catalyzex.com",
+        "text": "What is CatalyzeX?",
+        "outbound": true
+      },
+      {
+        "href": "https://dagshub.com/",
+        "text": "What is DagsHub?",
+        "outbound": true
+      },
+      {
+        "href": "http://gotit.pub/faq",
+        "text": "What is GotitPub?",
+        "outbound": true
+      },
+      {
+        "href": "https://huggingface.co/huggingface",
+        "text": "What is Huggingface?",
+        "outbound": true
+      },
+      {
+        "href": "https://paperswithcode.com/",
+        "text": "What is Papers with Code?",
+        "outbound": true
+      },
+      {
+        "href": "https://sciencecast.org/welcome",
+        "text": "What is ScienceCast?",
+        "outbound": true
+      },
+      {
+        "href": "https://replicate.com/docs/arxiv/about",
+        "text": "What is Replicate?",
+        "outbound": true
+      },
+      {
+        "href": "https://huggingface.co/docs/hub/spaces",
+        "text": "What is Spaces?",
+        "outbound": true
+      },
+      {
+        "href": "https://txyz.ai",
+        "text": "What is TXYZ.AI?",
+        "outbound": true
+      },
+      {
+        "href": "https://influencemap.cmlab.dev/",
+        "text": "What are Influence Flowers?",
+        "outbound": true
+      },
+      {
+        "href": "https://core.ac.uk/services/recommender",
+        "text": "What is CORE?",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/labs/index.html",
+        "text": "Learn more about arXivLabs",
+        "outbound": true
+      },
+      {
+        "href": "/auth/show-endorsers/2602.14130",
+        "text": "Which authors of this paper are endorsers?",
+        "outbound": true
+      },
+      {
+        "href": "javascript:setMathjaxCookie()",
+        "text": "Disable MathJax",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/mathjax.html",
+        "text": "What is MathJax?",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/about",
+        "text": "About",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help",
+        "text": "Help",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/contact.html",
+        "text": "Contact",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/subscribe",
+        "text": "Subscribe",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/license/index.html",
+        "text": "Copyright",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/policies/privacy_policy.html",
+        "text": "Privacy Policy",
+        "outbound": true
+      },
+      {
+        "href": "https://info.arxiv.org/help/web_accessibility.html",
+        "text": "Web Accessibility Assistance",
+        "outbound": true
+      },
+      {
+        "href": "https://status.arxiv.org",
+        "text": "arXiv Operational Status",
+        "outbound": true
+      }
+    ],
+    "code_blocks": [],
+    "emphasis_map": {
+      "bold_count": 3,
+      "italic_count": 16,
+      "quote_count": 1
+    },
+    "dom_depth": 17
+  },
+  "concepts": {
+    "equations": [],
+    "parameters": [],
+    "technical_terms": [
+      "Access Paper",
+      "New Framework",
+      "Citation Tools Code",
+      "Search Tools",
+      "Media Associated",
+      "Algebraic Quantum Intelligence",
+      "Computer Science",
+      "Article Demos Recommenders",
+      "Bookmark Bibliographic",
+      "Artificial Intelligence Title",
+      "Reproducible Machine Creativity Submission"
+    ],
+    "has_experiment": true
+  },
+  "ingested_at": 1771372884.750657
+}

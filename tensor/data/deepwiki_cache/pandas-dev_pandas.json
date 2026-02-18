@@ -1,0 +1,823 @@
+{
+  "repo_url": "pandas-dev/pandas",
+  "summary": "This document provides a high-level introduction to the pandas codebase architecture. It explains the major subsystems, their relationships, and key code entities that implement pandas' functionality. This overview is intended for developers seeking to understand pandas internals, contribute to the codebase, or extend pandas with custom functionality.",
+  "file_tree": [
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/documentation_improvement.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/installation_issue.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/pdep_vote.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/performance_issue.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/submit_question.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/build_pandas",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/build_pandas/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/run-tests",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/run-tests/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/setup-conda",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/setup-conda/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/cache-cleanup-daily.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/cache-cleanup.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/code-checks.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/comment-commands.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/deprecation-tracking-bot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/docbuild-and-upload.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/package-checks.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/stale-pr.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/unit-tests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/wheels.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "type": "file"
+    },
+    {
+      "path": "AGENTS.md",
+      "type": "file"
+    },
+    {
+      "path": "AUTHORS.md",
+      "type": "file"
+    },
+    {
+      "path": "CITATION.cff",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES",
+      "type": "dir"
+    },
+    {
+      "path": "LICENSES/BOTTLENECK_LICENCE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/DATEUTIL_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/HAVEN_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/HAVEN_MIT",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/KLIB_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/MUSL_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/NUMPY_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/PACKAGING_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/PSF_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/PYPERCLIP_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/PYUPGRADE_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/SAS7BDAT_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSES/ULTRAJSON_LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "MANIFEST.in",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench",
+      "type": "dir"
+    },
+    {
+      "path": "asv_bench/asv.conf.json",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks",
+      "type": "dir"
+    },
+    {
+      "path": "asv_bench/benchmarks/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/algorithms.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/algos",
+      "type": "dir"
+    },
+    {
+      "path": "asv_bench/benchmarks/algos/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/algos/isin.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/arithmetic.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/array.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/attrs_caching.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/boolean.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/categoricals.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/ctors.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/dtypes.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/eval.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/finalize.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/frame_ctor.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/frame_methods.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/gil.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/groupby.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/hash_functions.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/index_cached_properties.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/index_object.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/indexing.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/indexing_engines.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/inference.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io",
+      "type": "dir"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/csv.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/excel.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/hdf.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/json.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/parsers.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/pickle.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/sas.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/sql.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/stata.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/io/style.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/join_merge.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/libs.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/multiindex_object.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/package.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/pandas_vb_common.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/period.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/plotting.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/reindex.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/replace.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/reshape.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/rolling.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/series_methods.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/sparse.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/stat_ops.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/strftime.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/strings.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/timedelta.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/timeseries.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs",
+      "type": "dir"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/fields.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/normalize.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/offsets.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/period.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/resolution.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/timedelta.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/timestamp.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/tslib.py",
+      "type": "file"
+    },
+    {
+      "path": "asv_bench/benchmarks/tslibs/tz_convert.py",
+      "type": "file"
+    },
+    {
+      "path": "ci",
+      "type": "dir"
+    },
+    {
+      "path": "ci/.condarc",
+      "type": "file"
+    },
+    {
+      "path": "ci/code_checks.sh",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps",
+      "type": "dir"
+    },
+    {
+      "path": "ci/deps/actions-311-minimum_versions.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-311.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-312.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-313-downstream_compat.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-313-freethreading.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-313-numpydev.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-313-pyarrownightly.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-313.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/deps/actions-314.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/meta.yaml",
+      "type": "file"
+    },
+    {
+      "path": "ci/run_tests.sh",
+      "type": "file"
+    },
+    {
+      "path": "ci/upload_wheels.sh",
+      "type": "file"
+    },
+    {
+      "path": "codecov.yml",
+      "type": "file"
+    },
+    {
+      "path": "doc",
+      "type": "dir"
+    },
+    {
+      "path": "doc/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates",
+      "type": "dir"
+    },
+    {
+      "path": "doc/_templates/api_redirect.html",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/autosummary",
+      "type": "dir"
+    },
+    {
+      "path": "doc/_templates/autosummary/accessor.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/autosummary/accessor_attribute.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/autosummary/accessor_callable.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/autosummary/accessor_method.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/autosummary/class.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/autosummary/class_without_autosummary.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/docs-announcement-banner.html",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/pandas_footer.html",
+      "type": "file"
+    },
+    {
+      "path": "doc/_templates/sidebar-nav-bs.html",
+      "type": "file"
+    },
+    {
+      "path": "doc/cheatsheet",
+      "type": "dir"
+    },
+    {
+      "path": "doc/cheatsheet/Pandas_Cheat_Sheet.pdf",
+      "type": "file"
+    },
+    {
+      "path": "doc/cheatsheet/Pandas_Cheat_Sheet.pptx",
+      "type": "file"
+    },
+    {
+      "path": "doc/cheatsheet/Pandas_Cheat_Sheet_FA.pdf",
+      "type": "file"
+    },
+    {
+      "path": "doc/cheatsheet/Pandas_Cheat_Sheet_FA.pptx",
+      "type": "file"
+    },
+    {
+      "path": "doc/cheatsheet/Pandas_Cheat_Sheet_JA.pdf",
+      "type": "file"
+    },
+    {
+      "path": "doc/cheatsheet/Pandas_Cheat_Sheet_JA.pptx",
+      "type": "file"
+    },
+    {
+      "path": "doc/cheatsheet/README.md",
+      "type": "file"
+    },
+    {
+      "path": "doc/data",
+      "type": "dir"
+    },
+    {
+      "path": "doc/data/air_quality_long.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/air_quality_no2.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/air_quality_no2_long.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/air_quality_parameters.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/air_quality_pm25_long.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/air_quality_stations.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/baseball.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/iris.data",
+      "type": "file"
+    },
+    {
+      "path": "doc/data/titanic.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/make.py",
+      "type": "file"
+    },
+    {
+      "path": "doc/redirects.csv",
+      "type": "file"
+    },
+    {
+      "path": "doc/scripts",
+      "type": "dir"
+    },
+    {
+      "path": "doc/scripts/eval_performance.py",
+      "type": "file"
+    },
+    {
+      "path": "doc/source",
+      "type": "dir"
+    },
+    {
+      "path": "doc/source/_static",
+      "type": "dir"
+    },
+    {
+      "path": "doc/source/_static/ci.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/css",
+      "type": "dir"
+    },
+    {
+      "path": "doc/source/_static/css/getting_started.css",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/css/pandas.css",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/df_repr_truncated.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/eval-perf.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/index_api.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/index_contribute.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/index_getting_started.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/index_user_guide.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/logo_r.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/logo_sas.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/logo_sas_white.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/logo_sql.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/logo_stata.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/new-excel-index.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/old-excel-index.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/print_df_new.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/print_df_old.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/query-perf.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/question_mark_noback.svg",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/reshaping_melt.png",
+      "type": "file"
+    },
+    {
+      "path": "doc/source/_static/reshaping_pivot.png",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "README.md",
+    "doc/cheatsheet/README.md"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "LICENSES",
+      "asv_bench",
+      "ci",
+      "doc"
+    ],
+    "language": "Python",
+    "star_count": 47902
+  }
+}

@@ -1,0 +1,829 @@
+{
+  "repo_url": "numpy/numpy",
+  "summary": "NumPy is the fundamental package for scientific computing with Python. It provides a powerful N-dimensional array object, sophisticated mathematical functions, tools for integrating C/C++ and Fortran code, and capabilities for random number generation, Fourier analysis, and linear algebra operations.",
+  "file_tree": [
+    {
+      "path": ".circleci",
+      "type": "dir"
+    },
+    {
+      "path": ".circleci/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".cirrus.star",
+      "type": "file"
+    },
+    {
+      "path": ".clang-format",
+      "type": "file"
+    },
+    {
+      "path": ".codecov.yml",
+      "type": "file"
+    },
+    {
+      "path": ".coveragerc",
+      "type": "file"
+    },
+    {
+      "path": ".ctags.d",
+      "type": "file"
+    },
+    {
+      "path": ".devcontainer",
+      "type": "dir"
+    },
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "type": "file"
+    },
+    {
+      "path": ".devcontainer/setup.sh",
+      "type": "file"
+    },
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug-report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/documentation.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature-request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/post-install.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/typing.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/check-warnings",
+      "type": "dir"
+    },
+    {
+      "path": ".github/check-warnings/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/check-warnings/msvc-allowed-warnings.txt",
+      "type": "file"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/meson_actions",
+      "type": "dir"
+    },
+    {
+      "path": ".github/meson_actions/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/pr-prefix-labeler.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/windows_arm64_steps",
+      "type": "dir"
+    },
+    {
+      "path": ".github/windows_arm64_steps/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/circleci.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/compiler_sanitizers.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/cygwin.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/dependency-review.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/emscripten.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/labeler.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/linux-ppc64le.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/linux.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/linux_blas.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/linux_qemu.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/linux_simd.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/macos.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/mypy.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/mypy_primer.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/mypy_primer_comment.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/pixi-packages.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/scorecards.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/stubtest.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/wheels.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/windows.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".gitmodules",
+      "type": "file"
+    },
+    {
+      "path": ".mailmap",
+      "type": "file"
+    },
+    {
+      "path": ".spin",
+      "type": "dir"
+    },
+    {
+      "path": ".spin/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": ".spin/cmds.py",
+      "type": "file"
+    },
+    {
+      "path": "CITATION.bib",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.rst",
+      "type": "file"
+    },
+    {
+      "path": "INSTALL.rst",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE.txt",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "THANKS.txt",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/README.rst",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/asv.conf.json",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/asv_compare.conf.json.tpl",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/asv_pip_nopep517.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/benchmarks/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_app.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_array_coercion.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_clip.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_core.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_creation.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_function_base.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_import.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_indexing.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_io.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_itemselection.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_lib.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_linalg.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_ma.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_manipulate.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_ndindex.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_overrides.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_polynomial.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_random.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_records.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_reduce.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_scalar.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_searchsorted.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_shape_base.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_strings.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_trim_zeros.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_ufunc.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/bench_ufunc_strides.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/benchmarks/common.py",
+      "type": "file"
+    },
+    {
+      "path": "branding",
+      "type": "dir"
+    },
+    {
+      "path": "branding/logo",
+      "type": "dir"
+    },
+    {
+      "path": "branding/logo/logoguidelines.md",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/logomark",
+      "type": "dir"
+    },
+    {
+      "path": "branding/logo/logomark/numpylogoicon.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/logomark/numpylogoicon.svg",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/logomark/numpylogoicondark.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/logomark/numpylogoiconlight.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/primary",
+      "type": "dir"
+    },
+    {
+      "path": "branding/logo/primary/numpylogo.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/primary/numpylogo.svg",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/primary/numpylogodark.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/primary/numpylogolight.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/secondary",
+      "type": "dir"
+    },
+    {
+      "path": "branding/logo/secondary/numpylogo2.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/secondary/numpylogo2.svg",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/secondary/numpylogo2dark.png",
+      "type": "file"
+    },
+    {
+      "path": "branding/logo/secondary/numpylogo2light.png",
+      "type": "file"
+    },
+    {
+      "path": "building_with_meson.md",
+      "type": "file"
+    },
+    {
+      "path": "doc",
+      "type": "dir"
+    },
+    {
+      "path": "doc/BRANCH_WALKTHROUGH.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/C_STYLE_GUIDE.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/EXAMPLE_DOCSTRING.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/HOWTO_DOCUMENT.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/HOWTO_RELEASE.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/Makefile",
+      "type": "file"
+    },
+    {
+      "path": "doc/RELEASE_WALKTHROUGH.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/TESTS.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog",
+      "type": "dir"
+    },
+    {
+      "path": "doc/changelog/1.12.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.12.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.13.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.13.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.13.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.13.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.14.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.14.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.14.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.14.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.14.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.14.5-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.14.6-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.15.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.15.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.15.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.15.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.15.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.16.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.16.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.16.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.16.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.16.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.16.5-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.16.6-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.17.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.17.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.17.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.17.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.17.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.17.5-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.18.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.18.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.18.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.18.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.18.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.18.5-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.19.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.19.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.19.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.19.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.19.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.19.5-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.20.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.20.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.20.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.20.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.21.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.21.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.21.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.21.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.21.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.21.5-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.21.6-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.22.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.22.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.22.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.22.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.22.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.23.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.23.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.23.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.23.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.23.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.23.5-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.24.0-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.24.1-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.24.2-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.24.3-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.24.4-changelog.rst",
+      "type": "file"
+    },
+    {
+      "path": "doc/changelog/1.25.0-changelog.rst",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "README.md",
+    "benchmarks/README.rst",
+    "doc/Makefile",
+    "doc/neps/Makefile",
+    "doc/release/upcoming_changes/README.rst",
+    "doc/source/f2py/code/CMakeLists.txt"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".circleci",
+      ".devcontainer",
+      ".github",
+      ".spin",
+      "benchmarks",
+      "branding",
+      "doc"
+    ],
+    "language": "Python",
+    "star_count": 31454
+  }
+}

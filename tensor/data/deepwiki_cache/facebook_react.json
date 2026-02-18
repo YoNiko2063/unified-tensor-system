@@ -1,0 +1,849 @@
+{
+  "repo_url": "facebook/react",
+  "summary": "The React repository athttps://github.com/facebook/reactis a monorepo containing the implementation of React, a JavaScript library for building user interfaces. This repository includes:",
+  "file_tree": [
+    {
+      "path": ".claude",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/instructions.md",
+      "type": "file"
+    },
+    {
+      "path": ".claude/settings.json",
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/extract-errors",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/extract-errors/SKILL.md",
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/feature-flags",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/feature-flags/SKILL.md",
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/fix",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/fix/SKILL.md",
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/flags",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/flags/SKILL.md",
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/flow",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/flow/SKILL.md",
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/test",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/test/SKILL.md",
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/verify",
+      "type": "dir"
+    },
+    {
+      "path": ".claude/skills/verify/SKILL.md",
+      "type": "file"
+    },
+    {
+      "path": ".codesandbox",
+      "type": "dir"
+    },
+    {
+      "path": ".codesandbox/ci.json",
+      "type": "file"
+    },
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".eslintignore",
+      "type": "file"
+    },
+    {
+      "path": ".eslintrc.js",
+      "type": "file"
+    },
+    {
+      "path": ".git-blame-ignore-revs",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/compiler_bug_report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/devtools_bug_report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/compiler_discord_notify.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/compiler_playground.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/compiler_prereleases.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/compiler_prereleases_manual.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/compiler_prereleases_nightly.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/compiler_typescript.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/devtools_discord_notify.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/devtools_regression_tests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_build_and_test.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_commit_artifacts.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_discord_notify.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_eslint_plugin_e2e.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_fuzz_tests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_prereleases.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_prereleases_manual.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_prereleases_nightly.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/runtime_releases_from_npm_manual.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/shared_check_maintainer.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/shared_cleanup_merged_branch_caches.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/shared_cleanup_stale_branch_caches.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/shared_close_direct_sync_branch_prs.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/shared_label_core_team_prs.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/shared_lint.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/shared_stale.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".mailmap",
+      "type": "file"
+    },
+    {
+      "path": ".nvmrc",
+      "type": "file"
+    },
+    {
+      "path": ".prettierignore",
+      "type": "file"
+    },
+    {
+      "path": ".prettierrc.js",
+      "type": "file"
+    },
+    {
+      "path": ".watchmanconfig",
+      "type": "file"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "type": "file"
+    },
+    {
+      "path": "CLAUDE.md",
+      "type": "file"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "MAINTAINERS",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "ReactVersions.js",
+      "type": "file"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "file"
+    },
+    {
+      "path": "babel.config-react-compiler.js",
+      "type": "file"
+    },
+    {
+      "path": "babel.config-ts.js",
+      "type": "file"
+    },
+    {
+      "path": "babel.config.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/.claude",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/.claude/agents",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/.claude/agents/investigate-error.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/.claude/settings.json",
+      "type": "file"
+    },
+    {
+      "path": "compiler/.eslintrc.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "compiler/CHANGELOG.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/CLAUDE.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/README.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/.eslintrc.json",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/.vscode",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/.vscode/extensions.json",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/README.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/01-user-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/02-default-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/compilationMode-all-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/compilationMode-infer-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/default-config.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/disableMemoizationForDebugging-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/function-scope-beats-module-scope-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/module-scope-use-memo-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/module-scope-use-no-memo-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/parse-flow-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/parse-typescript-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/todo-function-scope-does-not-beat-module-scope-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/use-memo-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/__snapshots__/page.spec.ts/use-no-memo-output.txt",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/__tests__/e2e/page.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/app",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/app/layout.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/app/page.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/colors.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/components/AccordionWindow.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Editor",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/components/Editor/ConfigEditor.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Editor/EditorImpl.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Editor/Input.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Editor/Output.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Editor/index.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Editor/monacoOptions.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Header.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Icons",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/components/Icons/IconChevron.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Icons/IconGitHub.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Logo.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/Message.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/StoreContext.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/TabbedWindow.tsx",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/components/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/hooks",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/hooks/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/hooks/useMountEffect.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/lib/compilation.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/createContext.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/defaultStore.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/reactCompilerMonacoDiagnostics.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/stores",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/lib/stores/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/stores/messages.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/stores/store.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/transitionTypes.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/lib/types.d.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/next.config.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/package.json",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/playwright.config.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/postcss.config.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/public",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/public/favicon.ico",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/public/fonts",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/public/fonts/Source-Code-Pro-Regular.woff2",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/public/graphvizlib.wasm",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/public/icon-180x180.png",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/public/site.webmanifest",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/public/vercel.svg",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/scripts",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/scripts/downloadFonts.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/scripts/link-compiler.sh",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/styles",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/apps/playground/styles/globals.css",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/tailwind.config.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/tsconfig.json",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/vercel.json",
+      "type": "file"
+    },
+    {
+      "path": "compiler/apps/playground/yarn.lock",
+      "type": "file"
+    },
+    {
+      "path": "compiler/docs",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/docs/DESIGN_GOALS.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/docs/DEVELOPMENT_GUIDE.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/fixtures",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/fixtures/.gitkeep",
+      "type": "file"
+    },
+    {
+      "path": "compiler/package.json",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/README.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes",
+      "type": "dir"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/01-lower.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/02-enterSSA.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/03-eliminateRedundantPhi.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/04-constantPropagation.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/05-deadCodeElimination.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/06-inferTypes.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/07-analyseFunctions.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/08-inferMutationAliasingEffects.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/09-inferMutationAliasingRanges.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/10-inferReactivePlaces.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/11-inferReactiveScopeVariables.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/12-rewriteInstructionKindsBasedOnReassignment.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/13-alignMethodCallScopes.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/14-alignObjectMethodScopes.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/15-alignReactiveScopesToBlockScopesHIR.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/16-mergeOverlappingReactiveScopesHIR.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/17-buildReactiveScopeTerminalsHIR.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/18-flattenReactiveLoopsHIR.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/19-flattenScopesWithHooksOrUseHIR.md",
+      "type": "file"
+    },
+    {
+      "path": "compiler/packages/babel-plugin-react-compiler/docs/passes/20-propagateScopeDependenciesHIR.md",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "README.md",
+    "compiler/README.md",
+    "compiler/apps/playground/README.md",
+    "compiler/apps/playground/package.json",
+    "compiler/package.json",
+    "compiler/packages/babel-plugin-react-compiler/README.md",
+    "compiler/packages/babel-plugin-react-compiler/docs/passes/README.md",
+    "compiler/packages/babel-plugin-react-compiler/package.json"
+  ],
+  "dependencies": [
+    "@babel/core",
+    "@babel/generator",
+    "@babel/parser",
+    "@babel/plugin-syntax-typescript",
+    "@babel/plugin-transform-block-scoping",
+    "@babel/plugin-transform-modules-commonjs",
+    "@babel/preset-react",
+    "@babel/preset-typescript",
+    "@babel/traverse",
+    "@babel/types",
+    "@heroicons/react",
+    "@monaco-editor/react",
+    "@playwright/test",
+    "@use-gesture/react",
+    "hermes-eslint",
+    "hermes-parser",
+    "invariant",
+    "lru-cache",
+    "lz-string",
+    "monaco-editor"
+  ],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".claude",
+      ".codesandbox",
+      ".github",
+      "compiler"
+    ],
+    "language": "JavaScript",
+    "star_count": 243054
+  }
+}

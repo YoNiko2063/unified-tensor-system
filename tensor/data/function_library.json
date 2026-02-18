@@ -1,0 +1,5723 @@
+{
+  "algebraic_0": {
+    "symbolic_str": "Eq(tau_{text*(f*(i*(r*(s*t))))}(g), min)",
+    "type": "algebraic",
+    "parameters": [
+      "g",
+      "min"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376662.665956
+  },
+  "algebraic_1": {
+    "symbolic_str": "A*mathcal",
+    "type": "algebraic",
+    "parameters": [
+      "A",
+      "mathcal"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376662.6720657
+  },
+  "algebraic_2": {
+    "symbolic_str": "c*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "c",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376662.8242035
+  },
+  "algebraic_3": {
+    "symbolic_str": "Eq(S_{text*(p*(a*(i*(r*(w*(i*(e*s)))))))}(t_{i}, t_{j}), 1/(N_{t_{i}}*N_{t_{j}}))",
+    "type": "algebraic",
+    "parameters": [
+      "N_{t_{i}}",
+      "N_{t_{j}}",
+      "t_{i}",
+      "t_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376663.2623997
+  },
+  "algebraic_4": {
+    "symbolic_str": "Eq(S_{K}(p), 1/K)",
+    "type": "algebraic",
+    "parameters": [
+      "K",
+      "p"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376663.2955055
+  },
+  "algebraic_5": {
+    "symbolic_str": "Eq(D_{a}, 1)",
+    "type": "algebraic",
+    "parameters": [
+      "D_{a}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376663.3349092
+  },
+  "algebraic_6": {
+    "symbolic_str": "Eq(N*P, Delta_{b*(o*t)} - Delta_{t*(o*p)}*label*((e*q)/((n*(e*(t_{p}*(r*(o*(g*(r*(e*(s*s))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "Delta_{b*(o*t)}",
+      "Delta_{t*(o*p)}",
+      "N",
+      "P",
+      "e",
+      "g",
+      "label",
+      "n",
+      "o",
+      "q",
+      "r",
+      "s",
+      "t_{p}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376663.633372
+  },
+  "algebraic_7": {
+    "symbolic_str": "Eq(Delta_{i*(n*(t*(e*(r*(a*(c*t))))))}, S)",
+    "type": "algebraic",
+    "parameters": [
+      "Delta_{i*(n*(t*(e*(r*(a*(c*t))))))}",
+      "S"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376663.7893088
+  },
+  "algebraic_8": {
+    "symbolic_str": "Eq(Delta_{t*(o*p)}, text*(di*(s*t)))",
+    "type": "algebraic",
+    "parameters": [
+      "Delta_{t*(o*p)}",
+      "di",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14299"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376663.8302984
+  },
+  "power_law_9": {
+    "symbolic_str": "Eq(r_{t}**(c*(f*o)), begin*(c*(a*(s*(e*s)))) + beta_{z*(o*(m*o))})",
+    "type": "power_law",
+    "parameters": [
+      "a",
+      "begin",
+      "beta_{z*(o*(m*o))}",
+      "c",
+      "e",
+      "f",
+      "o",
+      "r_{t}",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14201"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376664.6940851
+  },
+  "algebraic_10": {
+    "symbolic_str": "(0.95*columnwidth)*resizebox",
+    "type": "algebraic",
+    "parameters": [
+      "columnwidth",
+      "resizebox"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14201"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376664.7351305
+  },
+  "algebraic_11": {
+    "symbolic_str": "Eq(text*(D*(I*(C*(E*(S*(c*(o*(e*r)))))))), (label*((e*q)/((di*(c*e)))))*((2*Abs(X*(Y*cap)))/(Abs(X) + Abs(Y))))",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "D",
+      "E",
+      "I",
+      "S",
+      "c",
+      "cap",
+      "di",
+      "e",
+      "label",
+      "o",
+      "q",
+      "r",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13286"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376668.6245239
+  },
+  "exponential_12": {
+    "symbolic_str": "text*((emph*(P*(r*(b*o))))*(mathcal*(R*((H*in)*(mathcal*(A*(D*mathcal))))))) <= (text*(emph*(P*(r*(b*o)))))*exp(epsilon)",
+    "type": "exponential",
+    "parameters": [
+      "A",
+      "D",
+      "H",
+      "P",
+      "R",
+      "b",
+      "emph",
+      "epsilon",
+      "in",
+      "mathcal",
+      "o",
+      "r",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376669.733993
+  },
+  "algebraic_13": {
+    "symbolic_str": "text*(emph*(P*(r*(b*o))))",
+    "type": "algebraic",
+    "parameters": [
+      "P",
+      "b",
+      "emph",
+      "o",
+      "r",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376669.8082895
+  },
+  "power_law_14": {
+    "symbolic_str": "Eq(label*(((e*(q*u))/((m*(o*(de*(l_{l}*(o*(s*(s_{s}*(i*(m*(p*(l*(i*(f*y)))))))))))))))*u(epsilon)), -G*eta**2/epsilon)",
+    "type": "power_law",
+    "parameters": [
+      "G",
+      "de",
+      "e",
+      "epsilon",
+      "eta",
+      "f",
+      "i",
+      "l",
+      "l_{l}",
+      "label",
+      "m",
+      "o",
+      "p",
+      "q",
+      "s",
+      "s_{s}",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376669.9784992
+  },
+  "exponential_15": {
+    "symbolic_str": "emph*(text*(P*(A*F))) + (emph*(text*(P*(D*M))))*exp(epsilon) >= 1 - delta",
+    "type": "exponential",
+    "parameters": [
+      "A",
+      "D",
+      "F",
+      "M",
+      "P",
+      "delta",
+      "emph",
+      "epsilon",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376670.0567603
+  },
+  "exponential_16": {
+    "symbolic_str": "(label*(xi*((e*(q*u))/((e*(r*(r*(o*(r_{r}*(a*(e*t)))))))))))*exp(-epsilon)",
+    "type": "exponential",
+    "parameters": [
+      "a",
+      "e",
+      "epsilon",
+      "label",
+      "o",
+      "q",
+      "r",
+      "r_{r}",
+      "u",
+      "xi"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376670.345881
+  },
+  "algebraic_17": {
+    "symbolic_str": "label*((text*(D*(e*(t*(e*(c*t))))))*((e*(q*u))/((A*(u*(di*(t_{a}*(c*(c*(u*(r*(a*(c*y)))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "A",
+      "D",
+      "a",
+      "c",
+      "di",
+      "e",
+      "label",
+      "q",
+      "r",
+      "t_{a}",
+      "text",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376670.6399863
+  },
+  "algebraic_18": {
+    "symbolic_str": "label*(m*((E*(q*u))/((B*(R_{a}*(u*(di*t)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "B",
+      "E",
+      "R_{a}",
+      "di",
+      "label",
+      "m",
+      "q",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376671.0938096
+  },
+  "algebraic_19": {
+    "symbolic_str": "((label*((hat*(epsilon*(c*triangleq)))*((e*(q*u))/((de*(l*(e*(t*(i*(o*(n_{t}*(h*(r*(e*(s*(h*(o*(d*l))))))))))))))))))/((p*(text*((a*(d*n))*(tilde*(epsilon*(triangleq*(c*e)))))))))/p",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "c",
+      "d",
+      "de",
+      "e",
+      "epsilon",
+      "h",
+      "hat",
+      "i",
+      "l",
+      "label",
+      "n",
+      "n_{t}",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "text",
+      "tilde",
+      "triangleq",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376671.5621955
+  },
+  "algebraic_20": {
+    "symbolic_str": "label*((H*(H*H))*(mathcal*(J*(epsilon*(triangleq*(text*(D*(e*(t*(e*(c*t)))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "D",
+      "H",
+      "J",
+      "c",
+      "e",
+      "epsilon",
+      "label",
+      "mathcal",
+      "text",
+      "triangleq"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376671.733022
+  },
+  "algebraic_21": {
+    "symbolic_str": "label*((E*(q*u))/((N*(E_{c}*(e*(r*(t*(i*(f*(i*(c*(a*(t*(i*(n*o)))))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "E",
+      "E_{c}",
+      "N",
+      "a",
+      "c",
+      "e",
+      "f",
+      "i",
+      "label",
+      "n",
+      "o",
+      "q",
+      "r",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376672.0348353
+  },
+  "algebraic_22": {
+    "symbolic_str": "label*(m*((E*(q*u))/((N*(E_{a}*(u*(di*t)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "E",
+      "E_{a}",
+      "N",
+      "di",
+      "label",
+      "m",
+      "q",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376672.1813478
+  },
+  "power_law_23": {
+    "symbolic_str": "label*((p_{text*(h*t)}*(triangleq*((e*(c*(G*eta_{max}**2)))/((epsilon_{0}*(2*(G*eta_{max}**2) - c*e))))))*((e*(q*u))/((t*(h*(r*(e*(s*(h*(o*(l*(d_{x}*(i*1)))))))))))))",
+    "type": "power_law",
+    "parameters": [
+      "G",
+      "c",
+      "d_{x}",
+      "e",
+      "epsilon_{0}",
+      "eta_{max}",
+      "h",
+      "i",
+      "l",
+      "label",
+      "o",
+      "p_{text*(h*t)}",
+      "q",
+      "r",
+      "s",
+      "triangleq",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376673.1216218
+  },
+  "power_law_24": {
+    "symbolic_str": "Eq(label*((epsilon**d*m**d)*((e*(q*u))/((S*(P*(E_{o}*(p*(e*(r*(a*(t*(o*r)))))))))))), (m**dG*(epsilon_{0}*eta**2) + sqrt(4*(G*(eta**2*(m**dleft*(G*(epsilon_{0}*eta**2) + epsilon_{0}**2*p)))) + (G**2*(epsilon_{0}**2*eta**4))*(m**dright)**2))/((2*(m**dleft*(G*eta**2 + epsilon_{0}*p)))))",
+    "type": "power_law",
+    "parameters": [
+      "E_{o}",
+      "G",
+      "P",
+      "S",
+      "a",
+      "d",
+      "dG",
+      "dleft",
+      "dright",
+      "e",
+      "epsilon",
+      "epsilon_{0}",
+      "eta",
+      "label",
+      "m",
+      "o",
+      "p",
+      "q",
+      "r",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376673.3386016
+  },
+  "exponential_25": {
+    "symbolic_str": "Eq(label*((di*(s*(c*(l*(o*(s*(d_{Q}*e)))))))*(mathcal*(Q*m**d))), gamma_{1}(-m**dc + p*(1 - exp(-m**dcdot*epsilon**d*m**d))) + gamma_{2}(-epsilon**d*m**d))",
+    "type": "exponential",
+    "parameters": [
+      "Q",
+      "c",
+      "d",
+      "d_{Q}",
+      "dc",
+      "dcdot",
+      "di",
+      "e",
+      "epsilon",
+      "l",
+      "label",
+      "m",
+      "mathcal",
+      "o",
+      "p",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376673.8385336
+  },
+  "polynomial_26": {
+    "symbolic_str": "epsilon**d > epsilon",
+    "type": "polynomial",
+    "parameters": [
+      "d",
+      "epsilon"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376673.85841
+  },
+  "polynomial_27": {
+    "symbolic_str": "Pi**d_{c} > Pi",
+    "type": "polynomial",
+    "parameters": [
+      "Pi",
+      "d_{c}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376673.8850868
+  },
+  "polynomial_28": {
+    "symbolic_str": "Pi*Pi**dge",
+    "type": "polynomial",
+    "parameters": [
+      "Pi",
+      "dge"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376673.9988089
+  },
+  "algebraic_29": {
+    "symbolic_str": "label",
+    "type": "algebraic",
+    "parameters": [
+      "label"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14553",
+      "2602.13980"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376674.2641842
+  },
+  "algebraic_30": {
+    "symbolic_str": "r",
+    "type": "algebraic",
+    "parameters": [
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376675.3542438
+  },
+  "algebraic_31": {
+    "symbolic_str": "s_{j}",
+    "type": "algebraic",
+    "parameters": [
+      "s_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376675.4348345
+  },
+  "algebraic_32": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376675.4956937
+  },
+  "trigonometric_33": {
+    "symbolic_str": "sin(angle(u_{1}, x_{1}))",
+    "type": "trigonometric",
+    "parameters": [
+      "u_{1}",
+      "x_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376676.0680134
+  },
+  "trigonometric_34": {
+    "symbolic_str": "sin(angle(u_{1}, x_{1}))",
+    "type": "trigonometric",
+    "parameters": [
+      "u_{1}",
+      "x_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376676.5367668
+  },
+  "power_law_35": {
+    "symbolic_str": "Eq(label*(Omega**star*(-de*c*(o*(m*p)) + (e*q)/((O*(m*(e*(a*g))))))), lambda(Delta + x_{1}*y_{1}**top))",
+    "type": "power_law",
+    "parameters": [
+      "Delta",
+      "O",
+      "Omega",
+      "a",
+      "c",
+      "de",
+      "e",
+      "g",
+      "label",
+      "m",
+      "o",
+      "p",
+      "q",
+      "star",
+      "top",
+      "x_{1}",
+      "y_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376676.6610506
+  },
+  "power_law_36": {
+    "symbolic_str": "Eq(Delta, -x_{1}*y_{1}**top*(label*(-i*o*s + (e*q)/D)) + (x_{1}*(y_{1}**top/(E_{Y} + I)))/(E_{X} + I))",
+    "type": "power_law",
+    "parameters": [
+      "D",
+      "Delta",
+      "E_{X}",
+      "E_{Y}",
+      "I",
+      "e",
+      "i",
+      "label",
+      "o",
+      "q",
+      "s",
+      "top",
+      "x_{1}",
+      "y_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376676.835808
+  },
+  "power_law_37": {
+    "symbolic_str": "Eq(Delta, x_{1}*(y_{1}**top*((label*(-i*s*(o*2) + (e*q)/D))*(C - I))) + ((x_{1}*y_{1}**top)*(A - I) + (x_{1}*(y_{1}**top*(C - I)))*(A - I)))",
+    "type": "power_law",
+    "parameters": [
+      "A",
+      "C",
+      "D",
+      "Delta",
+      "I",
+      "e",
+      "i",
+      "label",
+      "o",
+      "q",
+      "s",
+      "top",
+      "x_{1}",
+      "y_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376676.9362507
+  },
+  "power_law_38": {
+    "symbolic_str": "Eq(label*(((e*q)/((n*(e*(u*(m*(a*(n*n))))))))/(E_{X} + I)), -dots + (E_{X}**2 + (-E_{X} + I)))",
+    "type": "power_law",
+    "parameters": [
+      "E_{X}",
+      "I",
+      "a",
+      "dots",
+      "e",
+      "label",
+      "m",
+      "n",
+      "q",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376676.9908407
+  },
+  "trigonometric_39": {
+    "symbolic_str": "sin(angle(u_{1}, x_{1}))",
+    "type": "trigonometric",
+    "parameters": [
+      "u_{1}",
+      "x_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.2736053
+  },
+  "trigonometric_40": {
+    "symbolic_str": "sin(angle(u_{1}, x_{1}))",
+    "type": "trigonometric",
+    "parameters": [
+      "u_{1}",
+      "x_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.5401835
+  },
+  "power_law_41": {
+    "symbolic_str": "Eq(Omega**star, alpha*(((x_{1}*(y_{1}**top/(E_{Y} + I)))/(E_{X} + I))*Big(Big*(D/N))**2))",
+    "type": "power_law",
+    "parameters": [
+      "Big",
+      "D",
+      "E_{X}",
+      "E_{Y}",
+      "I",
+      "N",
+      "Omega",
+      "alpha",
+      "star",
+      "top",
+      "x_{1}",
+      "y_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.6076002
+  },
+  "algebraic_42": {
+    "symbolic_str": "Sigma_{X}",
+    "type": "algebraic",
+    "parameters": [
+      "Sigma_{X}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.657485
+  },
+  "polynomial_43": {
+    "symbolic_str": "ell**Omega",
+    "type": "polynomial",
+    "parameters": [
+      "Omega",
+      "ell"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.7134984
+  },
+  "algebraic_44": {
+    "symbolic_str": "p_{Omega}(j*(mid*r), s_{1/m})",
+    "type": "algebraic",
+    "parameters": [
+      "j",
+      "mid",
+      "r",
+      "s_{1/m}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.8134089
+  },
+  "algebraic_45": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.8390071
+  },
+  "algebraic_46": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.887837
+  },
+  "algebraic_47": {
+    "symbolic_str": "u",
+    "type": "algebraic",
+    "parameters": [
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.9412725
+  },
+  "algebraic_48": {
+    "symbolic_str": "Omega_{T}",
+    "type": "algebraic",
+    "parameters": [
+      "Omega_{T}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376677.9977927
+  },
+  "polynomial_49": {
+    "symbolic_str": "ell**T",
+    "type": "polynomial",
+    "parameters": [
+      "ell"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.0629609
+  },
+  "algebraic_50": {
+    "symbolic_str": "p_{T}(j*(mid*r), s_{1/m})",
+    "type": "algebraic",
+    "parameters": [
+      "j",
+      "mid",
+      "r",
+      "s_{1/m}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.1561728
+  },
+  "algebraic_51": {
+    "symbolic_str": "mathcal*(L*Omega)",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "Omega",
+      "mathcal"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.2471743
+  },
+  "exponential_52": {
+    "symbolic_str": "Eq(e**a_{i}/(e**a_{j}), e**b_{i}/(e**b_{j}))",
+    "type": "exponential",
+    "parameters": [
+      "a_{i}",
+      "a_{j}",
+      "b_{i}",
+      "b_{j}",
+      "e"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.320831
+  },
+  "algebraic_53": {
+    "symbolic_str": "Eq(Sigma_{Delta}, 2*((Sigma_{Y}*p(1 - p))*(m - 1)))",
+    "type": "algebraic",
+    "parameters": [
+      "Sigma_{Delta}",
+      "Sigma_{Y}",
+      "m",
+      "p"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.3664756
+  },
+  "power_law_54": {
+    "symbolic_str": "Eq(mathbb*(E*(d_{j}*d_{j}**top)), Sum(E*mathbb, (i, 1, N)))",
+    "type": "power_law",
+    "parameters": [
+      "E",
+      "N",
+      "d_{j}",
+      "mathbb",
+      "top"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.4437811
+  },
+  "algebraic_55": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.494712
+  },
+  "algebraic_56": {
+    "symbolic_str": "Eq(Sigma_{Delta}, 2*((Sigma_{Y}*p(1 - p))*(m - 1)))",
+    "type": "algebraic",
+    "parameters": [
+      "Sigma_{Delta}",
+      "Sigma_{Y}",
+      "m",
+      "p"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.5247116
+  },
+  "algebraic_57": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.5739796
+  },
+  "algebraic_58": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.6253328
+  },
+  "power_law_59": {
+    "symbolic_str": "(parallel*(x_{1}/Sigma_{X}))*u_{1}(Omega**star)",
+    "type": "power_law",
+    "parameters": [
+      "Omega",
+      "Sigma_{X}",
+      "parallel",
+      "star",
+      "x_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.7696857
+  },
+  "algebraic_60": {
+    "symbolic_str": "Eq(mathcal*(L*Omega), E*mathbb + text*(c*(o*(n*(s*t)))))",
+    "type": "algebraic",
+    "parameters": [
+      "E",
+      "L",
+      "Omega",
+      "c",
+      "mathbb",
+      "mathcal",
+      "n",
+      "o",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.8147917
+  },
+  "algebraic_61": {
+    "symbolic_str": "p_{Omega}",
+    "type": "algebraic",
+    "parameters": [
+      "p_{Omega}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.8784776
+  },
+  "power_law_62": {
+    "symbolic_str": "Eq(r**top*(Omega*s_{j}), r**top*(Omega_{T}*s_{j}) + (forall*j)*c(r, s_{1/m}))",
+    "type": "power_law",
+    "parameters": [
+      "Omega",
+      "Omega_{T}",
+      "forall",
+      "j",
+      "r",
+      "s_{1/m}",
+      "s_{j}",
+      "top"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.9223197
+  },
+  "algebraic_63": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376678.9574385
+  },
+  "algebraic_64": {
+    "symbolic_str": "Eq(Omega - Omega_{T}, 0)",
+    "type": "algebraic",
+    "parameters": [
+      "Omega",
+      "Omega_{T}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.0423338
+  },
+  "algebraic_65": {
+    "symbolic_str": "Eq(Sigma_{X}, I*a)",
+    "type": "algebraic",
+    "parameters": [
+      "I",
+      "Sigma_{X}",
+      "a"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.0632098
+  },
+  "algebraic_66": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.0906632
+  },
+  "power_law_67": {
+    "symbolic_str": "(parallel*x_{1})*u_{1}(Omega**star)",
+    "type": "power_law",
+    "parameters": [
+      "Omega",
+      "parallel",
+      "star",
+      "x_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.1887243
+  },
+  "algebraic_68": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.2600584
+  },
+  "power_law_69": {
+    "symbolic_str": "Eq(Omega**star, alpha*((x_{1}*(y_{1}**top/Sigma_{Y}))/Sigma_{X}))",
+    "type": "power_law",
+    "parameters": [
+      "Omega",
+      "Sigma_{X}",
+      "Sigma_{Y}",
+      "alpha",
+      "star",
+      "top",
+      "x_{1}",
+      "y_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.2960067
+  },
+  "algebraic_70": {
+    "symbolic_str": "Eq(1/Sigma_{X}, (D/N)/(E_{X} + I))",
+    "type": "algebraic",
+    "parameters": [
+      "D",
+      "E_{X}",
+      "I",
+      "N",
+      "Sigma_{X}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.3264713
+  },
+  "power_law_71": {
+    "symbolic_str": "Eq(Omega**star, lambda(Delta + x_{1}*y_{1}**top))",
+    "type": "power_law",
+    "parameters": [
+      "Delta",
+      "Omega",
+      "star",
+      "top",
+      "x_{1}",
+      "y_{1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.4225483
+  },
+  "algebraic_72": {
+    "symbolic_str": "mathrm*(C*E)",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "E",
+      "mathrm"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.5024195
+  },
+  "power_law_73": {
+    "symbolic_str": "Eq(label*(Omega_{T}*(-m*a*(t*(r*(i*x))) + (e*q)/((t*(e*(a*(c*(h*(e*r))))))))), sigma_{1}*(u_{1}*v_{1}**top) + sigma_{2}*(u_{2}*v_{2}**top))",
+    "type": "power_law",
+    "parameters": [
+      "Omega_{T}",
+      "a",
+      "c",
+      "e",
+      "h",
+      "i",
+      "label",
+      "m",
+      "q",
+      "r",
+      "sigma_{1}",
+      "sigma_{2}",
+      "top",
+      "u_{1}",
+      "u_{2}",
+      "v_{1}",
+      "v_{2}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.568773
+  },
+  "algebraic_74": {
+    "symbolic_str": "J*mathcal",
+    "type": "algebraic",
+    "parameters": [
+      "J",
+      "mathcal"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.6511629
+  },
+  "power_law_75": {
+    "symbolic_str": "Eq(delta_{A}(x_{2}, y_{2}), x_{1}**top*Omega_{T}(y_{1} - y_{2}))",
+    "type": "power_law",
+    "parameters": [
+      "top",
+      "x_{1}",
+      "x_{2}",
+      "y_{1}",
+      "y_{2}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.6989133
+  },
+  "algebraic_76": {
+    "symbolic_str": "L*mathcal",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "mathcal"
+    ],
+    "domains": [
+      "biology",
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524",
+      "2602.13842",
+      "2602.13640",
+      "2602.14687",
+      "2602.13559",
+      "2602.13282",
+      "2602.13980",
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.8618186
+  },
+  "power_law_77": {
+    "symbolic_str": "(lambda/2)*(y_{1}*y_{2}**(lambda*top))**2 <= L*mathcal",
+    "type": "power_law",
+    "parameters": [
+      "L",
+      "lambda",
+      "mathcal",
+      "top",
+      "y_{1}",
+      "y_{2}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13524"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376679.8965394
+  },
+  "algebraic_78": {
+    "symbolic_str": "label*((e*q)/((s*(h*(a*p)))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "e",
+      "h",
+      "label",
+      "p",
+      "q",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13231"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376682.6908526
+  },
+  "algebraic_79": {
+    "symbolic_str": "label*(l*(o*(c*(a*l))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "c",
+      "l",
+      "label",
+      "o"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13231"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376682.9573274
+  },
+  "algebraic_80": {
+    "symbolic_str": "Eq(N*T, Sum(mathds*1, (i, 1, n)))",
+    "type": "algebraic",
+    "parameters": [
+      "N",
+      "mathds",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376684.785129
+  },
+  "algebraic_81": {
+    "symbolic_str": "Eq(F*P, Sum(mathds*1, (i, 1, n)))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "P",
+      "mathds",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376684.9218626
+  },
+  "algebraic_82": {
+    "symbolic_str": "Eq(F*N, Sum(mathds*1, (i, 1, n)))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "N",
+      "mathds",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376685.0604975
+  },
+  "algebraic_83": {
+    "symbolic_str": "Eq(P*T, Sum(mathds*1, (i, 1, n)))",
+    "type": "algebraic",
+    "parameters": [
+      "P",
+      "mathds",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376685.1278813
+  },
+  "algebraic_84": {
+    "symbolic_str": "Eq(A*(C*C), (N*T + P*T)/n)",
+    "type": "algebraic",
+    "parameters": [
+      "A",
+      "C",
+      "N",
+      "P",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376685.1871898
+  },
+  "algebraic_85": {
+    "symbolic_str": "Eq(label*((T*(P*R))*(-T*P*R + e*q)), (P*T)/(F*N + P*T))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "N",
+      "P",
+      "R",
+      "e",
+      "label",
+      "q"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376685.2667272
+  },
+  "algebraic_86": {
+    "symbolic_str": "Eq(T*(N*R), (N*T)/(F*P + N*T))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "N",
+      "P",
+      "R"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376685.3242
+  },
+  "algebraic_87": {
+    "symbolic_str": "Eq(P*(P*V), (P*T)/(F*P + P*T))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "P",
+      "V"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376685.3798559
+  },
+  "algebraic_88": {
+    "symbolic_str": "begin*((F*text)*(a*(l*(i*(g*(n*(d*e)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "a",
+      "begin",
+      "d",
+      "e",
+      "g",
+      "i",
+      "l",
+      "n",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376685.676335
+  },
+  "algebraic_89": {
+    "symbolic_str": "label*((text*(C*(u*(r*(e*v)))))*((e*q)/((c*(u*(r*(e*v)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "c",
+      "e",
+      "label",
+      "q",
+      "r",
+      "text",
+      "u",
+      "v"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13482"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376686.0518792
+  },
+  "algebraic_90": {
+    "symbolic_str": "Eq(P*(S*(d*n)), 1/Abs(P*mathcal))",
+    "type": "algebraic",
+    "parameters": [
+      "P",
+      "S",
+      "d",
+      "mathcal",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13855"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376687.9548974
+  },
+  "algebraic_91": {
+    "symbolic_str": "M*mathcal",
+    "type": "algebraic",
+    "parameters": [
+      "M",
+      "mathcal"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376689.4519014
+  },
+  "algebraic_92": {
+    "symbolic_str": "Eq(text*((T*(o*(k*(e*(n*(M*(i*(x*(e*r)))))))))*(mathbf*x)), text*((S*(A*W))*(text*((R*(M*(S*(N*(o*(m*r))))))*(mathbf*x)))) + (alpha*bm)*(textrm*((text*((R*(M*(S*(N*(o*(m*r))))))*(mathbf*x)))*(textsc*(A*(l*(l*(M*(e*m)))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "A",
+      "M",
+      "N",
+      "R",
+      "S",
+      "W",
+      "alpha",
+      "bm",
+      "e",
+      "i",
+      "k",
+      "l",
+      "m",
+      "mathbf",
+      "n",
+      "o",
+      "r",
+      "text",
+      "textrm",
+      "textsc"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376689.557908
+  },
+  "algebraic_93": {
+    "symbolic_str": "begin*((G*mathbf)*(a*(l*(i*(g*(n*(d*e)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "G",
+      "a",
+      "begin",
+      "d",
+      "e",
+      "g",
+      "i",
+      "l",
+      "mathbf",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376689.76493
+  },
+  "algebraic_94": {
+    "symbolic_str": "begin*((M*mathbf)*(a*(l*(i*(g*(n*(d*e)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "M",
+      "a",
+      "begin",
+      "d",
+      "e",
+      "g",
+      "i",
+      "l",
+      "mathbf",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376689.9919398
+  },
+  "power_law_95": {
+    "symbolic_str": "Eq(W*boldsymbol, boldsymbol*(W*((N*mathcal)/((l**2*((W*boldsymbol)*(n*(o*(m*r)))))))))",
+    "type": "power_law",
+    "parameters": [
+      "N",
+      "W",
+      "boldsymbol",
+      "l",
+      "m",
+      "mathcal",
+      "n",
+      "o",
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376690.058534
+  },
+  "algebraic_96": {
+    "symbolic_str": "Eq(L_{t*(o*(t*(a*l)))}, L_{C*E}*beta + L_{K*L}*alpha)",
+    "type": "algebraic",
+    "parameters": [
+      "L_{C*E}",
+      "L_{K*L}",
+      "L_{t*(o*(t*(a*l)))}",
+      "alpha",
+      "beta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376690.1119792
+  },
+  "algebraic_97": {
+    "symbolic_str": "hat*(mathbf*v)",
+    "type": "algebraic",
+    "parameters": [
+      "hat",
+      "mathbf",
+      "v"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376690.268991
+  },
+  "algebraic_98": {
+    "symbolic_str": "M*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "M",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376690.4701679
+  },
+  "algebraic_99": {
+    "symbolic_str": "ell",
+    "type": "algebraic",
+    "parameters": [
+      "ell"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13680"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376690.9657578
+  },
+  "power_law_100": {
+    "symbolic_str": "Eq(z_{t}, F(f_{a}(o_{t}**a), f_{p}(o_{t}**p), f_{s}(o_{t}**s)))",
+    "type": "power_law",
+    "parameters": [
+      "a",
+      "o_{t}",
+      "p",
+      "s",
+      "z_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376691.3787336
+  },
+  "algebraic_101": {
+    "symbolic_str": "a*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376691.5539815
+  },
+  "power_law_102": {
+    "symbolic_str": "Eq(h_{t}**p, mathrm*((S*(e*(l*(f*(A*(t*(n*t)))))))*(x_{t}**p*(odot*(mathrm*(M*(L*P)))))))",
+    "type": "power_law",
+    "parameters": [
+      "A",
+      "L",
+      "M",
+      "P",
+      "S",
+      "e",
+      "f",
+      "h_{t}",
+      "l",
+      "mathrm",
+      "n",
+      "odot",
+      "p",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376691.7395685
+  },
+  "power_law_103": {
+    "symbolic_str": "Eq(h_{t}**s, mathrm*((S*(e*(l*(f*(A*(t*(n*t)))))))*(x_{t}**s*(odot*(mathrm*(M*(L*P)))))))",
+    "type": "power_law",
+    "parameters": [
+      "A",
+      "L",
+      "M",
+      "P",
+      "S",
+      "e",
+      "f",
+      "h_{t}",
+      "l",
+      "mathrm",
+      "n",
+      "odot",
+      "s",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376691.80222
+  },
+  "algebraic_104": {
+    "symbolic_str": "h*hat",
+    "type": "algebraic",
+    "parameters": [
+      "h",
+      "hat"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640",
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376691.978813
+  },
+  "algebraic_105": {
+    "symbolic_str": "Q*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "Q",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376692.170581
+  },
+  "algebraic_106": {
+    "symbolic_str": "Z*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376692.370722
+  },
+  "algebraic_107": {
+    "symbolic_str": "widetilde*(Z*mathbf)",
+    "type": "algebraic",
+    "parameters": [
+      "mathbf",
+      "widetilde"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376692.589923
+  },
+  "algebraic_108": {
+    "symbolic_str": "mathbf*z",
+    "type": "algebraic",
+    "parameters": [
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376692.7934282
+  },
+  "algebraic_109": {
+    "symbolic_str": "Eq(label*((S*mathcal)*((e*q)/((c*(a*(b*(i*(n*(e*(t*(m*(e*(t*(r*(c*i))))))))))))))), gamma*theta_{text*(r*(o*t))} + (alpha*d_{text*(s*(l*(de*i)))} + beta*d_{text*(di*(p*s))}))",
+    "type": "algebraic",
+    "parameters": [
+      "S",
+      "a",
+      "alpha",
+      "b",
+      "beta",
+      "c",
+      "d_{text*(di*(p*s))}",
+      "d_{text*(s*(l*(de*i)))}",
+      "e",
+      "gamma",
+      "i",
+      "label",
+      "m",
+      "mathcal",
+      "n",
+      "q",
+      "r",
+      "theta_{text*(r*(o*t))}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376692.9147606
+  },
+  "algebraic_110": {
+    "symbolic_str": "I",
+    "type": "algebraic",
+    "parameters": [
+      "I"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13640"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376693.075401
+  },
+  "algebraic_111": {
+    "symbolic_str": "text*(s*(t*(a*(t*(s*u)))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "s",
+      "text",
+      "u"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13346"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376694.4762356
+  },
+  "algebraic_112": {
+    "symbolic_str": "begin*((s*(p*(l*(i*t))))*(text*(s*(i*m))))",
+    "type": "algebraic",
+    "parameters": [
+      "begin",
+      "i",
+      "l",
+      "m",
+      "p",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13346"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376695.3643034
+  },
+  "algebraic_113": {
+    "symbolic_str": "text*(n*(o*(r*(m*(a*(l*(i*(z*(d*e)))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "d",
+      "e",
+      "i",
+      "l",
+      "m",
+      "n",
+      "o",
+      "r",
+      "text"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13346"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376696.0370834
+  },
+  "logarithmic_114": {
+    "symbolic_str": "log(bigl, 2)",
+    "type": "logarithmic",
+    "parameters": [
+      "bigl"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13346"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376696.662388
+  },
+  "algebraic_115": {
+    "symbolic_str": "small*(L*mathcal)",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "mathcal",
+      "small"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14134"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376699.3037798
+  },
+  "algebraic_116": {
+    "symbolic_str": "Eq(label*((small*(M*mathbf))*((e*q)/((l*(o*(g*(i*(t*(s_{t}*(o_{m}*(a*(k*s)))))))))))), mathcal*(A*Big(mathcal*(I*(Big*Big(mathcal*(R*(Big*Big(hat*(Big*(Z*mathbf)))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "A",
+      "Big",
+      "I",
+      "M",
+      "R",
+      "a",
+      "e",
+      "g",
+      "hat",
+      "i",
+      "k",
+      "l",
+      "label",
+      "mathbf",
+      "mathcal",
+      "o",
+      "o_{m}",
+      "q",
+      "s",
+      "s_{t}",
+      "small"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14134"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376699.6158326
+  },
+  "algebraic_117": {
+    "symbolic_str": "label*((p*scriptsize)*((e*q)/((b*(c*(e_{p}*(r*(b*o))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "b",
+      "c",
+      "e",
+      "e_{p}",
+      "label",
+      "o",
+      "p",
+      "q",
+      "r",
+      "scriptsize"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14134"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376700.6936314
+  },
+  "algebraic_118": {
+    "symbolic_str": "small*(N*mathcal)",
+    "type": "algebraic",
+    "parameters": [
+      "N",
+      "mathcal",
+      "small"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14134"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376700.9371083
+  },
+  "algebraic_119": {
+    "symbolic_str": "scriptsize*(L*mathcal)",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "mathcal",
+      "scriptsize"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14134"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376701.182205
+  },
+  "power_law_120": {
+    "symbolic_str": "Eq(bar*ell**t, Sum(ell_{i}**t, (i, 1, N))/N)",
+    "type": "power_law",
+    "parameters": [
+      "N",
+      "bar",
+      "ell",
+      "ell_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14462"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376701.477292
+  },
+  "power_law_121": {
+    "symbolic_str": "Eq(D_{mathrm*(l*(o*(s*s)))}**t, sqrt(Sum((-bar*ell**t + ell_{i}**t)**2, (i, 1, N))/N))",
+    "type": "power_law",
+    "parameters": [
+      "D_{mathrm*(l*(o*(s*s)))}",
+      "N",
+      "bar",
+      "ell",
+      "ell_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14462"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376701.5374753
+  },
+  "power_law_122": {
+    "symbolic_str": "Eq(R_{mathrm*(l*(o*(s*s)))}**t, ell_{i}**t*max_{i} - ell_{i}**t*min_{i})",
+    "type": "power_law",
+    "parameters": [
+      "R_{mathrm*(l*(o*(s*s)))}",
+      "ell_{i}",
+      "max_{i}",
+      "min_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14462"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376701.6043136
+  },
+  "power_law_123": {
+    "symbolic_str": "Eq(C_{mathrm*(di*r)}**t, 2/N(N - 1))",
+    "type": "power_law",
+    "parameters": [
+      "C_{mathrm*(di*r)}",
+      "N"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14462"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376701.6864429
+  },
+  "power_law_124": {
+    "symbolic_str": "T**0*(xrightarrow*((T**1*(xrightarrow*((cdots*(xrightarrow*(T*(text*(e*(x*(p*(e*(r*(t*(r*(e*(v*(i*(e*w)))))))))))))))*(text*(e*(x*(p*(e*(r*(t*(r*(e*(v*(i*(e*w)))))))))))))))*(text*(i*(n*(i*(t*(i*(a*l)))))))))",
+    "type": "power_law",
+    "parameters": [
+      "a",
+      "cdots",
+      "e",
+      "i",
+      "l",
+      "n",
+      "p",
+      "r",
+      "text",
+      "v",
+      "w",
+      "xrightarrow"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13248"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376705.4885805
+  },
+  "power_law_125": {
+    "symbolic_str": "Eq(mathrm*(A*(c*c))**j, Sum(I*mathbb, (i, 1, n))/n)",
+    "type": "power_law",
+    "parameters": [
+      "A",
+      "I",
+      "c",
+      "j",
+      "mathbb",
+      "mathrm",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13248"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376705.5669477
+  },
+  "algebraic_126": {
+    "symbolic_str": "F*mathrm",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "mathrm"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13248"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376706.0784945
+  },
+  "algebraic_127": {
+    "symbolic_str": "Eq(kappa, (-p_{e} + p_{o})/(1 - p_{e}))",
+    "type": "algebraic",
+    "parameters": [
+      "kappa",
+      "p_{e}",
+      "p_{o}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13248"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376706.1579025
+  },
+  "algebraic_128": {
+    "symbolic_str": "Eq(D_{mathrm*(s*(a*(m*(p*(e*l)))))}, mathrm*(S*(t*(r*(a*(t*(i*(f*(i*(e*(dS*(a*(m*(p*(e*l)))))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "D_{mathrm*(s*(a*(m*(p*(e*l)))))}",
+      "S",
+      "a",
+      "dS",
+      "e",
+      "f",
+      "i",
+      "l",
+      "m",
+      "mathrm",
+      "p",
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13248"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376706.3830538
+  },
+  "algebraic_129": {
+    "symbolic_str": "Eq(D_{mathrm*(g*(o*(d*l)))}, D_{mathrm*(s*(a*(m*(p*(e*l)))))}*(D_{mathrm*(r*(a*(e*r)))}*cup))",
+    "type": "algebraic",
+    "parameters": [
+      "D_{mathrm*(g*(o*(d*l)))}",
+      "D_{mathrm*(r*(a*(e*r)))}",
+      "D_{mathrm*(s*(a*(m*(p*(e*l)))))}",
+      "cup"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13248"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376706.6232975
+  },
+  "algebraic_130": {
+    "symbolic_str": "texttt",
+    "type": "algebraic",
+    "parameters": [
+      "texttt"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13248"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376706.837689
+  },
+  "algebraic_131": {
+    "symbolic_str": "Eq(text*(v_{i}*(I*(m*p))), (w_{i} - min(mathbf*w))/(epsilon + (max(mathbf*w) - min(mathbf*w))))",
+    "type": "algebraic",
+    "parameters": [
+      "I",
+      "epsilon",
+      "m",
+      "mathbf",
+      "p",
+      "text",
+      "v_{i}",
+      "w",
+      "w_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13315"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376707.562822
+  },
+  "algebraic_132": {
+    "symbolic_str": "text*(S*(i*m))",
+    "type": "algebraic",
+    "parameters": [
+      "S",
+      "i",
+      "m",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13315"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376707.8571966
+  },
+  "algebraic_133": {
+    "symbolic_str": "v",
+    "type": "algebraic",
+    "parameters": [
+      "v"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13315"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376708.0778666
+  },
+  "algebraic_134": {
+    "symbolic_str": "begin*(v*(a*(l*(i*(g*(n*(d*e)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "begin",
+      "d",
+      "e",
+      "g",
+      "i",
+      "l",
+      "n",
+      "v"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13315"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376708.4725058
+  },
+  "algebraic_135": {
+    "symbolic_str": "mathbf*(g*(sim*(N*mathcal)))",
+    "type": "algebraic",
+    "parameters": [
+      "N",
+      "g",
+      "mathbf",
+      "mathcal",
+      "sim"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376709.5247087
+  },
+  "algebraic_136": {
+    "symbolic_str": "Eq(a*mathbf, Sum(c_{i}*(d*mathbf), (i, 1, N)))",
+    "type": "algebraic",
+    "parameters": [
+      "N",
+      "a",
+      "c_{i}",
+      "d",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376709.5970058
+  },
+  "power_law_137": {
+    "symbolic_str": "Eq(Sigma*boldsymbol, mathbf*(F*(F**top*mathbf)) + text*((boldsymbol*delta)*(di*(a*g))))",
+    "type": "power_law",
+    "parameters": [
+      "F",
+      "Sigma",
+      "a",
+      "boldsymbol",
+      "delta",
+      "di",
+      "g",
+      "mathbf",
+      "text",
+      "top"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376709.652285
+  },
+  "algebraic_138": {
+    "symbolic_str": "Eq(g*mathbf, mathbf*(F*(boldsymbol*epsilon)) + sqrt(boldsymbol*delta)*(odot*(boldsymbol*eta)))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "boldsymbol",
+      "delta",
+      "epsilon",
+      "eta",
+      "g",
+      "mathbf",
+      "odot"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376709.7080965
+  },
+  "algebraic_139": {
+    "symbolic_str": "d*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "d",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376709.9807146
+  },
+  "algebraic_140": {
+    "symbolic_str": "(mathbf*1)*(c_{text*(c*(h*(i*(d*l))))}*(c_{text*(c*(h*(i*(d*l))))}*leftarrow))",
+    "type": "algebraic",
+    "parameters": [
+      "c_{text*(c*(h*(i*(d*l))))}",
+      "leftarrow",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376710.4333956
+  },
+  "algebraic_141": {
+    "symbolic_str": "Eq(text*(M*(C*C)), 1/min(L, N))",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "L",
+      "M",
+      "N",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376710.492297
+  },
+  "power_law_142": {
+    "symbolic_str": "Eq(gamma_{i}**(text*(h*(i*(e*r)))), 1/p_{text*(p*(a*(r*(e*(n*t)))))})",
+    "type": "power_law",
+    "parameters": [
+      "e",
+      "gamma_{i}",
+      "h",
+      "i",
+      "p_{text*(p*(a*(r*(e*(n*t)))))}",
+      "r",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376710.5719817
+  },
+  "power_law_143": {
+    "symbolic_str": "Eq(gamma_{i}**(text*(E*M)), 1)",
+    "type": "power_law",
+    "parameters": [
+      "E",
+      "M",
+      "gamma_{i}",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376710.6453218
+  },
+  "algebraic_144": {
+    "symbolic_str": "c_{text*(c*(h*(i*(d*l))))}*(c_{text*(c*(h*(i*(d*l))))}*leftarrow)",
+    "type": "algebraic",
+    "parameters": [
+      "c_{text*(c*(h*(i*(d*l))))}",
+      "leftarrow"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376710.9758549
+  },
+  "power_law_145": {
+    "symbolic_str": "Eq(Sigma*boldsymbol, mathbf*(F*(F**top*mathbf)) + text*((boldsymbol*delta)*(di*(a*g))))",
+    "type": "power_law",
+    "parameters": [
+      "F",
+      "Sigma",
+      "a",
+      "boldsymbol",
+      "delta",
+      "di",
+      "g",
+      "mathbf",
+      "text",
+      "top"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376711.0426087
+  },
+  "algebraic_146": {
+    "symbolic_str": "(F_{i*j}*(s*sim))*(N*mathcal)",
+    "type": "algebraic",
+    "parameters": [
+      "F_{i*j}",
+      "N",
+      "mathcal",
+      "s",
+      "sim"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376711.381516
+  },
+  "power_law_147": {
+    "symbolic_str": "Eq(delta_{i}, 1 - Sum(F_{i*j}**2, (j, 1, r)))",
+    "type": "power_law",
+    "parameters": [
+      "F_{i*j}",
+      "delta_{i}",
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376711.4481523
+  },
+  "algebraic_148": {
+    "symbolic_str": "Eq(g*mathbf, mathbf*(F*(boldsymbol*epsilon)) + sqrt(boldsymbol*delta)*(odot*(boldsymbol*eta)))",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "boldsymbol",
+      "delta",
+      "epsilon",
+      "eta",
+      "g",
+      "mathbf",
+      "odot"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376711.517241
+  },
+  "algebraic_149": {
+    "symbolic_str": "Eq(Delta, K_{i}*g)",
+    "type": "algebraic",
+    "parameters": [
+      "Delta",
+      "K_{i}",
+      "g"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376711.731862
+  },
+  "algebraic_150": {
+    "symbolic_str": "Eq(l_{t}, argmax_{i})",
+    "type": "algebraic",
+    "parameters": [
+      "argmax_{i}",
+      "l_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376711.863546
+  },
+  "algebraic_151": {
+    "symbolic_str": "Eq(c_{i}, z_{i}*(text*((R*(e*(L*U)))*(epsilon_{i}*sigma_{i} + mu_{i}))))",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "R",
+      "U",
+      "c_{i}",
+      "e",
+      "epsilon_{i}",
+      "mu_{i}",
+      "sigma_{i}",
+      "text",
+      "z_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376711.98023
+  },
+  "algebraic_152": {
+    "symbolic_str": "bar*ell",
+    "type": "algebraic",
+    "parameters": [
+      "bar",
+      "ell"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14687"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376712.524555
+  },
+  "algebraic_153": {
+    "symbolic_str": "U*mathcal",
+    "type": "algebraic",
+    "parameters": [
+      "U",
+      "mathcal"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13258"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376713.4714396
+  },
+  "algebraic_154": {
+    "symbolic_str": "mathcal*(M*(xrightarrow*((mathcal*(P*(xrightarrow*((r*(xrightarrow*((mathcal*(L*(xrightarrow*((M*mathcal)*(text*(w*(r*(i*(t*(e*s))))))))))*(text*(f*(e*(e*(db*(a*(c*k))))))))))*(text*(a*(da*(p*(s*t)))))))))*(text*(r*(e*(t*(r*(i*(e*(v*(e*s))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "M",
+      "P",
+      "a",
+      "c",
+      "da",
+      "db",
+      "e",
+      "f",
+      "i",
+      "k",
+      "mathcal",
+      "p",
+      "r",
+      "s",
+      "text",
+      "v",
+      "w",
+      "xrightarrow"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13258"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376714.6303709
+  },
+  "algebraic_155": {
+    "symbolic_str": "Eq(R_{mathrm*(s*(c*e))}(q, s), alpha*F_{mathrm*(s*(c*e))}(q, s) + (1 - alpha)*E_{mathrm*(s*(c*e))}(q, s))",
+    "type": "algebraic",
+    "parameters": [
+      "alpha",
+      "q",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13647"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376714.8064673
+  },
+  "trigonometric_156": {
+    "symbolic_str": "Eq(E_{mathrm*(s*(c*e))}(q, s), cos(e(q)))",
+    "type": "trigonometric",
+    "parameters": [
+      "q",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13647"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376714.892747
+  },
+  "algebraic_157": {
+    "symbolic_str": "Eq(Delta(i), S_{i}(q)/c_{i})",
+    "type": "algebraic",
+    "parameters": [
+      "c_{i}",
+      "i",
+      "q"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13647"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376714.948634
+  },
+  "trigonometric_158": {
+    "symbolic_str": "Eq(s_{mathrm*(s*(e*g))}(q, i), cos(e(q)))",
+    "type": "trigonometric",
+    "parameters": [
+      "i",
+      "q"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13647"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376715.0134842
+  },
+  "power_law_159": {
+    "symbolic_str": "Eq(beta, 1 - 1/10**k)",
+    "type": "power_law",
+    "parameters": [
+      "beta",
+      "k"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13559"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376716.4018686
+  },
+  "power_law_160": {
+    "symbolic_str": "Eq(E_{n_{i}}, (1 - beta**n_{i})/(1 - beta))",
+    "type": "power_law",
+    "parameters": [
+      "E_{n_{i}}",
+      "beta",
+      "n_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13559"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376716.5029993
+  },
+  "algebraic_161": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13559"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376716.7371607
+  },
+  "algebraic_162": {
+    "symbolic_str": "hat*(X*mathbf)",
+    "type": "algebraic",
+    "parameters": [
+      "hat",
+      "mathbf"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376726.1976728
+  },
+  "algebraic_163": {
+    "symbolic_str": "Eq(Q*mathbf, X*mathbf)",
+    "type": "algebraic",
+    "parameters": [
+      "Q",
+      "mathbf"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376726.297237
+  },
+  "algebraic_164": {
+    "symbolic_str": "H*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "H",
+      "mathbf"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376726.8863971
+  },
+  "algebraic_165": {
+    "symbolic_str": "Eq(alpha_{f}, operatorname*(big*(S*(o*(f*(t*(m*(a*x))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "S",
+      "a",
+      "alpha_{f}",
+      "big",
+      "f",
+      "m",
+      "o",
+      "operatorname"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376727.5853484
+  },
+  "algebraic_166": {
+    "symbolic_str": "F*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "F",
+      "mathbf"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376728.0917437
+  },
+  "algebraic_167": {
+    "symbolic_str": "U*mathbf",
+    "type": "algebraic",
+    "parameters": [
+      "U",
+      "mathbf"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376728.691821
+  },
+  "algebraic_168": {
+    "symbolic_str": "Eq(alpha_{i}, sigma)",
+    "type": "algebraic",
+    "parameters": [
+      "alpha_{i}",
+      "sigma"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376728.7879252
+  },
+  "algebraic_169": {
+    "symbolic_str": "widetilde*(U*mathbf)",
+    "type": "algebraic",
+    "parameters": [
+      "U",
+      "mathbf",
+      "widetilde"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376729.4373944
+  },
+  "algebraic_170": {
+    "symbolic_str": "hat*(mathbf*y)",
+    "type": "algebraic",
+    "parameters": [
+      "hat",
+      "mathbf"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376730.231728
+  },
+  "algebraic_171": {
+    "symbolic_str": "Eq(mathrm*(M*(A*E)), 1/M)",
+    "type": "algebraic",
+    "parameters": [
+      "A",
+      "E",
+      "M",
+      "mathrm"
+    ],
+    "domains": [
+      "biology"
+    ],
+    "source_papers": [
+      "2602.13282"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376730.6383202
+  },
+  "algebraic_172": {
+    "symbolic_str": "f_{text*(L*(L*M))}(widetilde*(H*mathbf), text*(p*(r*(o*(m*(p*t))))))",
+    "type": "algebraic",
+    "parameters": [
+      "H",
+      "m",
+      "mathbf",
+      "o",
+      "p",
+      "r",
+      "text",
+      "widetilde"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13980"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376732.1798496
+  },
+  "algebraic_173": {
+    "symbolic_str": "Eq(h_{t}, text*(C*(o*(m*(p*(r*(e*(s*(s*(o*r))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "e",
+      "h_{t}",
+      "m",
+      "o",
+      "p",
+      "r",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13980"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376732.4681313
+  },
+  "algebraic_174": {
+    "symbolic_str": "Eq(h_{t}, text*(C*(o*(m*(p*(r*(e*(s*(s*(o*r))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "e",
+      "h_{t}",
+      "m",
+      "o",
+      "p",
+      "r",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13980"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376732.8115394
+  },
+  "algebraic_175": {
+    "symbolic_str": "Eq(L*mathcal, lambda*(L*mathcal))",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "lambda",
+      "mathcal"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13980"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376733.4769487
+  },
+  "algebraic_176": {
+    "symbolic_str": "p",
+    "type": "algebraic",
+    "parameters": [
+      "p"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792",
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376734.811135
+  },
+  "algebraic_177": {
+    "symbolic_str": "P*mathbb",
+    "type": "algebraic",
+    "parameters": [
+      "P",
+      "mathbb"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376735.6354294
+  },
+  "algebraic_178": {
+    "symbolic_str": "Eq(mathbb*(E*epsilon_{j}(mathbf*x)), 0)",
+    "type": "algebraic",
+    "parameters": [
+      "E",
+      "mathbb",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376735.7984715
+  },
+  "algebraic_179": {
+    "symbolic_str": "Sum(I*mathbb, (j, 1, M))",
+    "type": "algebraic",
+    "parameters": [
+      "I",
+      "M",
+      "mathbb"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376736.833341
+  },
+  "algebraic_180": {
+    "symbolic_str": "h*conjugate(mathrm*(e*(r*r)))",
+    "type": "algebraic",
+    "parameters": [
+      "e",
+      "h",
+      "mathrm",
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376738.421602
+  },
+  "algebraic_181": {
+    "symbolic_str": "Eq(mathrm*((e*(r*r))*(h*hat)), (h*conjugate(mathrm*(e*(r*r))))/M)",
+    "type": "algebraic",
+    "parameters": [
+      "M",
+      "e",
+      "h",
+      "hat",
+      "mathrm",
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376738.6236482
+  },
+  "algebraic_182": {
+    "symbolic_str": "H*widehat",
+    "type": "algebraic",
+    "parameters": [
+      "H",
+      "widehat"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376739.7510486
+  },
+  "algebraic_183": {
+    "symbolic_str": "Eq(mathrm*((H*widehat)*(e*(r*r))), Sum(w_{j}*(C_{j*j'}*w_{j'}), (j', 1, M), (j, 1, M)))",
+    "type": "algebraic",
+    "parameters": [
+      "C_{j*j'}",
+      "H",
+      "M",
+      "e",
+      "mathrm",
+      "r",
+      "w_{j'}",
+      "w_{j}",
+      "widehat"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376740.1211913
+  },
+  "algebraic_184": {
+    "symbolic_str": "Eq(C_{j*j'}, mathbb*(E*(epsilon_{j'}(mathbf*x)*epsilon_{j}(mathbf*x))))",
+    "type": "algebraic",
+    "parameters": [
+      "C_{j*j'}",
+      "E",
+      "mathbb",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376740.291833
+  },
+  "algebraic_185": {
+    "symbolic_str": "Eq(mathrm*((H*widehat)*(e*(r*r))), big/Sum(big/C_{j*j}, (j, 1, M)))",
+    "type": "algebraic",
+    "parameters": [
+      "C_{j*j}",
+      "H",
+      "M",
+      "big",
+      "e",
+      "mathrm",
+      "r",
+      "widehat"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376740.4964554
+  },
+  "algebraic_186": {
+    "symbolic_str": "Eq(w_{j}, 1/(C_{j*j}*Sum(1/C_{j'*j'}, (j', 1, M))))",
+    "type": "algebraic",
+    "parameters": [
+      "C_{j'*j'}",
+      "C_{j*j}",
+      "M",
+      "w_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376740.62983
+  },
+  "algebraic_187": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376740.8372607
+  },
+  "algebraic_188": {
+    "symbolic_str": "L*mathrm",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "mathrm"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376741.5241435
+  },
+  "algebraic_189": {
+    "symbolic_str": "w_{j} >= 0",
+    "type": "algebraic",
+    "parameters": [
+      "w_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376741.631154
+  },
+  "logarithmic_190": {
+    "symbolic_str": "w_{j}*(propto*log(p_{j}/(1 - p_{j}), E))",
+    "type": "logarithmic",
+    "parameters": [
+      "p_{j}",
+      "propto",
+      "w_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376743.453137
+  },
+  "polynomial_191": {
+    "symbolic_str": "Eq(q_{j*j'}, begin*((c*(a*(s*(e*s))))*1) - mu_{j}**2)",
+    "type": "polynomial",
+    "parameters": [
+      "a",
+      "begin",
+      "c",
+      "e",
+      "mu_{j}",
+      "q_{j*j'}",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376743.651594
+  },
+  "algebraic_192": {
+    "symbolic_str": "v_{j}*propto(2*pi_{j} - 1)",
+    "type": "algebraic",
+    "parameters": [
+      "pi_{j}",
+      "v_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376745.2106802
+  },
+  "algebraic_193": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376745.434892
+  },
+  "algebraic_194": {
+    "symbolic_str": "w_{j} >= 0",
+    "type": "algebraic",
+    "parameters": [
+      "w_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13792"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376747.151056
+  },
+  "algebraic_195": {
+    "symbolic_str": "Eq(A(i*tau), (r_{i} - text*(m*(e*(a*n)))*(mathbf*r))/((text*((mathbf*r)*(s*(d*t))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "d",
+      "e",
+      "i",
+      "m",
+      "mathbf",
+      "n",
+      "r",
+      "r_{i}",
+      "s",
+      "tau",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376749.2979324
+  },
+  "algebraic_196": {
+    "symbolic_str": "Eq(nabla*J(theta), E_{theta}*mathbb)",
+    "type": "algebraic",
+    "parameters": [
+      "E_{theta}",
+      "mathbb",
+      "nabla",
+      "theta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376749.4295597
+  },
+  "power_law_197": {
+    "symbolic_str": "Q_{t}**i",
+    "type": "power_law",
+    "parameters": [
+      "Q_{t}",
+      "i"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376750.0819643
+  },
+  "algebraic_198": {
+    "symbolic_str": "Eq(nabla*J(theta), E_{theta}*mathbb)",
+    "type": "algebraic",
+    "parameters": [
+      "E_{theta}",
+      "mathbb",
+      "nabla",
+      "theta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376750.238616
+  },
+  "algebraic_199": {
+    "symbolic_str": "(stackrel*(text*(de*f)))*D_{i}(tau)",
+    "type": "algebraic",
+    "parameters": [
+      "de",
+      "f",
+      "stackrel",
+      "tau",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376751.3429399
+  },
+  "algebraic_200": {
+    "symbolic_str": "Eq(nabla*J(theta), E_{theta}*mathbb)",
+    "type": "algebraic",
+    "parameters": [
+      "E_{theta}",
+      "mathbb",
+      "nabla",
+      "theta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376751.5596359
+  },
+  "algebraic_201": {
+    "symbolic_str": "Eq(nabla*J(theta), E_{theta}*mathbb)",
+    "type": "algebraic",
+    "parameters": [
+      "E_{theta}",
+      "mathbb",
+      "nabla",
+      "theta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376751.7166858
+  },
+  "algebraic_202": {
+    "symbolic_str": "Eq(w_{i}, 1*(text*((c*(l*(o*(e*n))))*(i*(text*(r*(e*(t*(u*(r*(n*(s*(a*(p*(a*(r*(s*(e*(a*(b*(l*(e*(f*(i*(n*(a*(l*(a*(n*(s*(w*(e*r))))))))))))))))))))))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "b",
+      "c",
+      "e",
+      "f",
+      "i",
+      "l",
+      "n",
+      "o",
+      "p",
+      "r",
+      "s",
+      "text",
+      "u",
+      "w",
+      "w_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376751.9504795
+  },
+  "power_law_203": {
+    "symbolic_str": "Eq(b**i*tau, E_{tau*(pi_{theta}*sim)}*mathbb)",
+    "type": "power_law",
+    "parameters": [
+      "E_{tau*(pi_{theta}*sim)}",
+      "b",
+      "i",
+      "mathbb",
+      "tau"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376752.1703417
+  },
+  "algebraic_204": {
+    "symbolic_str": "text",
+    "type": "algebraic",
+    "parameters": [
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376752.6000135
+  },
+  "algebraic_205": {
+    "symbolic_str": "(h*i)*(j - k) + (g*(e*f) + (a*b)*(c - d))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13262"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376754.920335
+  },
+  "algebraic_206": {
+    "symbolic_str": "x_{t}",
+    "type": "algebraic",
+    "parameters": [
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376755.7311392
+  },
+  "power_law_207": {
+    "symbolic_str": "Eq(label*((v_{t}**star*x_{t})*(-c*o*(n*(de*(p*x))) + (e*q)/((f*m)))), E*mathbb)",
+    "type": "power_law",
+    "parameters": [
+      "E",
+      "c",
+      "de",
+      "e",
+      "f",
+      "label",
+      "m",
+      "mathbb",
+      "n",
+      "o",
+      "p",
+      "q",
+      "star",
+      "v_{t}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376755.930066
+  },
+  "algebraic_208": {
+    "symbolic_str": "label*((L*mathcal)*(-m*e*s + (e*q)/((f*m))))",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "e",
+      "f",
+      "label",
+      "m",
+      "mathcal",
+      "q",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376757.5554507
+  },
+  "algebraic_209": {
+    "symbolic_str": "False",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376757.7452755
+  },
+  "power_law_210": {
+    "symbolic_str": "Eq(v_{t}**star*x_{t}, mathbb*(E*((text*((w*(h*(e*(e*r))))*u_{t}(x_{t}*(mid*x_{1}))))*((mid*x_{t})*u_{t}(x_{t}*(mid*x_{1}))))))",
+    "type": "power_law",
+    "parameters": [
+      "E",
+      "e",
+      "h",
+      "mathbb",
+      "mid",
+      "r",
+      "star",
+      "text",
+      "v_{t}",
+      "w",
+      "x_{1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376757.9830425
+  },
+  "power_law_211": {
+    "symbolic_str": "Eq(label*((v_{t}**varphi*x_{t})*(-f*i*(e*(d*l)) + (e*q)/((v*(f*m))))), E*mathbb)",
+    "type": "power_law",
+    "parameters": [
+      "E",
+      "d",
+      "e",
+      "f",
+      "i",
+      "l",
+      "label",
+      "m",
+      "mathbb",
+      "q",
+      "v",
+      "v_{t}",
+      "varphi",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376758.122705
+  },
+  "algebraic_212": {
+    "symbolic_str": "label*((L*mathcal)*(-l*o*(s*s) + (e*q)/((v*(f*m)))))",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "e",
+      "f",
+      "l",
+      "label",
+      "m",
+      "mathcal",
+      "o",
+      "q",
+      "s",
+      "v"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376761.0691354
+  },
+  "algebraic_213": {
+    "symbolic_str": "label*((E*mathbb)*(-s*u*(f*f) + (-m*e*(a*n) + (e*q)/((v*(f*m))))))",
+    "type": "algebraic",
+    "parameters": [
+      "E",
+      "a",
+      "e",
+      "f",
+      "label",
+      "m",
+      "mathbb",
+      "n",
+      "q",
+      "s",
+      "u",
+      "v"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376764.4722478
+  },
+  "power_law_214": {
+    "symbolic_str": "Eq(q_{t}**varphi*(x_{1}*(mid*x_{t})), Product(q_{t}**varphi*((text*((L*mathcal)*(s*(u*(c*(h*(t*(h*(a*t)))))))))*(x_{1}**dmid*x_{t})), (d, 1, D)))",
+    "type": "power_law",
+    "parameters": [
+      "D",
+      "L",
+      "a",
+      "c",
+      "dmid",
+      "h",
+      "mathcal",
+      "mid",
+      "q_{t}",
+      "s",
+      "text",
+      "u",
+      "varphi",
+      "x_{1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376764.85972
+  },
+  "power_law_215": {
+    "symbolic_str": "Eq(label*((v_{t}**varphi*x_{t})*(-s*a*(m*(p*(l*(i*(g*n))))) + (e*q)/((v*(f*m))))), (mu_{t}**varphi*x_{t} - x_{t})/(1 - t))",
+    "type": "power_law",
+    "parameters": [
+      "a",
+      "e",
+      "f",
+      "g",
+      "i",
+      "l",
+      "label",
+      "m",
+      "mu_{t}",
+      "n",
+      "p",
+      "q",
+      "s",
+      "v",
+      "v_{t}",
+      "varphi",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376765.0180063
+  },
+  "algebraic_216": {
+    "symbolic_str": "label*((x*(sim*(texttt*((S*(i*(m*(u*(l*(a*(t*(o*r))))))))*(theta*(iff*(x*(sim*p(x*(mid*theta))))))))))*(-l*i*(k*(e*(l*(i*(h*(o*(d*o))))))) + (e*q)/((s*(i*(m*(u*(l*(a*(t*(o*r)))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "S",
+      "a",
+      "d",
+      "e",
+      "h",
+      "i",
+      "iff",
+      "k",
+      "l",
+      "label",
+      "m",
+      "mid",
+      "o",
+      "q",
+      "r",
+      "s",
+      "sim",
+      "texttt",
+      "theta",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376767.6970685
+  },
+  "algebraic_217": {
+    "symbolic_str": "Eq(x_{t}, alpha_{t}*x_{0} + beta_{t}*x_{1})",
+    "type": "algebraic",
+    "parameters": [
+      "alpha_{t}",
+      "beta_{t}",
+      "x_{0}",
+      "x_{1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376767.963567
+  },
+  "algebraic_218": {
+    "symbolic_str": "Eq(v_{t}, alpha*dot)",
+    "type": "algebraic",
+    "parameters": [
+      "alpha",
+      "dot",
+      "v_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376768.1214864
+  },
+  "algebraic_219": {
+    "symbolic_str": "u_{t}(x_{t})",
+    "type": "algebraic",
+    "parameters": [
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376769.015914
+  },
+  "algebraic_220": {
+    "symbolic_str": "Eq(x_{0}, (-beta_{t}*x_{1} + x_{t})/alpha_{t})",
+    "type": "algebraic",
+    "parameters": [
+      "alpha_{t}",
+      "beta_{t}",
+      "x_{0}",
+      "x_{1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376769.108212
+  },
+  "algebraic_221": {
+    "symbolic_str": "Eq(u_{t}(x_{t}), a_{t}*x_{t} + c_{t}*(mathbb*(E*(x_{1}*(mid*x_{t})))))",
+    "type": "algebraic",
+    "parameters": [
+      "E",
+      "a_{t}",
+      "c_{t}",
+      "mathbb",
+      "mid",
+      "x_{1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376769.3271124
+  },
+  "algebraic_222": {
+    "symbolic_str": "mathbb*(E*((Omega*in)*(x_{1}*(mid*x_{t}))))",
+    "type": "algebraic",
+    "parameters": [
+      "E",
+      "Omega",
+      "in",
+      "mathbb",
+      "mid",
+      "x_{1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376770.6842895
+  },
+  "algebraic_223": {
+    "symbolic_str": "Omega*c_{t} + (in*(a_{t}*x_{t}))*u_{t}(x_{t})",
+    "type": "algebraic",
+    "parameters": [
+      "Omega",
+      "a_{t}",
+      "c_{t}",
+      "in",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376772.108702
+  },
+  "power_law_224": {
+    "symbolic_str": "(approx*q**varphi_{t})*p_{t}(x_{0}, x_{1}*(mid*x_{t}))",
+    "type": "power_law",
+    "parameters": [
+      "approx",
+      "mid",
+      "q",
+      "varphi_{t}",
+      "x_{0}",
+      "x_{1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376773.3621724
+  },
+  "power_law_225": {
+    "symbolic_str": "Eq(v**varphi_{t}*x_{t}, alpha*dot)",
+    "type": "power_law",
+    "parameters": [
+      "alpha",
+      "dot",
+      "v",
+      "varphi_{t}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376773.8060353
+  },
+  "power_law_226": {
+    "symbolic_str": "(approx*q**varphi_{t})*p_{t}(theta_{0}, theta_{1}*(mid*theta_{t}), x)",
+    "type": "power_law",
+    "parameters": [
+      "approx",
+      "mid",
+      "q",
+      "theta_{0}",
+      "theta_{1}",
+      "theta_{t}",
+      "varphi_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376775.8859131
+  },
+  "power_law_227": {
+    "symbolic_str": "Eq((mathrm*(d*x_{t}))/((mathrm*(d*t))), v_{t}**varphi*x_{t})",
+    "type": "power_law",
+    "parameters": [
+      "d",
+      "mathrm",
+      "v_{t}",
+      "varphi",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376776.3529978
+  },
+  "algebraic_228": {
+    "symbolic_str": "Eq(p(theta*(mid*x)), (p(theta)*p(x*(mid*theta)))/p(x))",
+    "type": "algebraic",
+    "parameters": [
+      "mid",
+      "theta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376776.4442542
+  },
+  "algebraic_229": {
+    "symbolic_str": "theta",
+    "type": "algebraic",
+    "parameters": [
+      "theta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376777.012008
+  },
+  "algebraic_230": {
+    "symbolic_str": "x_{0/T}",
+    "type": "algebraic",
+    "parameters": [
+      "x_{0/T}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376777.736556
+  },
+  "algebraic_231": {
+    "symbolic_str": "z_{0}*(sim*(mathrm*(pi_{0}*(C*(a*(t*(e*(g*(o*(r*(i*(c*(a*l)))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "a",
+      "c",
+      "e",
+      "g",
+      "i",
+      "l",
+      "mathrm",
+      "o",
+      "pi_{0}",
+      "r",
+      "sim",
+      "z_{0}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376779.6709347
+  },
+  "power_law_232": {
+    "symbolic_str": "Eq(Pi, 0.7*I_{K} + 0.3*((mathbf*(1*(1**top*mathbf)))/K))",
+    "type": "power_law",
+    "parameters": [
+      "I_{K}",
+      "K",
+      "Pi",
+      "mathbf",
+      "top"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376779.8598495
+  },
+  "algebraic_233": {
+    "symbolic_str": "Eq(A_{k}, 0.8*R_{k})",
+    "type": "algebraic",
+    "parameters": [
+      "A_{k}",
+      "R_{k}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376779.9661405
+  },
+  "algebraic_234": {
+    "symbolic_str": "x_{0}*(sim*(N*mathcal))",
+    "type": "algebraic",
+    "parameters": [
+      "N",
+      "mathcal",
+      "sim",
+      "x_{0}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376780.8960857
+  },
+  "algebraic_235": {
+    "symbolic_str": "Eq(x_{t + 1}, sigma_{z_{t}}*varepsilon_{t} + (A_{z_{t}}*x_{t} + b_{z_{t}}))",
+    "type": "algebraic",
+    "parameters": [
+      "A_{z_{t}}",
+      "b_{z_{t}}",
+      "sigma_{z_{t}}",
+      "varepsilon_{t}",
+      "x_{t + 1}",
+      "x_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376781.0535202
+  },
+  "algebraic_236": {
+    "symbolic_str": "Eq(p(x_{0/T}*(mid*z_{-1 + 0/T})), p(x_{0})*Product(p(x_{t + 1}*(mid*x_{t}), z_{t}), (t, 0, T - 1)))",
+    "type": "algebraic",
+    "parameters": [
+      "mid",
+      "x_{0/T}",
+      "x_{0}",
+      "x_{t + 1}",
+      "x_{t}",
+      "z_{-1 + 0/T}",
+      "z_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376781.1742194
+  },
+  "algebraic_237": {
+    "symbolic_str": "Eq(p(x_{0}), N*mathcal)",
+    "type": "algebraic",
+    "parameters": [
+      "N",
+      "mathcal",
+      "x_{0}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376781.24555
+  },
+  "algebraic_238": {
+    "symbolic_str": "Eq(p(z_{-1 + 0/T}, x_{0/T}), p(z_{0})*Product((p(x_{0})*Product(p(x_{t + 1}*(mid*x_{t}), z_{t}), (t, 0, T - 1)))*p(z_{t}*(mid*z_{t - 1})), (t, 1, T - 1)))",
+    "type": "algebraic",
+    "parameters": [
+      "mid",
+      "x_{0/T}",
+      "x_{0}",
+      "x_{t + 1}",
+      "x_{t}",
+      "z_{-1 + 0/T}",
+      "z_{0}",
+      "z_{t - 1}",
+      "z_{t}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376781.7221346
+  },
+  "algebraic_239": {
+    "symbolic_str": "Eq(p(theta*(mid*x_{0/T})), p(z_{-1 + 0/T}*(mid*x_{0/T})))",
+    "type": "algebraic",
+    "parameters": [
+      "mid",
+      "theta",
+      "x_{0/T}",
+      "z_{-1 + 0/T}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376781.8668187
+  },
+  "algebraic_240": {
+    "symbolic_str": "ell_{t}(k)",
+    "type": "algebraic",
+    "parameters": [
+      "k"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376782.6049898
+  },
+  "logarithmic_241": {
+    "symbolic_str": "ell_{0}(k) + log(propto*alpha_{0}(k), E)*log(pi_{0}(k), E)",
+    "type": "logarithmic",
+    "parameters": [
+      "k",
+      "propto"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376783.7846537
+  },
+  "logarithmic_242": {
+    "symbolic_str": "log((propto*(ell_{t}*k))*alpha_{t}(k), E)",
+    "type": "logarithmic",
+    "parameters": [
+      "ell_{t}",
+      "k",
+      "propto"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376784.971621
+  },
+  "algebraic_243": {
+    "symbolic_str": "z_{T - 1}*(sim*(mathrm*(alpha_{T - 1}*(C*(a*(t*(e*(g*(o*(r*(i*(c*(a*l)))))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "C",
+      "a",
+      "alpha_{T - 1}",
+      "c",
+      "e",
+      "g",
+      "i",
+      "l",
+      "mathrm",
+      "o",
+      "r",
+      "sim",
+      "z_{T - 1}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376786.5405743
+  },
+  "power_law_244": {
+    "symbolic_str": "Eq(t, u**(1/(alpha + 1)))",
+    "type": "power_law",
+    "parameters": [
+      "alpha",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13813"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376787.3239741
+  },
+  "algebraic_245": {
+    "symbolic_str": "Eq(mathcal*(J*theta), textstyle/N)",
+    "type": "algebraic",
+    "parameters": [
+      "J",
+      "N",
+      "mathcal",
+      "textstyle",
+      "theta"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376789.1540477
+  },
+  "algebraic_246": {
+    "symbolic_str": "label*(-de*f + (-f*u*(n*(c*(t*(i*(n*o))))) + (e*q)/((v*(a*(l*(e*u)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "c",
+      "de",
+      "e",
+      "f",
+      "i",
+      "l",
+      "label",
+      "n",
+      "o",
+      "q",
+      "u",
+      "v"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376790.7814283
+  },
+  "algebraic_247": {
+    "symbolic_str": "label*((mathrm*(s*(c*(o*(e*r)))))*(-e*q*(u*(a*(t*(i*(n*o))))) + (e*q)/((s*(e*(l*(e*(c*(t*(i*(n*o)))))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "c",
+      "e",
+      "i",
+      "l",
+      "label",
+      "mathrm",
+      "n",
+      "o",
+      "q",
+      "r",
+      "s",
+      "u"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376792.3556895
+  },
+  "algebraic_248": {
+    "symbolic_str": "k*(leftarrow*(mathrm*(a*(r*(g*(m*(a*x)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "g",
+      "k",
+      "leftarrow",
+      "m",
+      "mathrm",
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376793.1223164
+  },
+  "algebraic_249": {
+    "symbolic_str": "ell*(pi_{text*(r*(e*f))}*sim)",
+    "type": "algebraic",
+    "parameters": [
+      "ell",
+      "pi_{text*(r*(e*f))}",
+      "sim"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376794.218393
+  },
+  "algebraic_250": {
+    "symbolic_str": "mathrm*((di*(f*f))*(pi_{text*(r*(e*f))}*sim))",
+    "type": "algebraic",
+    "parameters": [
+      "di",
+      "f",
+      "mathrm",
+      "pi_{text*(r*(e*f))}",
+      "sim"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376795.570382
+  },
+  "algebraic_251": {
+    "symbolic_str": "k*(leftarrow*(arg*(V_{i}*max_{i})))",
+    "type": "algebraic",
+    "parameters": [
+      "V_{i}",
+      "arg",
+      "k",
+      "leftarrow",
+      "max_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376796.826101
+  },
+  "algebraic_252": {
+    "symbolic_str": "ell*(pi_{text*(r*(e*f))}*sim)",
+    "type": "algebraic",
+    "parameters": [
+      "ell",
+      "pi_{text*(r*(e*f))}",
+      "sim"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376797.7187424
+  },
+  "algebraic_253": {
+    "symbolic_str": "mathrm*((di*(f*f))*(pi_{text*(r*(e*f))}*sim))",
+    "type": "algebraic",
+    "parameters": [
+      "di",
+      "f",
+      "mathrm",
+      "pi_{text*(r*(e*f))}",
+      "sim"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376798.9300172
+  },
+  "algebraic_254": {
+    "symbolic_str": "mathbf*s",
+    "type": "algebraic",
+    "parameters": [
+      "mathbf",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376799.7275395
+  },
+  "algebraic_255": {
+    "symbolic_str": "mathrm*(di*(f*f))",
+    "type": "algebraic",
+    "parameters": [
+      "di",
+      "f",
+      "mathrm"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376800.377433
+  },
+  "algebraic_256": {
+    "symbolic_str": "z_{i}*(sim*(N*mathcal))",
+    "type": "algebraic",
+    "parameters": [
+      "N",
+      "mathcal",
+      "sim",
+      "z_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.0403862
+  },
+  "algebraic_257": {
+    "symbolic_str": "Eq(p_{i}, epsilon_{i} + z_{i})",
+    "type": "algebraic",
+    "parameters": [
+      "epsilon_{i}",
+      "p_{i}",
+      "z_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.142576
+  },
+  "algebraic_258": {
+    "symbolic_str": "Eq(epsilon_{mathrm*(a*(b*s))}, (((p_{text*(dr*(a*w))} + 1)/2)*(sqrt(2)*beta))/Phi)",
+    "type": "algebraic",
+    "parameters": [
+      "Phi",
+      "beta",
+      "epsilon_{mathrm*(a*(b*s))}",
+      "p_{text*(dr*(a*w))}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.2776806
+  },
+  "algebraic_259": {
+    "symbolic_str": "Eq(epsilon, epsilon_{mathrm*(a*(b*s))}/c)",
+    "type": "algebraic",
+    "parameters": [
+      "c",
+      "epsilon",
+      "epsilon_{mathrm*(a*(b*s))}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.3518891
+  },
+  "algebraic_260": {
+    "symbolic_str": "Eq(t, (mu_{i} - mu_{j})/c)",
+    "type": "algebraic",
+    "parameters": [
+      "c",
+      "mu_{i}",
+      "mu_{j}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.4236715
+  },
+  "algebraic_261": {
+    "symbolic_str": "Eq(v_{text*(w*(i*n))}(t, epsilon), phi(-epsilon + t)/Phi(-epsilon + t))",
+    "type": "algebraic",
+    "parameters": [
+      "epsilon"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.5125291
+  },
+  "algebraic_262": {
+    "symbolic_str": "Eq(v_{text*(dr*(a*w))}(t, epsilon), (phi(-epsilon - t) - phi(epsilon - t))/(-Phi(-epsilon - t) + Phi(epsilon - t)))",
+    "type": "algebraic",
+    "parameters": [
+      "epsilon"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.618731
+  },
+  "power_law_263": {
+    "symbolic_str": "Eq(v_{i}, beta**2 + sigma_{i}**2)",
+    "type": "power_law",
+    "parameters": [
+      "beta",
+      "sigma_{i}",
+      "v_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.6918604
+  },
+  "power_law_264": {
+    "symbolic_str": "Eq(pi_{i}**(k*setminus), pi_{i}**0)",
+    "type": "power_law",
+    "parameters": [
+      "k",
+      "pi_{i}",
+      "setminus"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.7692106
+  },
+  "power_law_265": {
+    "symbolic_str": "Eq(mu_{i}**(k*setminus), tau_{i}**(k*setminus)/(pi_{i}**(k*setminus)))",
+    "type": "power_law",
+    "parameters": [
+      "k",
+      "mu_{i}",
+      "pi_{i}",
+      "setminus",
+      "tau_{i}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.850528
+  },
+  "power_law_266": {
+    "symbolic_str": "Eq(mu_{i}**(text*(p*(o*(s*t)))), mu_{i}**(k*setminus))",
+    "type": "power_law",
+    "parameters": [
+      "k",
+      "mu_{i}",
+      "o",
+      "p",
+      "s",
+      "setminus",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376801.9358504
+  },
+  "power_law_267": {
+    "symbolic_str": "Eq(pi_{i}**(text*(p*(e*(f*r)))), pi_{i}**0)",
+    "type": "power_law",
+    "parameters": [
+      "e",
+      "f",
+      "p",
+      "pi_{i}",
+      "r",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376802.0190973
+  },
+  "power_law_268": {
+    "symbolic_str": "Eq(mu_{i}**(text*(p*(e*(f*r)))), tau_{i}**(text*(p*(e*(f*r))))/(pi_{i}**(text*(p*(e*(f*r))))))",
+    "type": "power_law",
+    "parameters": [
+      "e",
+      "f",
+      "mu_{i}",
+      "p",
+      "pi_{i}",
+      "r",
+      "tau_{i}",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376802.1123815
+  },
+  "algebraic_269": {
+    "symbolic_str": "Eq(pi_{text*(m*(g*s))}, pi_{text*(p*(o*(s*t)))} - pi_{text*(p*(r*(i*(o*r))))})",
+    "type": "algebraic",
+    "parameters": [
+      "pi_{text*(m*(g*s))}",
+      "pi_{text*(p*(o*(s*t)))}",
+      "pi_{text*(p*(r*(i*(o*r))))}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376802.2412722
+  },
+  "power_law_270": {
+    "symbolic_str": "Eq(pi_{text*(m*(g*s))}**(text*(s*(k*(i*(l*l))))), pi_{text*(m*(g*s))}/(beta**2*pi_{text*(m*(g*s))} + 1))",
+    "type": "power_law",
+    "parameters": [
+      "beta",
+      "i",
+      "k",
+      "l",
+      "pi_{text*(m*(g*s))}",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376802.3527195
+  },
+  "power_law_271": {
+    "symbolic_str": "Eq(pi_{i}**(text*(s*(k*(i*(l*l))))), pi_{text*(m*(g*s))}**(text*(s*(k*(i*(l*l))))) + 1/(sigma_{i}**2))",
+    "type": "power_law",
+    "parameters": [
+      "i",
+      "k",
+      "l",
+      "pi_{i}",
+      "pi_{text*(m*(g*s))}",
+      "s",
+      "sigma_{i}",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376802.467021
+  },
+  "power_law_272": {
+    "symbolic_str": "Eq(sigma_{i}**2, 1/(pi_{i}**(text*(s*(k*(i*(l*l)))))))",
+    "type": "power_law",
+    "parameters": [
+      "i",
+      "k",
+      "l",
+      "pi_{i}",
+      "s",
+      "sigma_{i}",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376802.548298
+  },
+  "algebraic_273": {
+    "symbolic_str": "text*(s*(c*(o*(e*r))))",
+    "type": "algebraic",
+    "parameters": [
+      "c",
+      "e",
+      "o",
+      "r",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376803.2751946
+  },
+  "algebraic_274": {
+    "symbolic_str": "Eq(mu_{text*(c*(h*(i*(d*l))))}, mu_{k})",
+    "type": "algebraic",
+    "parameters": [
+      "mu_{k}",
+      "mu_{text*(c*(h*(i*(d*l))))}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376803.3961127
+  },
+  "algebraic_275": {
+    "symbolic_str": "g(x)",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376804.0324197
+  },
+  "algebraic_276": {
+    "symbolic_str": "boxed*11021",
+    "type": "algebraic",
+    "parameters": [
+      "boxed"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376805.4164553
+  },
+  "algebraic_277": {
+    "symbolic_str": "1/((cdots + ((Abs(x_{1}) + Abs(x_{1} - x_{2})) + Abs(-x_{3} + (x_{1} + x_{2})))) + Abs(-x_{3526} + (x_{3525} + (cdots + (x_{1} + x_{2})))))",
+    "type": "algebraic",
+    "parameters": [
+      "cdots",
+      "x_{1}",
+      "x_{2}",
+      "x_{3525}",
+      "x_{3526}",
+      "x_{3}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376808.8220012
+  },
+  "algebraic_278": {
+    "symbolic_str": "boxed*432",
+    "type": "algebraic",
+    "parameters": [
+      "boxed"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376809.3221378
+  },
+  "algebraic_279": {
+    "symbolic_str": "boxed*5940",
+    "type": "algebraic",
+    "parameters": [
+      "boxed"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376809.8184898
+  },
+  "algebraic_280": {
+    "symbolic_str": "Eq(P(n), Product(-a_{i} + n, (i, 1, m)))",
+    "type": "algebraic",
+    "parameters": [
+      "a_{i}",
+      "m",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376810.0445714
+  },
+  "algebraic_281": {
+    "symbolic_str": "Eq(v_{p}(k), max)",
+    "type": "algebraic",
+    "parameters": [
+      "k",
+      "max"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376810.1145153
+  },
+  "algebraic_282": {
+    "symbolic_str": "Eq(e_{p}, min_{n*(in*(Z*mathbb))}*(v_{p}*bigl(bigr*P(n))))",
+    "type": "algebraic",
+    "parameters": [
+      "bigr",
+      "e_{p}",
+      "min_{n*(in*(Z*mathbb))}",
+      "n",
+      "v_{p}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376810.198211
+  },
+  "algebraic_283": {
+    "symbolic_str": "Eq(v_{p}*bigl(bigr*P(n)), Sum(v_{p}(-a_{i} + n), (i, 1, m)))",
+    "type": "algebraic",
+    "parameters": [
+      "a_{i}",
+      "bigr",
+      "m",
+      "n",
+      "v_{p}"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376810.3214958
+  },
+  "algebraic_284": {
+    "symbolic_str": "p*((Longleftrightarrow*(a_{i}*(equiv*(r*(p*pmod)))))*mid(-a_{i} + n))",
+    "type": "algebraic",
+    "parameters": [
+      "Longleftrightarrow",
+      "a_{i}",
+      "equiv",
+      "n",
+      "p",
+      "pmod",
+      "r"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376811.488082
+  },
+  "algebraic_285": {
+    "symbolic_str": "Eq(v_{p}(-a_{i} + n), 0*(text*(i*(f*(o*(r*(a*(l*l))))))))",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "a_{i}",
+      "f",
+      "i",
+      "l",
+      "n",
+      "o",
+      "r",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376811.6537592
+  },
+  "algebraic_286": {
+    "symbolic_str": "boxed*6",
+    "type": "algebraic",
+    "parameters": [
+      "boxed"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376812.2037923
+  },
+  "algebraic_287": {
+    "symbolic_str": "boxed*1296",
+    "type": "algebraic",
+    "parameters": [
+      "boxed"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376812.786316
+  },
+  "algebraic_288": {
+    "symbolic_str": "boxed*866",
+    "type": "algebraic",
+    "parameters": [
+      "boxed"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.14697"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376813.3491857
+  },
+  "algebraic_289": {
+    "symbolic_str": "D*mathbb",
+    "type": "algebraic",
+    "parameters": [
+      "D",
+      "mathbb"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13218"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376816.8415575
+  },
+  "algebraic_290": {
+    "symbolic_str": "y",
+    "type": "algebraic",
+    "parameters": [],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13218"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376817.7368896
+  },
+  "algebraic_291": {
+    "symbolic_str": "text*((P*(a*(s*s)))*(iff*(Sum(I*mathbb, (i, 1, N))/N)))",
+    "type": "algebraic",
+    "parameters": [
+      "I",
+      "N",
+      "P",
+      "a",
+      "iff",
+      "mathbb",
+      "s",
+      "text"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13218"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376819.8857138
+  },
+  "algebraic_292": {
+    "symbolic_str": "Eq(label*((T*W)*(a*mathbf)), W*mathbf)",
+    "type": "algebraic",
+    "parameters": [
+      "W",
+      "a",
+      "label",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13316"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376820.4514894
+  },
+  "algebraic_293": {
+    "symbolic_str": "Eq(mathbf*x, a*mathbf)",
+    "type": "algebraic",
+    "parameters": [
+      "a",
+      "mathbf"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13316"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376820.5212784
+  },
+  "algebraic_294": {
+    "symbolic_str": "begin*((L*mathcal)*(a*(l*(i*(g*(n*(d*e)))))))",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "a",
+      "begin",
+      "d",
+      "e",
+      "g",
+      "i",
+      "l",
+      "mathcal",
+      "n"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13316"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376821.4266121
+  },
+  "algebraic_295": {
+    "symbolic_str": "begin*((L*mathcal)*(s*(p*(l*(i*t)))))",
+    "type": "algebraic",
+    "parameters": [
+      "L",
+      "begin",
+      "i",
+      "l",
+      "mathcal",
+      "p",
+      "s"
+    ],
+    "domains": [
+      "general"
+    ],
+    "source_papers": [
+      "2602.13316"
+    ],
+    "classification": "experimental",
+    "discovered_at": 1771376822.1970327
+  }
+}

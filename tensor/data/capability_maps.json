@@ -1,0 +1,78 @@
+[
+  {
+    "repo_url": "https://github.com/wmjordan/PDFPatcher",
+    "intent": "PDFPatcher (PDF \u8865\u4e01\u4e01) is a comprehensive PDF processing application designed to address various PDF document handling needs. This document provides a high-level overview of the application's architecture, key components, and functionality.",
+    "workflow": [
+      "Overview",
+      "Application Architecture",
+      "Core Processing Workflow",
+      "External Libraries Integration",
+      "PDF Editor System",
+      "Bookmark Editor",
+      "PDF Viewer",
+      "Auto-Bookmarking",
+      "Document Inspector",
+      "PDF Document Processing"
+    ],
+    "components": [],
+    "dependencies": [],
+    "source": "deepwiki"
+  },
+  {
+    "repo_url": "https://github.com/Ultimaker/Cura",
+    "intent": "Ultimaker Cura is an open-source 3D printing preparation software that processes 3D models into instructions (G-code) for 3D printers. This document provides a high-level overview of the Cura codebase architecture, core systems, and how they interact with each other.",
+    "workflow": [
+      "Overview",
+      "Core Architecture",
+      "CuraApplication",
+      "Build Volume System",
+      "Slicing Process",
+      "Settings Management",
+      "Machine and Material Management",
+      "Container System",
+      "Per-Object Settings",
+      "User Interface"
+    ],
+    "components": [],
+    "dependencies": [],
+    "source": "deepwiki"
+  },
+  {
+    "repo_url": "https://github.com/apache/pdfbox",
+    "intent": "Apache PDFBox is an open-source Java library for working with PDF documents. This page provides an architectural overview of the PDFBox codebase, including its multi-module structure, core capabilities, and fundamental design principles. This document introduces the major systems that comprise PDFBo",
+    "workflow": [
+      "Overview",
+      "Project Structure",
+      "Getting Started",
+      "Core Document Model",
+      "PDF Document Structure",
+      "COS Object System",
+      "PDF Parsing",
+      "Document Persistence",
+      "Content Processing",
+      "Content Stream Processing"
+    ],
+    "components": [],
+    "dependencies": [],
+    "source": "deepwiki"
+  },
+  {
+    "repo_url": "https://github.com/python/cpython",
+    "intent": "This document provides a high-level architectural overview of CPython, the reference implementation of the Python programming language. It covers the major subsystems, their interactions, and the overall flow from Python source code to execution. This page serves as an entry point to understanding t",
+    "workflow": [
+      "Overview",
+      "Code Execution Pipeline",
+      "Bytecode Interpreter and Tiered Optimization",
+      "Compilation Pipeline",
+      "Object System and Memory Management",
+      "PyObject and Type System",
+      "Dictionary and Container Objects",
+      "Reference Counting and Garbage Collection",
+      "Type Hinting and Annotations",
+      "Runtime and Thread Management"
+    ],
+    "components": [],
+    "dependencies": [],
+    "source": "deepwiki"
+  }
+]

@@ -1,0 +1,830 @@
+{
+  "repo_url": "slic3r/Slic3r",
+  "summary": "Slic3r is an open-source 3D printing slicer that converts 3D models into G-code instructions for 3D printers. This document provides a high-level overview of the Slic3r system architecture, core components, and processing pipeline. For detailed information about specific subsystems, please refer to their respective documentation pages.",
+  "file_tree": [
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "type": "file"
+    },
+    {
+      "path": ".github/CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/old-slic3r-issue-template.md",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".travis.yml",
+      "type": "file"
+    },
+    {
+      "path": "Build.PL",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "appveyor.yml",
+      "type": "file"
+    },
+    {
+      "path": "lib",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/Config.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/ExPolygon.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/ExtrusionLoop.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/ExtrusionPath.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Flow.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GCode",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/GCode/ArcFitting.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GCode/MotionPlanner.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GCode/PressureRegulator.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GCode/Reader.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GCode/VibrationLimit.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/GUI/2DBed.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/3DScene.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/AboutDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/BedShapeDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/BonjourBrowser.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/ColorScheme.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/ConfigWizard.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Controller.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Controller",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Controller/ManualControlDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Controller/PrinterPanel.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/MainFrame.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Notifier.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/OptionsGroup.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/OptionsGroup",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/GUI/OptionsGroup/Field.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/2D.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/2DToolpaths.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/3D.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/3DPreview.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/LambdaObjectDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/ObjectCutDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/ObjectPartsPanel.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/ObjectRotateFaceDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/ObjectSettingsDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/OverrideSettingsPanel.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Plater/SplineControl.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Preferences.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Preset.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/PresetEditor.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/PresetEditorDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/ProgressStatusBar.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/Projector.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/ReloadDialog.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/GUI/SLAPrintOptions.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Geometry.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Geometry",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/Geometry/Clipper.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Layer.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Line.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Model.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Point.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Polygon.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Polyline.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Print.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Print",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/Print/GCode.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Print/Object.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Print/Simple.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Print/State.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Print/SupportMaterial.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/SVG.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Surface.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Test.pm",
+      "type": "file"
+    },
+    {
+      "path": "lib/Slic3r/Test",
+      "type": "dir"
+    },
+    {
+      "path": "lib/Slic3r/Test/SectionCut.pm",
+      "type": "file"
+    },
+    {
+      "path": "package",
+      "type": "dir"
+    },
+    {
+      "path": "package/common",
+      "type": "dir"
+    },
+    {
+      "path": "package/common/coreperl",
+      "type": "file"
+    },
+    {
+      "path": "package/common/shell.cpp",
+      "type": "file"
+    },
+    {
+      "path": "package/common/travis-decrypt-key",
+      "type": "file"
+    },
+    {
+      "path": "package/common/util.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/deploy",
+      "type": "dir"
+    },
+    {
+      "path": "package/deploy/bintray.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/deploy/sftp-symlink.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/deploy/sftp.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/deploy/slic3r-upload.ppk.enc",
+      "type": "file"
+    },
+    {
+      "path": "package/deploy/slic3r-upload.rsa.enc",
+      "type": "file"
+    },
+    {
+      "path": "package/deploy/winscp.ps1",
+      "type": "file"
+    },
+    {
+      "path": "package/linux",
+      "type": "dir"
+    },
+    {
+      "path": "package/linux/appimage-apprun.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/appimage.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/build_shell.mk",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/libpaths.appimage.txt",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/libpaths.txt",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/make_archive.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/slic3r.desktop.in",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/startup_script.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/travis-build-cpp.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/travis-build-main.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/travis-deploy-cpp.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/linux/travis-deploy-main.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/osx",
+      "type": "dir"
+    },
+    {
+      "path": "package/osx/make_dmg.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/osx/patch-wxwidgets.diff",
+      "type": "file"
+    },
+    {
+      "path": "package/osx/plist.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/osx/startup_script.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/osx/travis-build-cpp.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/osx/travis-build-main.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/osx/travis-deploy-main.sh",
+      "type": "file"
+    },
+    {
+      "path": "package/win",
+      "type": "dir"
+    },
+    {
+      "path": "package/win/appveyor_buildscript.ps1",
+      "type": "file"
+    },
+    {
+      "path": "package/win/appveyor_deploy.ps1",
+      "type": "file"
+    },
+    {
+      "path": "package/win/appveyor_preinstall.ps1",
+      "type": "file"
+    },
+    {
+      "path": "package/win/compile_wrapper.ps1",
+      "type": "file"
+    },
+    {
+      "path": "package/win/package_win32.ps1",
+      "type": "file"
+    },
+    {
+      "path": "package/win/slic3r.exe.manifest",
+      "type": "file"
+    },
+    {
+      "path": "package/win/slic3r.rc",
+      "type": "file"
+    },
+    {
+      "path": "share",
+      "type": "dir"
+    },
+    {
+      "path": "share/locale",
+      "type": "dir"
+    },
+    {
+      "path": "share/locale/ja",
+      "type": "dir"
+    },
+    {
+      "path": "share/locale/ja/slic3r.mo",
+      "type": "file"
+    },
+    {
+      "path": "slic3r.pl",
+      "type": "file"
+    },
+    {
+      "path": "src",
+      "type": "dir"
+    },
+    {
+      "path": "src/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI",
+      "type": "dir"
+    },
+    {
+      "path": "src/GUI/ColorScheme.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/ColorScheme",
+      "type": "dir"
+    },
+    {
+      "path": "src/GUI/ColorScheme/ColorSchemeBase.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/ColorScheme/Default.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/ColorScheme/Solarized.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Controller.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs",
+      "type": "dir"
+    },
+    {
+      "path": "src/GUI/Dialogs/AboutDialog.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/AboutDialog.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/AnglePicker.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/MaterialEditor.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/ObjectCutDialog.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/ObjectCutDialog.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/PresetEditor.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/PresetEditor.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/PrintEditor.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Dialogs/PrinterEditor.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/GUI.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/GUI.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/MainFrame.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/MainFrame.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Notifier.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup",
+      "type": "dir"
+    },
+    {
+      "path": "src/GUI/OptionsGroup/Field.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup/UI_Choice.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup/UI_Color.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup/UI_NumChoice.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup/UI_Point.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup/UI_Point3.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/OptionsGroup/UI_Slider.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater",
+      "type": "dir"
+    },
+    {
+      "path": "src/GUI/Plater/3DPreview.pm",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/Plate2D.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/Plate2D.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/Plate3D.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/Plate3D.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/PlaterObject.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/PlaterObject.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/PresetChooser.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/PresetChooser.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/Preview2D.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/Preview3D.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/Preview3D.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Plater/PreviewDLP.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Preset.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Preset.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/ProgressStatusBar.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/ProgressStatusBar.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Scene3D.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Scene3D.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Settings.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/Settings.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/misc_ui.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/GUI/misc_ui.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/slic3r.cpp",
+      "type": "file"
+    },
+    {
+      "path": "src/slic3r.hpp",
+      "type": "file"
+    },
+    {
+      "path": "src/standalone",
+      "type": "dir"
+    },
+    {
+      "path": "src/standalone/config.h",
+      "type": "file"
+    },
+    {
+      "path": "src/test",
+      "type": "dir"
+    }
+  ],
+  "key_files": [
+    "README.md",
+    "src/CMakeLists.txt",
+    "src/test/inputs/README.md",
+    "utils/zsh/README.markdown"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "lib",
+      "package",
+      "share",
+      "src",
+      "t",
+      "translation",
+      "utils",
+      "var",
+      "xs"
+    ],
+    "language": "C++",
+    "star_count": 3558
+  }
+}

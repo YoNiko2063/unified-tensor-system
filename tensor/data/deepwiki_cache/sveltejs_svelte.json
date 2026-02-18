@@ -1,0 +1,853 @@
+{
+  "repo_url": "sveltejs/svelte",
+  "summary": "This document provides a high-level introduction to the Svelte repository, its architecture as a compiler-first web framework, and how its major subsystems interact. It covers the monorepo organization, the three-phase compilation pipeline, the signal-based reactivity system, and the separation between client and server runtimes.",
+  "file_tree": [
+    {
+      "path": ".changeset",
+      "type": "dir"
+    },
+    {
+      "path": ".changeset/README.md",
+      "type": "file"
+    },
+    {
+      "path": ".changeset/angry-ideas-listen.md",
+      "type": "file"
+    },
+    {
+      "path": ".changeset/config.json",
+      "type": "file"
+    },
+    {
+      "path": ".changeset/volatile-each-key.md",
+      "type": "file"
+    },
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ecosystem-ci-trigger.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/pkg.pr.new.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".npmrc",
+      "type": "file"
+    },
+    {
+      "path": ".prettierignore",
+      "type": "file"
+    },
+    {
+      "path": ".prettierrc",
+      "type": "file"
+    },
+    {
+      "path": ".vscode",
+      "type": "dir"
+    },
+    {
+      "path": ".vscode/launch.json",
+      "type": "file"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "type": "file"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "FUNDING.json",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE.md",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "assets",
+      "type": "dir"
+    },
+    {
+      "path": "assets/banner.png",
+      "type": "file"
+    },
+    {
+      "path": "assets/banner_dark.png",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarking/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/index.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/sbench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_avoidable.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_broad.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_deep.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_diamond.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_mux.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_repeated.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_triangle.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/kairo_unstable.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/mol.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/tests/repeated_deps.bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/reactivity/util.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/ssr",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarking/benchmarks/ssr/index.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/ssr/wrapper",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarking/benchmarks/ssr/wrapper/App.svelte",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/benchmarks/ssr/wrapper/wrapper_bench.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/compare",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarking/compare/index.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/compare/runner.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/run.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/tsconfig.json",
+      "type": "file"
+    },
+    {
+      "path": "benchmarking/utils.js",
+      "type": "file"
+    },
+    {
+      "path": "documentation",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/01-introduction",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/01-introduction/01-overview.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/01-introduction/02-getting-started.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/01-introduction/03-svelte-files.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/01-introduction/04-svelte-js-files.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/01-introduction/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/02-runes/01-what-are-runes.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/02-$state.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/03-$derived.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/04-$effect.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/05-$props.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/06-$bindable.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/07-$inspect.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/08-$host.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/02-runes/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/01-basic-markup.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/02-if.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/03-each.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/04-key.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/05-await.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/06-snippet.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/07-@render.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/08-@html.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/09-@attach.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/10-@const.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/11-@debug.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/12-bind.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/13-use.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/14-transition.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/15-in-and-out.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/16-animate.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/17-style.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/18-class.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/19-await-expressions.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/03-template-syntax/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/04-styling",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/04-styling/01-scoped-styles.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/04-styling/02-global-styles.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/04-styling/03-custom-properties.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/04-styling/04-nested-style-elements.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/04-styling/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/01-svelte-boundary.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/02-svelte-window.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/03-svelte-document.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/04-svelte-body.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/05-svelte-head.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/06-svelte-element.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/07-svelte-options.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/05-special-elements/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/06-runtime",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/06-runtime/01-stores.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/06-runtime/02-context.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/06-runtime/03-lifecycle-hooks.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/06-runtime/04-imperative-component-api.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/06-runtime/05-hydratable.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/06-runtime/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/07-misc",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/07-misc/02-testing.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/07-misc/03-typescript.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/07-misc/04-custom-elements.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/07-misc/06-v4-migration-guide.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/07-misc/07-v5-migration-guide.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/07-misc/99-faq.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/07-misc/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/client-errors.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/client-warnings.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/compile-errors.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/compile-warnings.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/server-errors.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/server-warnings.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/shared-errors.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/.generated/shared-warnings.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/20-svelte.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-action.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-animate.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-attachments.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-compiler.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-easing.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-events.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-legacy.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-motion.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-reactivity-window.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-reactivity.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-server.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-store.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/21-svelte-transition.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/30-compiler-errors.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/30-compiler-warnings.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/30-runtime-errors.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/30-runtime-warnings.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/98-reference/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy",
+      "type": "dir"
+    },
+    {
+      "path": "documentation/docs/99-legacy/00-legacy-overview.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/01-legacy-let.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/02-legacy-reactive-assignments.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/03-legacy-export-let.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/04-legacy-$$props-and-$$restProps.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/10-legacy-on.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/20-legacy-slots.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/21-legacy-$$slots.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/22-legacy-svelte-fragment.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/30-legacy-svelte-component.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/31-legacy-svelte-self.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/40-legacy-component-api.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/99-legacy/index.md",
+      "type": "file"
+    },
+    {
+      "path": "documentation/docs/index.md",
+      "type": "file"
+    },
+    {
+      "path": "eslint.config.js",
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "type": "file"
+    },
+    {
+      "path": "packages",
+      "type": "dir"
+    },
+    {
+      "path": "packages/svelte",
+      "type": "dir"
+    },
+    {
+      "path": "packages/svelte/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/CHANGELOG-pre-5.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/CHANGELOG.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/README.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/compiler",
+      "type": "dir"
+    },
+    {
+      "path": "packages/svelte/compiler/package.json",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/elements.d.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/knip.json",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/messages",
+      "type": "dir"
+    },
+    {
+      "path": "packages/svelte/messages/client-errors",
+      "type": "dir"
+    },
+    {
+      "path": "packages/svelte/messages/client-errors/errors.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/messages/client-warnings",
+      "type": "dir"
+    },
+    {
+      "path": "packages/svelte/messages/client-warnings/warnings.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/messages/compile-errors",
+      "type": "dir"
+    },
+    {
+      "path": "packages/svelte/messages/compile-errors/options.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/messages/compile-errors/script.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/messages/compile-errors/style.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/messages/compile-errors/template.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/svelte/messages/compile-warnings",
+      "type": "dir"
+    }
+  ],
+  "key_files": [
+    ".changeset/README.md",
+    "README.md",
+    "benchmarking/benchmarks/reactivity/index.js",
+    "benchmarking/benchmarks/ssr/index.js",
+    "benchmarking/compare/index.js",
+    "package.json",
+    "packages/svelte/README.md",
+    "packages/svelte/compiler/package.json",
+    "packages/svelte/package.json",
+    "packages/svelte/scripts/process-messages/index.js"
+  ],
+  "dependencies": [
+    "@changesets/cli",
+    "@sveltejs/eslint-config",
+    "@svitejs/changesets-changelog-github-compact",
+    "@types/node",
+    "@types/picomatch",
+    "@vitest/coverage-v8",
+    "@eslint/js",
+    "eslint",
+    "eslint-plugin-lube",
+    "eslint-plugin-svelte",
+    "jsdom",
+    "playwright",
+    "prettier",
+    "prettier-plugin-svelte",
+    "svelte",
+    "typescript",
+    "typescript-eslint",
+    "v8-natives",
+    "vitest"
+  ],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".changeset",
+      ".github",
+      ".vscode",
+      "assets",
+      "benchmarking",
+      "documentation",
+      "packages"
+    ],
+    "language": "JavaScript",
+    "star_count": 85775
+  }
+}

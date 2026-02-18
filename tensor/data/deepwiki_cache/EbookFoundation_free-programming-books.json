@@ -1,0 +1,826 @@
+{
+  "repo_url": "EbookFoundation/free-programming-books",
+  "summary": "Thefree-programming-booksrepository is a federated content aggregation system that curates links to free educational programming resources hosted on external platforms. Rather than hosting content directly, it functions as a community-maintained index organized by resource type, programming language/technology, and natural language.",
+  "file_tree": [
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/awesomebot-gh-summary-action",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/awesomebot-gh-summary-action/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/check-urls.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/comment-pr.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/detect-conflicting-prs.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/fpb-lint.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/issues-pinner.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/rtl-ltr-linter.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/stale.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "_config.yml",
+      "type": "file"
+    },
+    {
+      "path": "_includes",
+      "type": "dir"
+    },
+    {
+      "path": "_includes/head-custom.html",
+      "type": "file"
+    },
+    {
+      "path": "books",
+      "type": "dir"
+    },
+    {
+      "path": "books/free-programming-books-ar.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-az.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-bg.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-bn.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ca.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-cs-cp.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-cs.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-da.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-de.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-el.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-en.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-es.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-et.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-fa_IR.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-fi.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-fr.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-he.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-hi.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-hu.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-hy.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-id.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-it.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ja.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ko.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-langs.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-lv.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ml.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-my.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-nl.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-no.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-pl.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-pt_BR.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-pt_PT.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ro.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ru.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-sk.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-sl.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-sr.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-subjects.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-sv.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ta.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-te.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-th.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-tr.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-uk.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-ur.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-vi.md",
+      "type": "file"
+    },
+    {
+      "path": "books/free-programming-books-zh.md",
+      "type": "file"
+    },
+    {
+      "path": "casts",
+      "type": "dir"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-ar.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-cs.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-de.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-en.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-es.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-fa_IR.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-fi.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-fr.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-he.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-id.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-my.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-nl.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-pl.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-pt_BR.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-pt_PT.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-ru.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-si.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-sv.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-tr.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-uk.md",
+      "type": "file"
+    },
+    {
+      "path": "casts/free-podcasts-screencasts-zh.md",
+      "type": "file"
+    },
+    {
+      "path": "courses",
+      "type": "dir"
+    },
+    {
+      "path": "courses/free-courses-ar.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-bg.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-bn.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-de.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-el.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-en.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-es.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-fa_IR.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-fi.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-fr.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-he.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-hi.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-id.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-it.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ja.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-kk.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-km.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-kn.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ko.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ml.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-mr.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-my.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ne.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-no.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-pa.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-pl.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-pt_BR.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-pt_PT.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ro.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ru.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-si.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-sv.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ta.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-te.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-th.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-tr.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-uk.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-ur.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-vi.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-zh.md",
+      "type": "file"
+    },
+    {
+      "path": "courses/free-courses-zh_TW.md",
+      "type": "file"
+    },
+    {
+      "path": "docs",
+      "type": "dir"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-bn.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-bs.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-de.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-el.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-es.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-fa_IR.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-fil.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-fr.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-hi.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-id.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-it.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-ja.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-km.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-kn.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-ko.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-ml.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-mr.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-no.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-np.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-pl.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-pt_BR.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-ru.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-si.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-sl.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-sv.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-ta.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-te.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-th.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-tr.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-uk.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-vi.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT-zh.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CODE_OF_CONDUCT.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-ca.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-de.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-el.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-es.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-fa_IR.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-fil.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-fr.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-hi.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-id.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-it.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-ja.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-kn.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-ko.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-ml.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-np.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-pt_BR.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-ru.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-sv.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-ta.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-te.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-vi.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-zh.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING-zh_TW.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-ar.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-bn.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-bs.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-de.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-el.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-es.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-fa_IR.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/HOWTO-fil.md",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "README.md",
+    "docs/README.md"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "_includes",
+      "books",
+      "casts",
+      "courses",
+      "docs",
+      "more",
+      "scripts"
+    ],
+    "language": "Python",
+    "star_count": 382648
+  }
+}

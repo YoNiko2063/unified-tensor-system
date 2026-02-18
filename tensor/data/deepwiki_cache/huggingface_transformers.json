@@ -1,0 +1,833 @@
+{
+  "repo_url": "huggingface/transformers",
+  "summary": "This document provides a comprehensive overview of the Transformers library architecture, major components, and system design. The Transformers library is a general-purpose machine learning framework focused on transformer-based models, supporting 200+ architectures across text, vision, audio, and multimodal domains.",
+  "file_tree": [
+    {
+      "path": ".circleci",
+      "type": "dir"
+    },
+    {
+      "path": ".circleci/TROUBLESHOOT.md",
+      "type": "file"
+    },
+    {
+      "path": ".circleci/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".circleci/create_circleci_config.py",
+      "type": "file"
+    },
+    {
+      "path": ".circleci/parse_test_outputs.py",
+      "type": "file"
+    },
+    {
+      "path": ".git-blame-ignore-revs",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug-report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature-request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/i18n.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/migration.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/new-model-addition.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/conda",
+      "type": "dir"
+    },
+    {
+      "path": ".github/conda/build.sh",
+      "type": "file"
+    },
+    {
+      "path": ".github/conda/meta.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/copilot-instructions.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/scripts",
+      "type": "dir"
+    },
+    {
+      "path": ".github/scripts/assign_reviewers.py",
+      "type": "file"
+    },
+    {
+      "path": ".github/scripts/codeowners_for_review_action",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/TROUBLESHOOT.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/add-model-like.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/assign-reviewers.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/benchmark.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/benchmark_v2.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/benchmark_v2_a10_caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/benchmark_v2_mi325_caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build-ci-docker-images.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build-docker-images.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build-nightly-ci-docker-images.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build-past-ci-docker-images.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_documentation.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_pr_documentation.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/check-workflow-permissions.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/check_failed_tests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/check_tiny_models.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/circleci-failure-summary-comment.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/collated-reports.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/doctest_job.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/doctests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/extras-smoke-test.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/get-pr-info.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/get-pr-number.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/model_jobs.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/model_jobs_intel_gaudi.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/new_model_pr_merged_notification.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/pr-repo-consistency-bot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/pr_build_doc_with_comment.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/pr_slow_ci_suggestion.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/push-important-models.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release-conda.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-comment-ci.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-nightly-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-nightly-past-ci-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-past-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-amd-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-amd-mi250-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-amd-mi325-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-amd-mi355-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-flash-attn-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-intel-gaudi.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled-intel-gaudi3-caller.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/self-scheduled.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/slack-report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ssh-runner.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/stale.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/trl-ci-bot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/trufflehog.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/update_metdata.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/upload_pr_documentation.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": "AGENTS.md",
+      "type": "file"
+    },
+    {
+      "path": "CITATION.cff",
+      "type": "file"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "ISSUES.md",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "MIGRATION_GUIDE_V5.md",
+      "type": "file"
+    },
+    {
+      "path": "Makefile",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "file"
+    },
+    {
+      "path": "awesome-transformers.md",
+      "type": "file"
+    },
+    {
+      "path": "benchmark",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/README.md",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/benches",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/benches/llama.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/benchmark.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/benchmarks_entrypoint.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/config",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/config/generation.yaml",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/default.yml",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/grafana_dashboard.json",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/grafana_datasource.yaml",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/optimum_benchmark_wrapper.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/requirements.txt",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/utils",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/utils/init_db.sql",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark_v2/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/README.md",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/benchmark_scripts",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark_v2/benchmark_scripts/continuous_batching_overall.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/framework",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark_v2/framework/benchmark_config.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/framework/benchmark_runner.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/framework/data_classes.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/framework/hardware_metrics.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/requirements.txt",
+      "type": "file"
+    },
+    {
+      "path": "benchmark_v2/run_benchmarks.py",
+      "type": "file"
+    },
+    {
+      "path": "conftest.py",
+      "type": "file"
+    },
+    {
+      "path": "docker",
+      "type": "dir"
+    },
+    {
+      "path": "docker/README.md",
+      "type": "file"
+    },
+    {
+      "path": "docker/consistency.dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/custom-tokenizers.dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/examples-torch.dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/exotic-models.dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/pipeline-torch.dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/quality.dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/torch-light.dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-all-latest-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-all-latest-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-doc-builder",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-doc-builder/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-intel-cpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-intel-cpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-amd-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-pytorch-amd-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-deepspeed-amd-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-pytorch-deepspeed-amd-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-deepspeed-latest-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-pytorch-deepspeed-latest-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-deepspeed-nightly-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-pytorch-deepspeed-nightly-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-pytorch-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-tpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-pytorch-tpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-tpu/bert-base-cased.jsonnet",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-tpu/dataset.yaml",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-tpu/docker-entrypoint.sh",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-pytorch-xpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-pytorch-xpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docker/transformers-quantization-latest-gpu",
+      "type": "dir"
+    },
+    {
+      "path": "docker/transformers-quantization-latest-gpu/Dockerfile",
+      "type": "file"
+    },
+    {
+      "path": "docs",
+      "type": "dir"
+    },
+    {
+      "path": "docs/README.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/TRANSLATING.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source",
+      "type": "dir"
+    },
+    {
+      "path": "docs/source/_config.py",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar",
+      "type": "dir"
+    },
+    {
+      "path": "docs/source/ar/_config.py",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/_toctree.yml",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/accelerate.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/attention.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/autoclass_tutorial.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/bertology.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/chat_templating.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/community.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/conversations.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/create_a_model.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/custom_models.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/fast_tokenizers.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/gguf.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/glossary.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/how_to_hack_models.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/index.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/installation.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/llm_tutorial.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/llm_tutorial_optimization.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/model_memory_anatomy.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/model_sharing.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/model_summary.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/modular_transformers.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/multilingual.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/notebooks.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/pad_truncation.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/peft.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/perplexity.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/philosophy.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/pipeline_tutorial.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/pipeline_webserver.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/preprocessing.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/quicktour.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/run_scripts.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/sagemaker.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/serialization.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/task_summary.md",
+      "type": "file"
+    },
+    {
+      "path": "docs/source/ar/tasks",
+      "type": "dir"
+    },
+    {
+      "path": "docs/source/ar/tasks/language_modeling.md",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "Makefile",
+    "README.md",
+    "benchmark/README.md",
+    "benchmark_v2/README.md",
+    "docker/README.md",
+    "docs/README.md"
+  ],
+  "dependencies": [
+    "gpustat",
+    "psutil",
+    "psycopg2",
+    "pandas"
+  ],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".circleci",
+      ".github",
+      "benchmark",
+      "benchmark_v2",
+      "docker",
+      "docs"
+    ],
+    "language": "Python",
+    "star_count": 156589
+  }
+}

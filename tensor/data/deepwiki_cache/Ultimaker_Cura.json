@@ -1,0 +1,825 @@
+{
+  "repo_url": "Ultimaker/Cura",
+  "summary": "Ultimaker Cura is an open-source 3D printing preparation software that processes 3D models into instructions (G-code) for 3D printers. This document provides a high-level overview of the Cura codebase architecture, core systems, and how they interact with each other.",
+  "file_tree": [
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/SlicingCrash.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bugreport.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/featurerequest.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/conan-package-resources.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/conan-package.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/find-packages.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/installers.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/linux.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/macos.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/nightly-stable.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/nightly-testing.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/nightly.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/nightly_release_notes.md.jinja",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/no-response.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/printer-linter-format.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/printer-linter-pr-diagnose.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/printer-linter-pr-post.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/process-pull-request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release-process_feature-freeze.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release-process_release-candidate.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/security_badge.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/slicing-error-check.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/stale.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/unit-test-post.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/unit-test.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/update-translation.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/windows.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".printer-linter",
+      "type": "file"
+    },
+    {
+      "path": ".pylintrc",
+      "type": "file"
+    },
+    {
+      "path": ".run_templates",
+      "type": "dir"
+    },
+    {
+      "path": ".run_templates/pycharm_cura_run.run.xml.jinja",
+      "type": "file"
+    },
+    {
+      "path": ".run_templates/pycharm_cura_test.run.xml.jinja",
+      "type": "file"
+    },
+    {
+      "path": "CITATION.cff",
+      "type": "file"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "CuraVersion.py.jinja",
+      "type": "file"
+    },
+    {
+      "path": "FUNDING.yml",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "file"
+    },
+    {
+      "path": "UltiMaker-Cura.spec.jinja",
+      "type": "file"
+    },
+    {
+      "path": "conandata.yml",
+      "type": "file"
+    },
+    {
+      "path": "conanfile.py",
+      "type": "file"
+    },
+    {
+      "path": "cura-logo-dark.PNG",
+      "type": "file"
+    },
+    {
+      "path": "cura-logo.PNG",
+      "type": "file"
+    },
+    {
+      "path": "cura.sharedmimeinfo",
+      "type": "file"
+    },
+    {
+      "path": "cura",
+      "type": "dir"
+    },
+    {
+      "path": "cura/API",
+      "type": "dir"
+    },
+    {
+      "path": "cura/API/Account.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/API/Backups.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/API/ConnectionStatus.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/API/Interface",
+      "type": "dir"
+    },
+    {
+      "path": "cura/API/Interface/Settings.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/API/Interface/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/API/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/ApplicationMetadata.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Arranging",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Arranging/ArrangeObjectsJob.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Arranging/Arranger.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Arranging/GridArrange.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Arranging/Nest2DArrange.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Arranging/ShapeArray.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Arranging/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/AutoSave.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/BackendPlugin.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Backups",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Backups/Backup.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Backups/BackupsManager.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Backups/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/BuildVolume.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/CameraAnimation.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/CrashHandler.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/CuraActions.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/CuraApplication.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/CuraPackageManager.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/CuraRenderer.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/CuraView.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/HitChecker.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Layer.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/LayerData.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/LayerDataBuilder.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/LayerDataDecorator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/LayerPolygon.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/MachineAction.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Machines/ContainerNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/ContainerTree.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/IntentNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/MachineErrorChecker.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/MachineNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/MaterialGroup.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/MaterialNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Machines/Models/ActiveIntentQualitiesModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/BaseMaterialsModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/BuildPlateModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/CompatibleMachineModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/CustomQualityProfilesDropDownMenuModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/DiscoveredCloudPrintersModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/DiscoveredPrintersModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/ExtrudersModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/FavoriteMaterialsModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/FirstStartMachineActionsModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/GenericMaterialsModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/GlobalStacksModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/IntentCategoryModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/IntentModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/IntentSelectionModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/IntentTranslations.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/MachineListModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/MachineModelUtils.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/MaterialBrandsModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/MaterialManagementModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/MultiBuildPlateModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/NozzleModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/QualityManagementModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/QualityProfilesDropDownMenuModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/QualitySettingsModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/SettingVisibilityPresetsModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/UserChangesModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/Models/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/QualityChangesGroup.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/QualityGroup.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/QualityNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/VariantNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/VariantType.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Machines/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/MultiplyObjectsJob.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2",
+      "type": "dir"
+    },
+    {
+      "path": "cura/OAuth2/AuthorizationHelpers.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2/AuthorizationRequestHandler.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2/AuthorizationRequestServer.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2/AuthorizationService.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2/KeyringAttribute.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2/LocalAuthorizationServer.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2/Models.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OAuth2/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/OneAtATimeIterator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Operations",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Operations/PlatformPhysicsOperation.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Operations/SetBuildPlateNumberOperation.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Operations/SetParentOperation.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Operations/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PickingPass.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PlatformPhysics.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PreviewPass.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrintJobPreviewImageProvider.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrintOrderManager.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput",
+      "type": "dir"
+    },
+    {
+      "path": "cura/PrinterOutput/FirmwareUpdater.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/FormatMaps.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/GenericOutputController.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Models",
+      "type": "dir"
+    },
+    {
+      "path": "cura/PrinterOutput/Models/ExtruderConfigurationModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Models/ExtruderOutputModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Models/MaterialOutputModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Models/PrintJobOutputModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Models/PrinterConfigurationModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Models/PrinterOutputModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Models/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/NetworkMJPGImage.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/NetworkedPrinterOutputDevice.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/Peripheral.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/PrintJobOutputModel.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/PrinterOutputController.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/PrinterOutputDevice.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/UploadMaterialsJob.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/PrinterOutput/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/ReaderWriters",
+      "type": "dir"
+    },
+    {
+      "path": "cura/ReaderWriters/ProfileReader.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/ReaderWriters/ProfileWriter.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/ReaderWriters/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Scene/BlockSlicingDecorator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/BuildPlateDecorator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/ConvexHullDecorator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/ConvexHullNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/CuraSceneController.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/CuraSceneNode.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/GCodeListDecorator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/SliceableObjectDecorator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/ZOffsetDecorator.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Scene/__init__.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Settings/ActiveQuality.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings/ContainerManager.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings/CuraContainerRegistry.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings/CuraContainerStack.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings/CuraFormulaFunctions.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings/CuraStackBuilder.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings/DatabaseHandlers",
+      "type": "dir"
+    },
+    {
+      "path": "cura/Settings/DatabaseHandlers/IntentDatabaseHandler.py",
+      "type": "file"
+    },
+    {
+      "path": "cura/Settings/DatabaseHandlers/QualityDatabaseHandler.py",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "CMakeLists.txt",
+    "README.md"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      ".run_templates",
+      "cura",
+      "doc",
+      "licenses_thirdparty",
+      "packaging",
+      "plugins"
+    ],
+    "language": "Python",
+    "star_count": 6893
+  }
+}

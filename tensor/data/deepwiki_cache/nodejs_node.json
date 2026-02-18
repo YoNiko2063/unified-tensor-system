@@ -1,0 +1,831 @@
+{
+  "repo_url": "nodejs/node",
+  "summary": "This document provides a high-level overview of Node.js as a JavaScript runtime, covering its architecture, core subsystems, module loading mechanisms, process lifecycle, and project governance. It introduces the fundamental concepts and components that make up Node.js, serving as an entry point for understanding the codebase.",
+  "file_tree": [
+    {
+      "path": ".clang-format",
+      "type": "file"
+    },
+    {
+      "path": ".configurations",
+      "type": "dir"
+    },
+    {
+      "path": ".configurations/configuration.dsc.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".configurations/configuration.vsBuildTools.dsc.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".configurations/configuration.vsEnterprise.dsc.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".configurations/configuration.vsProfessional.dsc.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".cpplint",
+      "type": "file"
+    },
+    {
+      "path": ".devcontainer",
+      "type": "dir"
+    },
+    {
+      "path": ".devcontainer/base",
+      "type": "dir"
+    },
+    {
+      "path": ".devcontainer/base/devcontainer.json",
+      "type": "file"
+    },
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/1-bug-report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/2-feature-request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/3-api-ref-docs-problem.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/4-report-a-flaky-test.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/SUPPORT.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install-clang",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install-clang/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/codeql-config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/label-pr-config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/auto-start-ci.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build-tarball.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/close-stale-feature-requests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/close-stale-pull-requests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/close-stalled.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/comment-labeled.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/commit-lint-problem-matcher.json",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/commit-lint.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/commit-queue.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/coverage-linux-without-intl.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/coverage-linux.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/coverage-windows.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/create-release-proposal.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/daily-wpt-fyi.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/daily.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/doc.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/find-inactive-collaborators.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/find-inactive-tsc.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/label-flaky-test-issue.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/label-pr.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/license-builder.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/lint-release-proposal.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/linters.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/major-release.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/notify-on-push.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/notify-on-review-wanted.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/post-release.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/remark-lint-problem-matcher.json",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/scorecard.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/test-internet.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/test-linux.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/test-macos.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/test-shared.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/timezone-update.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/tools.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/update-openssl.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/update-v8.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/update-wpt.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".gitpod.yml",
+      "type": "file"
+    },
+    {
+      "path": ".mailmap",
+      "type": "file"
+    },
+    {
+      "path": ".npmrc",
+      "type": "file"
+    },
+    {
+      "path": ".nycrc",
+      "type": "file"
+    },
+    {
+      "path": ".yamllint.yaml",
+      "type": "file"
+    },
+    {
+      "path": "BSDmakefile",
+      "type": "file"
+    },
+    {
+      "path": "BUILD.gn",
+      "type": "file"
+    },
+    {
+      "path": "BUILDING.md",
+      "type": "file"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "type": "file"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "GOVERNANCE.md",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "Makefile",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "file"
+    },
+    {
+      "path": "android-configure",
+      "type": "file"
+    },
+    {
+      "path": "android-patches",
+      "type": "dir"
+    },
+    {
+      "path": "android-patches/trap-handler.h.patch",
+      "type": "file"
+    },
+    {
+      "path": "android_configure.py",
+      "type": "file"
+    },
+    {
+      "path": "benchmark",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/README.md",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/_benchmark_progress.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/_cli.R",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/_cli.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/_http-benchmarkers.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/_test-double-benchmarker.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/abort_controller",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/abort_controller/abort-signal-static-abort.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/assert/assertion-error.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/deepequal-buffer.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/deepequal-map.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/deepequal-object.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/deepequal-prims-and-objs-big-loop.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/deepequal-set.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/deepequal-simple-array-and-set.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/deepequal-typedarrays.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/match.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/partial-deep-equal.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/rejects.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/strictequal.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/assert/throws.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/async_hooks/async-local-storage-getstore-nested-resources.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/async-local-storage-getstore-nested-run.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/async-local-storage-propagate-asyncresource.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/async-local-storage-propagate-promise.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/async-local-storage-run.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/async-resource-vs-destroy.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/gc-tracking.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/http-server.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/async_hooks/promises.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/bar.R",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/blob",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/blob/blob.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/blob/clone.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/blob/creation.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/blob/file.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/blob/resolveObjectURL.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/blob/slice.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/buffers/buffer-atob.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-base64-decode-wrapped.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-base64-decode.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-base64-encode.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-base64url-decode.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-base64url-encode.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-btoa.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-bytelength-buffer.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-bytelength-string.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-compare-instance-method.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-compare-offset.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-compare.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-concat-fill.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-concat.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-copy.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-creation.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-equals.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-fill.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-from.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-hex-decode.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-hex-encode.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-indexof-number.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-indexof.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-isascii.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-isutf8.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-iterate.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-normalize-encoding.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-read-float.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-read-with-byteLength.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-read.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-slice.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-swap.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-tojson.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-tostring.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-transcode.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-write-string-short.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-write-string.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-write.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/buffer-zero.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/buffers/dataview-set.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/calibrate-n.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/child_process",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/child_process/child-process-exec-stdout.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/child_process/child-process-params.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/child_process/child-process-read-ipc.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/child_process/child-process-read.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/child_process/spawn-echo.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/cluster",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/cluster/echo.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/common.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/compare.R",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/compare.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/console",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/console/log.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/cpu.sh",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto",
+      "type": "dir"
+    },
+    {
+      "path": "benchmark/crypto/aes-gcm-throughput.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/argon2.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/create-hash.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/create-keyobject.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/get-ciphers.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/getcipherinfo.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/hash-stream-creation.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/hash-stream-throughput.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/hkdf.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/kem.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/keygen.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/oneshot-hash.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmark/crypto/oneshot-sign.js",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "Makefile",
+    "README.md",
+    "benchmark/README.md",
+    "benchmark/napi/buffer/index.js",
+    "benchmark/napi/create_object_with_properties/index.js",
+    "benchmark/napi/define_properties/index.js",
+    "benchmark/napi/function_args/index.js",
+    "benchmark/napi/function_call/index.js",
+    "benchmark/napi/property_keys/index.js",
+    "benchmark/napi/ref/index.js"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".configurations",
+      ".devcontainer",
+      ".github",
+      "android-patches",
+      "benchmark"
+    ],
+    "language": "JavaScript",
+    "star_count": 115745
+  }
+}

@@ -1,0 +1,250 @@
+[
+  {
+    "source": "freecodecamp",
+    "id": "daily-coding-challenge"
+  },
+  {
+    "source": "books",
+    "title": "![Awesome"
+  },
+  {
+    "source": "books",
+    "title": "![License: CC BY 4.0"
+  },
+  {
+    "source": "books",
+    "title": "![Hacktoberfest 2025 stats"
+  },
+  {
+    "source": "books",
+    "title": "https://ebookfoundation.github.io/free-programming-books-search/"
+  },
+  {
+    "source": "books",
+    "title": "![https://ebookfoundation.github.io/free-programming-books-search/"
+  },
+  {
+    "source": "books",
+    "title": "![https://ebookfoundation.github.io/free-programming-books/"
+  },
+  {
+    "source": "books",
+    "title": "StackOverflow - List of Freely Available Programming Books"
+  },
+  {
+    "source": "books",
+    "title": "GitHub's most popular repositories"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo forks"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo stars"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo contributors"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub org sponsors"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo watchers"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo size"
+  },
+  {
+    "source": "books",
+    "title": "Free Ebook Foundation"
+  },
+  {
+    "source": "books",
+    "title": "Donations"
+  },
+  {
+    "source": "books",
+    "title": "Contributor Covenant 1.3"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Issues"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Good Issues for newbies"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub Help Wanted issues"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo PRs"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Merged PRs"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub Help Wanted PRs"
+  },
+  {
+    "source": "isl-org/Open3D",
+    "type": "geometry"
+  },
+  {
+    "source": "prusa3d/PrusaSlicer",
+    "type": "geometry"
+  },
+  {
+    "source": "nodejs/node",
+    "type": "architecture"
+  },
+  {
+    "source": "vuejs/vue",
+    "type": "architecture"
+  },
+  {
+    "source": "nodejs/node",
+    "name": "async_hooks",
+    "type": "architecture",
+    "code": "'use strict';\n\nconst {\n  ArrayPrototypeIncludes,\n  ArrayPrototypeIndexOf,\n  ArrayPrototypePush,\n  ArrayPrototypeSplice,\n  ArrayPrototypeUnshift,\n  FunctionPrototypeBind,\n  NumberIsSafeInteger,\n  ObjectDefineProperties,\n  ObjectFreeze,\n  ReflectApply,\n  Symbol,\n} = primordials;\n\nconst {\n  ERR_ASYNC_CALLBACK,\n  ERR_ASYNC_TYPE,\n  ERR_INVALID_ASYNC_ID,\n  ERR_INVALID_ARG_TYPE,\n  ERR_INVALID_ARG_VALUE,\n} = require('internal/errors').codes;\nconst {\n  kEmptyObject,\n} = require('internal/util');\nconst {\n  validateFunction,\n  validateString,\n} = require('internal/validators');\nconst internal_async_hooks = require('internal/async_hooks');\n\nconst AsyncContextFrame = require('internal/async_context_frame');\n\n// Get functions\n// For userland AsyncResources, make sure to emit a destroy event when the\n// resource gets gced.\nconst { registerDestroyHook, kNoPromiseHook } = internal_async_hooks;\nconst {\n  asyncWrap,\n  executionAsyncId,\n  triggerAsyncId,\n  // Private API\n  hasAsyncIdStack,\n  getHookArrays,\n  enableHooks,\n  disableHooks,\n  updatePromiseHookMode,\n  executionAsyncResource,\n  // Internal Embedder API\n  newAsyncId,\n  getDefaultTriggerAsyncId,\n  emitInit,\n  emitBefore,\n  emitAfter,\n  emitDestroy,\n  initHooksExist,\n  destroyHooksExist,\n} = internal_async_hooks;\n\n// Get symbols\nconst {\n  async_id_symbol, trigger_async_id_symbol,\n  init_symbol, before_symbol, after_symbol, destroy_symbol,\n  promise_resolve_symbol,\n} = internal_async_hooks.symbols;\n\n// Get constants\nconst {\n  kInit, kBefore, kAfter, kDestroy, kTotals, kPromiseResolve,\n} = internal_async_hooks.constants;\n\n// Listener API //\n\nclass AsyncHook {\n  constructor({ init, before, after, destroy, promiseResolve, trackPromises }) {\n    if (init !== undefined && typeof init !== 'function')\n      throw new ERR_ASYNC_CALLBACK('hook.init');\n    if (before !== undefined && typeof before !== 'function')\n      throw new ERR_ASYNC_CALLBACK('hook.before');\n    if (after !== undefined && typeof after !== 'function')\n      throw new "
+  },
+  {
+    "source": "numpy/numpy",
+    "name": "array_print",
+    "type": "behavioral",
+    "code": "def __getattr__(attr_name):\n    from numpy._core import arrayprint\n\n    from ._utils import _raise_warning\n    ret = getattr(arrayprint, attr_name, None)\n    if ret is None:\n        raise AttributeError(\n            f\"module 'numpy.core.arrayprint' has no attribute {attr_name}\")\n    _raise_warning(attr_name, \"arrayprint\")\n    return ret\n"
+  },
+  {
+    "source": "nodejs/node",
+    "name": "async_hooks",
+    "type": "architecture",
+    "code": "'use strict';\n\nconst {\n  ArrayPrototypeIncludes,\n  ArrayPrototypeIndexOf,\n  ArrayPrototypePush,\n  ArrayPrototypeSplice,\n  ArrayPrototypeUnshift,\n  FunctionPrototypeBind,\n  NumberIsSafeInteger,\n  ObjectDefineProperties,\n  ObjectFreeze,\n  ReflectApply,\n  Symbol,\n} = primordials;\n\nconst {\n  ERR_ASYNC_CALLBACK,\n  ERR_ASYNC_TYPE,\n  ERR_INVALID_ASYNC_ID,\n  ERR_INVALID_ARG_TYPE,\n  ERR_INVALID_ARG_VALUE,\n} = require('internal/errors').codes;\nconst {\n  kEmptyObject,\n} = require('internal/util');\nconst {\n  validateFunction,\n  validateString,\n} = require('internal/validators');\nconst internal_async_hooks = require('internal/async_hooks');\n\nconst AsyncContextFrame = require('internal/async_context_frame');\n\n// Get functions\n// For userland AsyncResources, make sure to emit a destroy event when the\n// resource gets gced.\nconst { registerDestroyHook, kNoPromiseHook } = internal_async_hooks;\nconst {\n  asyncWrap,\n  executionAsyncId,\n  triggerAsyncId,\n  // Private API\n  hasAsyncIdStack,\n  getHookArrays,\n  enableHooks,\n  disableHooks,\n  updatePromiseHookMode,\n  executionAsyncResource,\n  // Internal Embedder API\n  newAsyncId,\n  getDefaultTriggerAsyncId,\n  emitInit,\n  emitBefore,\n  emitAfter,\n  emitDestroy,\n  initHooksExist,\n  destroyHooksExist,\n} = internal_async_hooks;\n\n// Get symbols\nconst {\n  async_id_symbol, trigger_async_id_symbol,\n  init_symbol, before_symbol, after_symbol, destroy_symbol,\n  promise_resolve_symbol,\n} = internal_async_hooks.symbols;\n\n// Get constants\nconst {\n  kInit, kBefore, kAfter, kDestroy, kTotals, kPromiseResolve,\n} = internal_async_hooks.constants;\n\n// Listener API //\n\nclass AsyncHook {\n  constructor({ init, before, after, destroy, promiseResolve, trackPromises }) {\n    if (init !== undefined && typeof init !== 'function')\n      throw new ERR_ASYNC_CALLBACK('hook.init');\n    if (before !== undefined && typeof before !== 'function')\n      throw new ERR_ASYNC_CALLBACK('hook.before');\n    if (after !== undefined && typeof after !== 'function')\n      throw new "
+  },
+  {
+    "source": "numpy/numpy",
+    "name": "array_print",
+    "type": "behavioral",
+    "code": "def __getattr__(attr_name):\n    from numpy._core import arrayprint\n\n    from ._utils import _raise_warning\n    ret = getattr(arrayprint, attr_name, None)\n    if ret is None:\n        raise AttributeError(\n            f\"module 'numpy.core.arrayprint' has no attribute {attr_name}\")\n    _raise_warning(attr_name, \"arrayprint\")\n    return ret\n"
+  },
+  {
+    "source": "freecodecamp",
+    "id": "daily-coding-challenge"
+  },
+  {
+    "source": "books",
+    "title": "![Awesome"
+  },
+  {
+    "source": "books",
+    "title": "![License: CC BY 4.0"
+  },
+  {
+    "source": "books",
+    "title": "![Hacktoberfest 2025 stats"
+  },
+  {
+    "source": "books",
+    "title": "https://ebookfoundation.github.io/free-programming-books-search/"
+  },
+  {
+    "source": "books",
+    "title": "![https://ebookfoundation.github.io/free-programming-books-search/"
+  },
+  {
+    "source": "books",
+    "title": "![https://ebookfoundation.github.io/free-programming-books/"
+  },
+  {
+    "source": "books",
+    "title": "StackOverflow - List of Freely Available Programming Books"
+  },
+  {
+    "source": "books",
+    "title": "GitHub's most popular repositories"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo forks"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo stars"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo contributors"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub org sponsors"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo watchers"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo size"
+  },
+  {
+    "source": "books",
+    "title": "Free Ebook Foundation"
+  },
+  {
+    "source": "books",
+    "title": "Donations"
+  },
+  {
+    "source": "books",
+    "title": "Contributor Covenant 1.3"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Issues"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Good Issues for newbies"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub Help Wanted issues"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo PRs"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Merged PRs"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub Help Wanted PRs"
+  },
+  {
+    "source": "isl-org/Open3D",
+    "type": "geometry"
+  },
+  {
+    "source": "prusa3d/PrusaSlicer",
+    "type": "geometry"
+  },
+  {
+    "source": "nodejs/node",
+    "type": "architecture"
+  },
+  {
+    "source": "vuejs/vue",
+    "type": "architecture"
+  }
+]

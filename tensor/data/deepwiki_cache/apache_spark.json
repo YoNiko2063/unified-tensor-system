@@ -1,0 +1,828 @@
+{
+  "repo_url": "apache/spark",
+  "summary": "This document provides a technical overview of Apache Spark's architecture, major components, and system organization. It covers the core execution engine, SQL processing pipeline (Catalyst), Python integration (PySpark), structured streaming, and the build/deployment infrastructure. This overview is intended for developers who need to understand how Spark's subsystems interact and where specific ",
+  "file_tree": [
+    {
+      "path": ".asf.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/benchmark.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_and_test.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch35.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch35_python.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch40.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch40_java21.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch40_maven.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch40_maven_java21.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch40_non_ansi.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch40_python.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch40_python_pypy3.10.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41_java21.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41_maven.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41_maven_java21.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41_non_ansi.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41_python.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41_python_3.14.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_branch41_python_pypy3.10.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_coverage.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_infra_images_cache.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_java21.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_main.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_maven.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_maven_java21.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_maven_java21_arm.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_maven_java21_macos26.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_non_ansi.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.10.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.11.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.12_arm.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.12_classic_only.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.12_macos26.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.12_pandas_3.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.13.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.14.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_3.14_nogil.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_connect.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_connect40.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_minimum.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_ps_minimum.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_pypy3.10.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_python_pypy3.11.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_rockdb_as_ui_backend.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_sparkr_window.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_uds.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/images",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/images/workflow-enable-button.png",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/maven_test.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/notify_test_workflow.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/pages.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/publish_snapshot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/python_hosted_runner_test.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/stale.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/test_report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/update_build_status.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".mvn",
+      "type": "dir"
+    },
+    {
+      "path": ".mvn/extensions.xml",
+      "type": "file"
+    },
+    {
+      "path": ".mvn/jvm.config",
+      "type": "file"
+    },
+    {
+      "path": ".mvn/maven.config",
+      "type": "file"
+    },
+    {
+      "path": ".nojekyll",
+      "type": "file"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".sbtopts",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE-binary",
+      "type": "file"
+    },
+    {
+      "path": "NOTICE",
+      "type": "file"
+    },
+    {
+      "path": "NOTICE-binary",
+      "type": "file"
+    },
+    {
+      "path": "R",
+      "type": "dir"
+    },
+    {
+      "path": "R/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "R/CRAN_RELEASE.md",
+      "type": "file"
+    },
+    {
+      "path": "R/DOCUMENTATION.md",
+      "type": "file"
+    },
+    {
+      "path": "R/WINDOWS.md",
+      "type": "file"
+    },
+    {
+      "path": "R/check-cran.sh",
+      "type": "file"
+    },
+    {
+      "path": "R/create-docs.sh",
+      "type": "file"
+    },
+    {
+      "path": "R/create-rd.sh",
+      "type": "file"
+    },
+    {
+      "path": "R/find-r.sh",
+      "type": "file"
+    },
+    {
+      "path": "R/install-dev.bat",
+      "type": "file"
+    },
+    {
+      "path": "R/install-dev.sh",
+      "type": "file"
+    },
+    {
+      "path": "R/install-source-package.sh",
+      "type": "file"
+    },
+    {
+      "path": "R/log4j2.properties",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/.Rbuildignore",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/.lintr",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/DESCRIPTION",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/NAMESPACE",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/R/DataFrame.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/RDD.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/SQLContext.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/WindowSpec.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/backend.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/broadcast.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/catalog.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/client.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/column.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/context.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/deserialize.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/functions.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/generics.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/group.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/install.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/jobj.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/jvm.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_classification.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_clustering.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_fpm.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_recommendation.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_regression.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_stat.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_tree.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/mllib_utils.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/pairRDD.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/schema.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/serialize.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/sparkR.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/stats.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/streaming.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/types.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/utils.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/window.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/R/zzz.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/README.md",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/inst",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/inst/profile",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/inst/profile/general.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/inst/profile/shell.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/inst/tests",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/inst/tests/testthat",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/inst/tests/testthat/test_basic.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/inst/worker",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/inst/worker/daemon.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/inst/worker/worker.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/pkgdown",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/pkgdown/_pkgdown_template.yml",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/pkgdown/extra.css",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/src-native",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/src-native/Makefile",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/src-native/Makefile.win",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/src-native/string_hash_code.c",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/tests/fulltests",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/data",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/data/test_utils_utf.json",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/jarTest.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/packageInAJarTest.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_Serde.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_Windows.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_binaryFile.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_binary_function.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_broadcast.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_client.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_context.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_includePackage.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_jvm_api.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_mllib_classification.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_mllib_clustering.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_mllib_fpm.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_mllib_recommendation.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_mllib_regression.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_mllib_stat.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_mllib_tree.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_parallelize_collect.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_rdd.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_shuffle.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_sparkR.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_sparkSQL.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_sparkSQL_arrow.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_sparkSQL_eager.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_streaming.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_take.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_textFile.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/fulltests/test_utils.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/tests/run-all.R",
+      "type": "file"
+    },
+    {
+      "path": "R/pkg/vignettes",
+      "type": "dir"
+    },
+    {
+      "path": "R/pkg/vignettes/sparkr-vignettes.Rmd",
+      "type": "file"
+    },
+    {
+      "path": "R/run-tests.sh",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "assembly",
+      "type": "dir"
+    },
+    {
+      "path": "assembly/pom.xml",
+      "type": "file"
+    },
+    {
+      "path": "bin",
+      "type": "dir"
+    },
+    {
+      "path": "bin/beeline",
+      "type": "file"
+    },
+    {
+      "path": "bin/beeline.cmd",
+      "type": "file"
+    },
+    {
+      "path": "bin/docker-image-tool.sh",
+      "type": "file"
+    },
+    {
+      "path": "bin/find-spark-home",
+      "type": "file"
+    },
+    {
+      "path": "bin/find-spark-home.cmd",
+      "type": "file"
+    },
+    {
+      "path": "bin/load-spark-env.cmd",
+      "type": "file"
+    },
+    {
+      "path": "bin/load-spark-env.sh",
+      "type": "file"
+    },
+    {
+      "path": "bin/pyspark",
+      "type": "file"
+    },
+    {
+      "path": "bin/pyspark.cmd",
+      "type": "file"
+    },
+    {
+      "path": "bin/pyspark2.cmd",
+      "type": "file"
+    },
+    {
+      "path": "bin/run-example",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "R/pkg/README.md",
+    "R/pkg/src-native/Makefile",
+    "README.md",
+    "common/network-common/src/main/java/org/apache/spark/network/crypto/README.md"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      ".mvn",
+      "R",
+      "assembly",
+      "bin",
+      "binder",
+      "build",
+      "common"
+    ],
+    "language": "Scala",
+    "star_count": 42830
+  }
+}

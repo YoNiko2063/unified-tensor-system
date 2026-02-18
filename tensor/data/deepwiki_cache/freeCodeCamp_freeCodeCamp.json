@@ -1,0 +1,847 @@
+{
+  "repo_url": "freeCodeCamp/freeCodeCamp",
+  "summary": "This document provides a high-level introduction to the freeCodeCamp.org codebase structure, technology stack, and development workflow. The repository contains all code for the learning platform, curriculum content, API services, and supporting tools.",
+  "file_tree": [
+    {
+      "path": ".devcontainer",
+      "type": "dir"
+    },
+    {
+      "path": ".devcontainer/README.md",
+      "type": "file"
+    },
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "type": "file"
+    },
+    {
+      "path": ".devcontainer/docker-compose.yml",
+      "type": "file"
+    },
+    {
+      "path": ".dockerignore",
+      "type": "file"
+    },
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/.well-known",
+      "type": "dir"
+    },
+    {
+      "path": ".github/.well-known/funding-manifest-urls",
+      "type": "file"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "type": "file"
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/01--issues-with-coding-challenges.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/02--issues-with-software-on-platforms.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/03--issues-with-content-on-articles-and-docs.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/04--feature-request-for-freecodecamp-org-s-platforms.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/setup-turbo-cache",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/setup-turbo-cache/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/copilot-instructions.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/instructions",
+      "type": "dir"
+    },
+    {
+      "path": ".github/instructions/testing.instructions.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/labeler.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/crowdin-download.client-ui.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/crowdin-upload.client-ui.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/crowdin-upload.curriculum.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/curriculum-i18n-submodule.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/deploy-api.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/deploy-client.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/devcontainer-ci.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/docker-docr-cleanup.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/docker-docr.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/docker-ghcr.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/e2e-playwright.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/e2e-third-party.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/github-autoclose.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/github-labeler.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/github-no-i18n-via-prs.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/github-no-web-commits.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/github-spam.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/i18n-validate-builds.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/i18n-validate-prs.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/node.js-tests.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".gitmodules",
+      "type": "file"
+    },
+    {
+      "path": ".husky",
+      "type": "dir"
+    },
+    {
+      "path": ".husky/pre-commit",
+      "type": "file"
+    },
+    {
+      "path": ".npmrc",
+      "type": "file"
+    },
+    {
+      "path": ".nvmrc",
+      "type": "file"
+    },
+    {
+      "path": ".prettierignore",
+      "type": "file"
+    },
+    {
+      "path": ".prettierrc",
+      "type": "file"
+    },
+    {
+      "path": ".stylelintignore",
+      "type": "file"
+    },
+    {
+      "path": ".stylelintrc.json",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE.md",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "api",
+      "type": "dir"
+    },
+    {
+      "path": "api/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "api/.lintstagedrc.mjs",
+      "type": "file"
+    },
+    {
+      "path": "api/__mocks__",
+      "type": "dir"
+    },
+    {
+      "path": "api/__mocks__/exam-environment-exam.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/__mocks__/exam.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/eslint.config.js",
+      "type": "file"
+    },
+    {
+      "path": "api/package.json",
+      "type": "file"
+    },
+    {
+      "path": "api/prisma.config.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/prisma",
+      "type": "dir"
+    },
+    {
+      "path": "api/prisma/exam-creator.prisma",
+      "type": "file"
+    },
+    {
+      "path": "api/prisma/exam-environment.prisma",
+      "type": "file"
+    },
+    {
+      "path": "api/prisma/schema.prisma",
+      "type": "file"
+    },
+    {
+      "path": "api/src",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/app.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/daily-coding-challenge",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/README.md",
+      "type": "file"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/routes",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/routes/daily-coding-challenge.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/routes/daily-coding-challenge.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/schemas",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/schemas/daily-coding-challenge.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/schemas/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/utils",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/daily-coding-challenge/utils/helpers.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/db",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/db/extensions.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/db/prisma.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/exam-environment/routes",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/exam-environment/routes/exam-environment.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/routes/exam-environment.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/schemas",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/exam-environment/schemas/challenges.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/schemas/exam-environment-exam-attempt.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/schemas/exam-environment-exam-generated-exam.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/schemas/exam-environment-exams.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/schemas/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/schemas/token-meta.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/utils",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/exam-environment/utils/errors.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/utils/exam-environment.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/exam-environment/utils/exam-environment.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/instrument.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/plugins/__fixtures__",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/plugins/__fixtures__/user.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/auth-dev.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/auth-dev.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/auth.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/auth.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/auth0.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/auth0.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/bouncer.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/bouncer.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/cookie-update.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/cookie-update.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/cookies.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/cookies.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/cors.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/cors.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/csrf.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/csrf.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/error-handling.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/error-handling.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/growth-book.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/growth-book.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/mail-providers",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/plugins/mail-providers/nodemailer.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/mail-providers/ses.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/mailer.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/mailer.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/not-found.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/not-found.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/redirect-with-message.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/redirect-with-message.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/security.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/plugins/shadow-capture.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/reset.d.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/routes/helpers",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/routes/helpers/auth-helpers.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/helpers/auth-helpers.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/helpers/certificate-utils.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/helpers/certificate-utils.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/helpers/challenge-helpers.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/helpers/challenge-helpers.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/helpers/is-restricted.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/helpers/user-utils.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/routes/protected/certificate.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/certificate.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/challenge.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/challenge.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/donate.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/donate.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/settings.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/settings.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/user.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/protected/user.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/routes/public/auth-dev.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/auth.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/auth.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/certificate.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/certificate.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/deprecated-endpoints.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/deprecated-endpoints.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/deprecated-unsubscribe.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/deprecated-unsubscribe.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/donate.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/donate.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/email-subscription.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/email-subscription.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/sentry.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/signout.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/signout.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/status.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/status.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/user.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/routes/public/user.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schema.test.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/schemas/certificate",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/schemas/certificate/cert-slug.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/certificate/certificate-verify.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge",
+      "type": "dir"
+    },
+    {
+      "path": "api/src/schemas/challenge/backend-challenge-completed.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/coderoad-challenge-completed.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/daily-coding-challenge-completed.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/exam-challenge-completed.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/exam.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/modern-challenge-completed.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/ms-trophy-challenge-completed.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/project-completed.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/save-challenge.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/challenge/submit-quiz-attempt.ts",
+      "type": "file"
+    },
+    {
+      "path": "api/src/schemas/deprecated",
+      "type": "dir"
+    }
+  ],
+  "key_files": [
+    ".devcontainer/README.md",
+    "README.md",
+    "api/package.json",
+    "api/src/daily-coding-challenge/README.md",
+    "client/package.json"
+  ],
+  "dependencies": [
+    "@aws-sdk/client-ses",
+    "@fastify/accepts",
+    "@fastify/cookie",
+    "@fastify/csrf-protection",
+    "@fastify/oauth2",
+    "@fastify/swagger",
+    "@fastify/swagger-ui",
+    "@fastify/type-provider-typebox",
+    "@freecodecamp/shared",
+    "@growthbook/growthbook",
+    "@prisma/client",
+    "@sentry/node",
+    "ajv",
+    "ajv-formats",
+    "date-fns",
+    "date-fns-tz",
+    "dotenv",
+    "fast-uri",
+    "fastify",
+    "fastify-plugin"
+  ],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".devcontainer",
+      ".github",
+      ".husky",
+      "api",
+      "client"
+    ],
+    "language": "TypeScript",
+    "star_count": 437159
+  }
+}

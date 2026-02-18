@@ -1,0 +1,828 @@
+{
+  "repo_url": "prusa3d/PrusaSlicer",
+  "summary": "PrusaSlicer is a comprehensive 3D printing preparation application that converts 3D models into machine instructions for both FFF (Fused Filament Fabrication) and SLA (Stereolithography) 3D printers. This document provides a high-level overview of PrusaSlicer's architecture, core components, and system organization.",
+  "file_tree": [
+    {
+      "path": ".clang-format",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report_form.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/build_flatpak.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_flatpak_asan.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_nogui.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_osx.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_osx_asan.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/build_windows.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/bundle_flatpak.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/get_release_flatpak_manifest.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/static_analysis.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "CMakePresets.json",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "build-utils",
+      "type": "dir"
+    },
+    {
+      "path": "build-utils/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "build-utils/encoding-check.cpp",
+      "type": "file"
+    },
+    {
+      "path": "build_win.bat",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/admesh/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh/connect.cpp",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh/normals.cpp",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh/shared.cpp",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh/stl.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh/stl_io.cpp",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh/stlinit.cpp",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/admesh/admesh/util.cpp",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/agg/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/agg/agg/AUTHORS",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/VERSION",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_array.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_basics.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_bezier_arc.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_clip_liang_barsky.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_color_gray.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_color_rgba.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_config.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_conv_transform.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_gamma_functions.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_gamma_lut.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_math.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_path_storage.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_pixfmt_base.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_pixfmt_gray.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_pixfmt_rgb.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_rasterizer_cells_aa.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_rasterizer_scanline_aa.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_rasterizer_scanline_aa_nogamma.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_rasterizer_sl_clip.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_renderer_base.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_renderer_scanline.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_rendering_buffer.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_scanline_p.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/agg_trans_affine.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/agg/agg/copying",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/ankerl",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/ankerl/README.txt",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/ankerl/ankerl",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/ankerl/ankerl/unordered_dense.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/AUTHORS",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/BUILD-FROM-SVN",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/COPYING",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2001",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2002",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2003",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2004-2006",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2007",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2008",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2009",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2010",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2011",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2012",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2013",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2014",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ChangeLog-2015",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/Makefile.am",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/Makefile.standalone",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/NEWS",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/README",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ac_cfg.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/ac_cfg.h.in",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/arduino.c",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/arduino.h",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/AVR109.pdf",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/AVR910.pdf",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/AVRISPmkII-AVR069.pdf",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/browserDetect.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/960.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/docbook.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/fluid_grid.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/index.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/positioning.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/print.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/reset.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/css/text.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/fonts",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/fonts/DroidSansMono.eot",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/fonts/DroidSansMono.ttf",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/Book_Closed.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/Book_Open.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/Document_Text.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/Library.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/external_link.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/loading.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/logo.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/minus.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/next-arrow.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/plus.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/previous-arrow.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/search-icon.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/sidebar.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/starsSmall.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/toc-icon.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/images/ui-icons_217bc0_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/jquery-1.7.2.min.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/jquery.cookie.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/jquery.ui.all.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/layout",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/layout/jquery.layout.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-anim_basic_16x16.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_flat_0_aaaaaa_40x100.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_flat_55_fbec88_40x100.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_glass_75_d0e5f5_1x400.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_glass_85_dfeffc_1x400.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_glass_95_fef1ec_1x400.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_gloss-wave_55_5c9ccc_500x100.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_inset-hard_100_f5f8f9_1x100.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-bg_inset-hard_100_fcfdfd_1x100.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-icons_217bc0_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-icons_2e83ff_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-icons_469bdd_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-icons_6da8d5_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-icons_cd0a0a_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-icons_d8e7f3_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/images/ui-icons_f9bd01_256x240.png",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/theme-redmond/jquery-ui-1.8.2.custom.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/file.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/folder-closed.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/folder.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-black-line.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-black.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-default-line.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-default.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-famfamfam-line.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-famfamfam.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-gray-line.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-gray.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-red-line.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/images/treeview-red.gif",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/jquery.treeview.css",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/jquery/treeview/jquery.treeview.min.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/main.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/common/splitterInit.js",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs",
+      "type": "dir"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch01s01.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch01s02.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s01.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s01.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s02.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s02s01.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s02s02.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s03.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s03s01.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s03s02.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s03s03.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s02s03s04.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s03s01.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s03s02.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s03s03.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s03s04.html",
+      "type": "file"
+    },
+    {
+      "path": "bundled_deps/avrdude/avrdude/atmel-docs/EDBG/protocoldocs/ch02s03s05.html",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "CMakeLists.txt",
+    "README.md",
+    "build-utils/CMakeLists.txt",
+    "bundled_deps/CMakeLists.txt",
+    "bundled_deps/admesh/CMakeLists.txt",
+    "bundled_deps/agg/CMakeLists.txt",
+    "bundled_deps/ankerl/README.txt",
+    "bundled_deps/avrdude/CMakeLists.txt",
+    "bundled_deps/avrdude/avrdude/README"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "build-utils",
+      "bundled_deps"
+    ],
+    "language": "C++",
+    "star_count": 8859
+  }
+}

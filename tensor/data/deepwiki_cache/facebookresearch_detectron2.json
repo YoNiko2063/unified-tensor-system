@@ -1,0 +1,856 @@
+{
+  "repo_url": "facebookresearch/detectron2",
+  "summary": "Detectron2 is Facebook AI Research's computer vision framework that implements state-of-the-art object detection, instance segmentation, semantic segmentation, and keypoint detection algorithms. This document provides a high-level overview of the system architecture, components, and workflows of Detectron2.",
+  "file_tree": [
+    {
+      "path": ".clang-format",
+      "type": "file"
+    },
+    {
+      "path": ".flake8",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CODE_OF_CONDUCT.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/Detectron2-Logo-Horz.svg",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bugs.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/documentation.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature-request.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/unexpected-problems-bugs.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install_detectron2",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install_detectron2/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/install_detectron2_win",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install_detectron2_win/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/install_linux_dep",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install_linux_dep/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/install_linux_gpu_dep",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install_linux_gpu_dep/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/install_windows_dep",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/install_windows_dep/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/run_unittests",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/run_unittests/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/run_unittests_win",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/run_unittests_win/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/actions/uninstall_tests",
+      "type": "dir"
+    },
+    {
+      "path": ".github/actions/uninstall_tests/action.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/import-tests.sh",
+      "type": "file"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/check-template.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/levenshtein.js",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/needs-reply.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/remove-needs-reply.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/workflow.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": "GETTING_STARTED.md",
+      "type": "file"
+    },
+    {
+      "path": "INSTALL.md",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "MODEL_ZOO.md",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "configs",
+      "type": "dir"
+    },
+    {
+      "path": "configs/Base-RCNN-C4.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Base-RCNN-DilatedC5.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Base-RCNN-FPN.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Base-RetinaNet.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection",
+      "type": "dir"
+    },
+    {
+      "path": "configs/COCO-Detection/fast_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_101_C4_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_101_DC5_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_50_C4_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_50_C4_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_50_DC5_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_50_DC5_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/fcos_R_50_FPN_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/retinanet_R_101_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/retinanet_R_50_FPN_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/retinanet_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/retinanet_R_50_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/rpn_R_50_C4_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Detection/rpn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation",
+      "type": "dir"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_101_C4_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_101_DC5_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_C4_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_C4_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_C4_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_DC5_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_DC5_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x_giou.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_regnetx_4gf_dds_fpn_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-InstanceSegmentation/mask_rcnn_regnety_4gf_dds_fpn_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Keypoints",
+      "type": "dir"
+    },
+    {
+      "path": "configs/COCO-Keypoints/Base-Keypoint-RCNN-FPN.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Keypoints/keypoint_rcnn_R_101_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Keypoints/keypoint_rcnn_R_50_FPN_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Keypoints/keypoint_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-Keypoints/keypoint_rcnn_X_101_32x8d_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-PanopticSegmentation",
+      "type": "dir"
+    },
+    {
+      "path": "configs/COCO-PanopticSegmentation/Base-Panoptic-FPN.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-PanopticSegmentation/panoptic_fpn_R_101_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-PanopticSegmentation/panoptic_fpn_R_50_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-PanopticSegmentation/panoptic_fpn_R_50_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/COCO-PanopticSegmentation/panoptic_fpn_R_50_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Cityscapes",
+      "type": "dir"
+    },
+    {
+      "path": "configs/Cityscapes/mask_rcnn_R_50_FPN.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Detectron1-Comparisons",
+      "type": "dir"
+    },
+    {
+      "path": "configs/Detectron1-Comparisons/README.md",
+      "type": "file"
+    },
+    {
+      "path": "configs/Detectron1-Comparisons/faster_rcnn_R_50_FPN_noaug_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Detectron1-Comparisons/keypoint_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Detectron1-Comparisons/mask_rcnn_R_50_FPN_noaug_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/LVISv0.5-InstanceSegmentation",
+      "type": "dir"
+    },
+    {
+      "path": "configs/LVISv0.5-InstanceSegmentation/mask_rcnn_R_101_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/LVISv0.5-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/LVISv0.5-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/LVISv1-InstanceSegmentation",
+      "type": "dir"
+    },
+    {
+      "path": "configs/LVISv1-InstanceSegmentation/mask_rcnn_R_101_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/LVISv1-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/LVISv1-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc",
+      "type": "dir"
+    },
+    {
+      "path": "configs/Misc/cascade_mask_rcnn_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/cascade_mask_rcnn_X_152_32x8d_FPN_IN5k_gn_dconv.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/mask_rcnn_R_50_FPN_1x_cls_agnostic.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/mask_rcnn_R_50_FPN_1x_dconv_c3-c5.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/mask_rcnn_R_50_FPN_3x_dconv_c3-c5.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/mask_rcnn_R_50_FPN_3x_gn.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/mask_rcnn_R_50_FPN_3x_syncbn.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/mmdet_mask_rcnn_R_50_FPN_1x.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/panoptic_fpn_R_101_dconv_cascade_gn_3x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/scratch_mask_rcnn_R_50_FPN_3x_gn.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/scratch_mask_rcnn_R_50_FPN_9x_gn.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/scratch_mask_rcnn_R_50_FPN_9x_syncbn.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/semantic_R_50_FPN_1x.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/Misc/torchvision_imagenet_R_50.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/PascalVOC-Detection",
+      "type": "dir"
+    },
+    {
+      "path": "configs/PascalVOC-Detection/faster_rcnn_R_50_C4.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/PascalVOC-Detection/faster_rcnn_R_50_FPN.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/common",
+      "type": "dir"
+    },
+    {
+      "path": "configs/common/README.md",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/coco_schedule.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/data",
+      "type": "dir"
+    },
+    {
+      "path": "configs/common/data/coco.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/data/coco_keypoint.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/data/coco_panoptic_separated.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/data/constants.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models",
+      "type": "dir"
+    },
+    {
+      "path": "configs/common/models/cascade_rcnn.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models/fcos.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models/keypoint_rcnn_fpn.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models/mask_rcnn_c4.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models/mask_rcnn_fpn.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models/mask_rcnn_vitdet.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models/panoptic_fpn.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/models/retinanet.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/optim.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/common/train.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines",
+      "type": "dir"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_R_101_FPN_100ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_R_101_FPN_200ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_R_101_FPN_400ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_R_50_FPN_100ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_R_50_FPN_200ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_R_50_FPN_400ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_R_50_FPN_50ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_regnetx_4gf_dds_FPN_100ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_regnetx_4gf_dds_FPN_200ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_regnetx_4gf_dds_FPN_400ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_regnety_4gf_dds_FPN_100ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_regnety_4gf_dds_FPN_200ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/new_baselines/mask_rcnn_regnety_4gf_dds_FPN_400ep_LSJ.py",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules",
+      "type": "dir"
+    },
+    {
+      "path": "configs/quick_schedules/README.md",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/cascade_mask_rcnn_R_50_FPN_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/cascade_mask_rcnn_R_50_FPN_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/fast_rcnn_R_50_FPN_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/fast_rcnn_R_50_FPN_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/keypoint_rcnn_R_50_FPN_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/keypoint_rcnn_R_50_FPN_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/keypoint_rcnn_R_50_FPN_normalized_training_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/keypoint_rcnn_R_50_FPN_training_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_C4_GCV_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_C4_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_C4_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_C4_training_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_DC5_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_FPN_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_FPN_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_FPN_pred_boxes_training_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/mask_rcnn_R_50_FPN_training_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/panoptic_fpn_R_50_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/panoptic_fpn_R_50_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/panoptic_fpn_R_50_training_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/retinanet_R_50_FPN_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/retinanet_R_50_FPN_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/rpn_R_50_FPN_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/rpn_R_50_FPN_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/semantic_R_50_FPN_inference_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/semantic_R_50_FPN_instant_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "configs/quick_schedules/semantic_R_50_FPN_training_acc_test.yaml",
+      "type": "file"
+    },
+    {
+      "path": "datasets",
+      "type": "dir"
+    },
+    {
+      "path": "datasets/README.md",
+      "type": "file"
+    },
+    {
+      "path": "datasets/prepare_ade20k_sem_seg.py",
+      "type": "file"
+    },
+    {
+      "path": "datasets/prepare_cocofied_lvis.py",
+      "type": "file"
+    },
+    {
+      "path": "datasets/prepare_for_tests.sh",
+      "type": "file"
+    },
+    {
+      "path": "datasets/prepare_panoptic_fpn.py",
+      "type": "file"
+    },
+    {
+      "path": "demo",
+      "type": "dir"
+    }
+  ],
+  "key_files": [
+    "README.md",
+    "configs/Detectron1-Comparisons/README.md",
+    "configs/common/README.md",
+    "configs/quick_schedules/README.md",
+    "datasets/README.md",
+    "demo/README.md",
+    "detectron2/data/datasets/README.md",
+    "detectron2/export/README.md",
+    "detectron2/layers/csrc/README.md",
+    "detectron2/projects/README.md"
+  ],
+  "dependencies": [
+    "docutils",
+    "sphinx",
+    "recommonmark",
+    "sphinx_rtd_theme",
+    "termcolor",
+    "numpy",
+    "tqdm",
+    "matplotlib",
+    "termcolor",
+    "yacs",
+    "tabulate",
+    "cloudpickle",
+    "Pillow",
+    "future",
+    "git+https://github.com/facebookresearch/fvcore.git",
+    "https://download.pytorch.org/whl/cpu/torch-1.8.1%2Bcpu-cp37-cp37m-linux_x86_64.whl",
+    "https://download.pytorch.org/whl/cpu/torchvision-0.9.1%2Bcpu-cp37-cp37m-linux_x86_64.whl",
+    "omegaconf",
+    "hydra-core",
+    "scipy"
+  ],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "configs",
+      "datasets",
+      "demo",
+      "detectron2",
+      "dev",
+      "docker",
+      "docs",
+      "projects"
+    ],
+    "language": "Python",
+    "star_count": 34083
+  }
+}

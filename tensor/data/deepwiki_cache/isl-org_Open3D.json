@@ -1,0 +1,830 @@
+{
+  "repo_url": "isl-org/Open3D",
+  "summary": "This document provides a high-level overview of the Open3D library architecture, its major components, and how they fit together. Open3D is an open-source library for 3D data processing that supports both C++ and Python interfaces with capabilities including geometry processing, visualization, scene reconstruction, and machine learning operations with GPU acceleration.",
+  "file_tree": [
+    {
+      "path": ".clang-format",
+      "type": "file"
+    },
+    {
+      "path": ".codacy.yml",
+      "type": "file"
+    },
+    {
+      "path": ".dockerignore",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/0-build-issue-report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/1-bug-report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/2-questions.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/3-feature-request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/README.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/clean-gcloud-profiles.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/documentation.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/gcs.lifecycle.json",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/macos.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/style.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ubuntu-cuda.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ubuntu-openblas.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ubuntu-sycl.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ubuntu-wheel.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/ubuntu.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/update-release.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/vtk_packages.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/webrtc.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/windows.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".style.yapf",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/README.md",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/README_SYCL.md",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/assimp",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/assimp/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/assimp/assimp.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/azure_kinect",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/azure_kinect/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/azure_kinect/azure_kinect.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/benchmark",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/benchmark/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/benchmark/MakeAvailable",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/benchmark/MakeAvailable/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/benchmark/benchmark.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/boringssl",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/boringssl/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/boringssl/boringssl.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/boringssl/build_boringssl.ps1",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/boringssl/build_boringssl.sh",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/civetweb",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/civetweb/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/civetweb/civetweb.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/clang-format",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/clang-format/clang-foramt@10.rb",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/clang-format/clang-format@5.rb",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cmake",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/cmake/FindImGui.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cmake/FindLAPACKE.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cmake/FindOSMesa.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cmake/FindPytorch.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cmake/FindTBB.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cmake/FindTensorflow.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cub",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/cub/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cub/cub.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/curl",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/curl/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/curl/curl.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cutlass",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/cutlass/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cutlass/cutlass.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/dirent",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/dirent/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/dirent/dirent",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/dirent/dirent/dirent.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/eigen",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/eigen/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/eigen/eigen.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/embree",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/embree/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/embree/embree.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/filament",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/filament/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/filament/filament_build.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/filament/filament_download.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/find_dependencies.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/fmt",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/fmt/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/fmt/fmt.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/glew/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/LICENSE.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/README.md",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/include",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/glew/include/GL",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/glew/include/GL/eglew.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/include/GL/glew.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/include/GL/glxew.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/include/GL/wglew.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/src",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/glew/src/glew.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/src/glewinfo.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glew/src/visualinfo.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/glfw",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/glfw/glfw.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/googletest",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/googletest/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/googletest/googletest.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/imgui",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/imgui/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/imgui/imgui.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ipp",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ipp/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ipp/ipp.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/jsoncpp",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/jsoncpp/0001-optional-CXX11-ABI-and-MSVC-runtime.patch",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/jsoncpp/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/jsoncpp/jsoncpp.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjpeg-turbo",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/libjpeg-turbo/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjpeg-turbo/libjpeg-turbo.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/liblzf",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/liblzf/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/liblzf/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/liblzf/liblzf",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/liblzf/liblzf/lzf.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/liblzf/liblzf/lzfP.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/liblzf/liblzf/lzf_c.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/liblzf/liblzf/lzf_d.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libpng",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/libpng/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libpng/libpng.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/librealsense",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/librealsense/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/librealsense/fix-cudacrt.patch",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/librealsense/fix-include-chrono.patch",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/librealsense/fix_mac_apple_silicon_build.patch",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/librealsense/librealsense.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/librealsense/libusb-CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/mkl",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/mkl/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/mkl/mkl.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/mkl/tbb.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/msgpack",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/msgpack/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/msgpack/msgpack_build.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/nanoflann",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/nanoflann/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/nanoflann/nanoflann.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/openblas",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/openblas/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/openblas/openblas.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/possionrecon",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/possionrecon/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/possionrecon/possionrecon.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/pybind11",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/pybind11/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/pybind11/pybind11.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/qhull",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/qhull/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/qhull/qhull.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/rply/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/rply/rply/etc",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/rply/rply/etc/convert.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply/etc/dump.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply/etc/input.ply",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply/etc/sconvert.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply/manual",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/rply/rply/manual/manual.html",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply/manual/reference.css",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply/rply.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/rply/rply/rply.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/stdgpu",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/stdgpu/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/stdgpu/stdgpu.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinyfiledialogs",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tinyfiledialogs/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinyfiledialogs/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinyfiledialogs/include",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tinyfiledialogs/include/tinyfiledialogs",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tinyfiledialogs/include/tinyfiledialogs/tinyfiledialogs.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinyfiledialogs/include/tinyfiledialogs/tinyfiledialogs.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinygltf",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tinygltf/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinygltf/tinygltf.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinyobjloader",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tinyobjloader/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tinyobjloader/tinyobjloader.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tomasakeninemoeller",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tomasakeninemoeller/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tomasakeninemoeller/include",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tomasakeninemoeller/include/tomasakeninemoeller",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/tomasakeninemoeller/include/tomasakeninemoeller/opttritri.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tomasakeninemoeller/include/tomasakeninemoeller/tribox3.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/tomasakeninemoeller/readme.md",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    ".github/workflows/README.md",
+    "3rdparty/README.md",
+    "3rdparty/README_SYCL.md",
+    "3rdparty/benchmark/MakeAvailable/CMakeLists.txt",
+    "3rdparty/glew/CMakeLists.txt",
+    "3rdparty/glew/README.md",
+    "3rdparty/liblzf/CMakeLists.txt",
+    "3rdparty/rply/CMakeLists.txt",
+    "3rdparty/tinyfiledialogs/CMakeLists.txt",
+    "3rdparty/tomasakeninemoeller/readme.md"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "3rdparty",
+      "cmake",
+      "cpp"
+    ],
+    "language": "C++",
+    "star_count": 13324
+  }
+}

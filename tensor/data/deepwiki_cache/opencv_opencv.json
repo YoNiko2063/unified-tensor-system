@@ -1,0 +1,828 @@
+{
+  "repo_url": "opencv/opencv",
+  "summary": "This document provides a high-level technical overview of the OpenCV (Open Source Computer Vision Library) architecture, covering its modular structure, build system, core data structures, hardware acceleration mechanisms, and language binding infrastructure. For detailed information about specific subsystems, see: Build System (#2), Core Module (#3), DNN Module (#5), Media I/O (#7), and Language ",
+  "file_tree": [
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".gitattributes",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/documentation.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/4.x.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/PR-4.x.yaml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/.gitattributes",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cpufeatures",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/cpufeatures/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cpufeatures/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cpufeatures/README.md",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cpufeatures/cpu-features.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/cpufeatures/cpu-features.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/dlpack",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/dlpack/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/dlpack/include",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/dlpack/include/dlpack",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/dlpack/include/dlpack/dlpack.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/fastcv",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/fastcv/fastcv.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ffmpeg",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ffmpeg/.gitignore",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ffmpeg/ffmpeg-download.ps1.in",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ffmpeg/ffmpeg.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ffmpeg/license.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ffmpeg/readme.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/flatbuffers/LICENSE.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/README.md",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/allocator.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/array.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/base.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/buffer.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/buffer_ref.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/default_allocator.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/detached_buffer.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/flatbuffer_builder.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/flatbuffers.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/stl_emulation.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/string.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/struct.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/table.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/vector.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/vector_downward.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/flatbuffers/include/flatbuffers/verifier.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/include/opencl",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl.hpp",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_d3d10.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_d3d11.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_d3d11_ext.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_dx9_media_sharing.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_egl.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_ext.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_gl.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_gl_ext.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_platform.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/cl_va_api_media_sharing_intel.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/1.2/CL/opencl.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/opencl/LICENSE.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vk_platform.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_android.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_beta.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_core.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_directfb.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_fuchsia.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_ggp.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_ios.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_macos.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_metal.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_screen.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_vi.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_wayland.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_win32.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_xcb.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_xlib.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/include/vulkan/vulkan_xlib_xrandr.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ippicv",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ippicv/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ippicv/ippicv.cmake",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ittnotify/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/include",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ittnotify/include/ittnotify.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/include/jitprofiling.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/include/legacy",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ittnotify/include/legacy/ittnotify.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/include/libittnotify.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/BSD-3-Clause.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/GPL-2.0-only.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/disable_warnings.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/ittnotify_config.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/ittnotify_static.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/ittnotify_static.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/ittnotify_types.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/ittnotify/src/ittnotify/jitprofiling.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/libjasper/CMakeLists.txt",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/README",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/changelog",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/copyright",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_cm.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_debug.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_getopt.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_icc.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_iccdata.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_image.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_init.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_malloc.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_seq.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_stream.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_string.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_tmr.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_tvp.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jas_version.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper",
+      "type": "dir"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_cm.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_config.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_config.h.in",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_config2.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_debug.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_fix.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_getopt.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_icc.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_image.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_init.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_malloc.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_math.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_seq.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_stream.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_string.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_tmr.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_tvp.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_types.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jas_version.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jasper/jasper.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jp2_cod.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jp2_cod.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jp2_dec.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jp2_dec.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jp2_enc.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_bs.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_bs.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_cod.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_cs.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_cs.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_dec.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_dec.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_enc.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_enc.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_fix.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_flt.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_math.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_math.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mct.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mct.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mqcod.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mqcod.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mqdec.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mqdec.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mqenc.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_mqenc.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_qmfb.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_qmfb.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t1cod.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t1cod.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t1dec.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t1dec.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t1enc.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t1enc.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t2cod.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t2cod.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t2dec.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t2dec.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t2enc.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_t2enc.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_tagtree.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_tagtree.h",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_tsfb.c",
+      "type": "file"
+    },
+    {
+      "path": "3rdparty/libjasper/jpc_tsfb.h",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "3rdparty/cpufeatures/CMakeLists.txt",
+    "3rdparty/cpufeatures/README.md",
+    "3rdparty/ffmpeg/readme.txt",
+    "3rdparty/flatbuffers/README.md",
+    "3rdparty/ippicv/CMakeLists.txt",
+    "3rdparty/ittnotify/CMakeLists.txt",
+    "3rdparty/libjasper/CMakeLists.txt",
+    "3rdparty/libjasper/README",
+    "3rdparty/libjpeg-turbo/CMakeLists.txt",
+    "3rdparty/libjpeg-turbo/README.ijg"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "3rdparty"
+    ],
+    "language": "C++",
+    "star_count": 86219
+  }
+}

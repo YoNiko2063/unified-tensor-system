@@ -1,0 +1,835 @@
+{
+  "repo_url": "vuejs/vue",
+  "summary": "This document provides a comprehensive overview of Vue.js 2.7, its core architecture, features, and ecosystem. Vue.js is a progressive JavaScript framework for building user interfaces, designed to be incrementally adoptable with a focus on the view layer.",
+  "file_tree": [
+    {
+      "path": ".editorconfig",
+      "type": "file"
+    },
+    {
+      "path": ".git-blame-ignore-revs",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CODE_OF_CONDUCT.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/COMMIT_CONVENTION.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/release-tag.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": ".prettierrc",
+      "type": "file"
+    },
+    {
+      "path": "BACKERS.md",
+      "type": "file"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "type": "file"
+    },
+    {
+      "path": "LICENSE",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "api-extractor.json",
+      "type": "file"
+    },
+    {
+      "path": "api-extractor.tsconfig.json",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/big-table",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/big-table/demo.css",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/big-table/index.html",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/big-table/style.css",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/dbmon",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/dbmon/ENV.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/dbmon/app.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/dbmon/index.html",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/dbmon/lib",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/dbmon/lib/memory-stats.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/dbmon/lib/monitor.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/dbmon/lib/styles.css",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/reorder-list",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/reorder-list/index.html",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/ssr",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/ssr/README.md",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/ssr/common.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/ssr/renderToStream.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/ssr/renderToString.js",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/svg",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/svg/index.html",
+      "type": "file"
+    },
+    {
+      "path": "benchmarks/uptime",
+      "type": "dir"
+    },
+    {
+      "path": "benchmarks/uptime/index.html",
+      "type": "file"
+    },
+    {
+      "path": "compiler-sfc",
+      "type": "dir"
+    },
+    {
+      "path": "compiler-sfc/index.d.ts",
+      "type": "file"
+    },
+    {
+      "path": "compiler-sfc/index.js",
+      "type": "file"
+    },
+    {
+      "path": "compiler-sfc/index.mjs",
+      "type": "file"
+    },
+    {
+      "path": "compiler-sfc/package.json",
+      "type": "file"
+    },
+    {
+      "path": "dist",
+      "type": "dir"
+    },
+    {
+      "path": "dist/vue.common.js",
+      "type": "file"
+    },
+    {
+      "path": "dist/vue.runtime.common.js",
+      "type": "file"
+    },
+    {
+      "path": "dist/vue.runtime.mjs",
+      "type": "file"
+    },
+    {
+      "path": "examples",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/commits",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/commits/app.js",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/commits/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/elastic-header",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/elastic-header/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/elastic-header/style.css",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/firebase",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/firebase/app.js",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/firebase/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/firebase/style.css",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/grid",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/grid/grid.js",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/grid/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/grid/style.css",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/markdown",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/markdown/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/markdown/style.css",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/modal",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/modal/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/modal/style.css",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/move-animations",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/move-animations/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/select2",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/select2/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/svg",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/svg/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/svg/style.css",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/svg/svg.js",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/todomvc",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/todomvc/app.js",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/todomvc/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/todomvc/readme.md",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/tree",
+      "type": "dir"
+    },
+    {
+      "path": "examples/classic/tree/index.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/classic/tree/tree.js",
+      "type": "file"
+    },
+    {
+      "path": "examples/composition",
+      "type": "dir"
+    },
+    {
+      "path": "examples/composition/commits.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/composition/grid.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/composition/markdown.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/composition/svg.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/composition/todomvc.html",
+      "type": "file"
+    },
+    {
+      "path": "examples/composition/tree.html",
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "type": "file"
+    },
+    {
+      "path": "packages",
+      "type": "dir"
+    },
+    {
+      "path": "packages/compiler-sfc",
+      "type": "dir"
+    },
+    {
+      "path": "packages/compiler-sfc/api-extractor.json",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/package.json",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src",
+      "type": "dir"
+    },
+    {
+      "path": "packages/compiler-sfc/src/babelUtils.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/compileScript.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/compileStyle.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/compileTemplate.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/cssVars.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/parse.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/parseComponent.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/prefixIdentifiers.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/rewriteDefault.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/stylePlugins",
+      "type": "dir"
+    },
+    {
+      "path": "packages/compiler-sfc/src/stylePlugins/scoped.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/stylePlugins/trim.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/stylePreprocessors.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/templateCompilerModules",
+      "type": "dir"
+    },
+    {
+      "path": "packages/compiler-sfc/src/templateCompilerModules/assetUrl.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/templateCompilerModules/srcset.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/templateCompilerModules/utils.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/types.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/src/warn.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test",
+      "type": "dir"
+    },
+    {
+      "path": "packages/compiler-sfc/test/__snapshots__",
+      "type": "dir"
+    },
+    {
+      "path": "packages/compiler-sfc/test/__snapshots__/compileScript.spec.ts.snap",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/__snapshots__/cssVars.spec.ts.snap",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/compileScript.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/compileStyle.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/compileTemplate.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/cssVars.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/parseComponent.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/prefixIdentifiers.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/rewriteDefault.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/stylePluginScoped.spec.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/tsconfig.json",
+      "type": "file"
+    },
+    {
+      "path": "packages/compiler-sfc/test/util.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/README.md",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/client-plugin.d.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/index.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/package.json",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/server-plugin.d.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/src/bundle-renderer",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/src/bundle-renderer/create-bundle-renderer.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/bundle-renderer/create-bundle-runner.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/bundle-renderer/source-map-support.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/compiler.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/create-basic-renderer.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/create-renderer.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/directives",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/src/directives/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/directives/model.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/directives/show.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/index-basic.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/modules",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/src/modules/attrs.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/modules/class.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/modules/dom-props.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/modules/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/modules/style.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/optimizing-compiler",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/src/optimizing-compiler/codegen.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/optimizing-compiler/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/optimizing-compiler/modules.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/optimizing-compiler/optimizer.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/optimizing-compiler/runtime-helpers.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/render-context.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/render-stream.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/render.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/template-renderer",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/src/template-renderer/create-async-file-mapper.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/template-renderer/index.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/template-renderer/parse-template.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/template-renderer/template-stream.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/util.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/webpack-plugin",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/src/webpack-plugin/client.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/webpack-plugin/server.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/webpack-plugin/util.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/src/write.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/test/async-loader.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/compile-with-webpack.ts",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures",
+      "type": "dir"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/app.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/async-bar.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/async-foo.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/cache-opt-out.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/cache.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/error.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/nested-cache.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/promise-rejection.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/split.js",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/test.css",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/test.png",
+      "type": "file"
+    },
+    {
+      "path": "packages/server-renderer/test/fixtures/test.woff2",
+      "type": "file"
+    }
+  ],
+  "key_files": [
+    "README.md",
+    "benchmarks/ssr/README.md",
+    "compiler-sfc/index.js",
+    "compiler-sfc/package.json",
+    "examples/classic/todomvc/readme.md",
+    "package.json",
+    "packages/compiler-sfc/package.json",
+    "packages/server-renderer/README.md",
+    "packages/server-renderer/index.js",
+    "packages/server-renderer/package.json"
+  ],
+  "dependencies": [],
+  "insights": {
+    "complexity": "medium",
+    "patterns": [
+      ".github",
+      "benchmarks",
+      "compiler-sfc",
+      "dist",
+      "examples",
+      "packages",
+      "scripts",
+      "src",
+      "test"
+    ],
+    "language": "TypeScript",
+    "star_count": 209881
+  }
+}
