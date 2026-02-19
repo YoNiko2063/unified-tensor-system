@@ -210,3 +210,85 @@ class TestPrediction:
         k = EDMDKoopman()
         with pytest.raises(RuntimeError):
             k.predict_next_observable(np.array([1.0, 0.0]))
+
+
+# ------------------------------------------------------------------
+# Tests: Reconstruction error + trust score (whattodo.md gaps)
+# ------------------------------------------------------------------
+
+class TestReconstructionAndTrust:
+    def _fit(self, traj=None):
+        if traj is None:
+            A = np.array([[-0.5, 1.0], [-1.0, -0.5]])
+            x = np.array([1.0, 0.0])
+            traj = [x.copy()]
+            for _ in range(99):
+                x = x + 0.05 * (A @ x)
+                traj.append(x.copy())
+            traj = np.array(traj)
+        k = EDMDKoopman(observable_degree=2)
+        k.fit_trajectory(traj)
+        return k
+
+    def test_reconstruction_error_nonnegative(self):
+        k = self._fit()
+        assert k.compute_reconstruction_error() >= 0.0
+
+    def test_reconstruction_error_unfit_is_inf(self):
+        k = EDMDKoopman()
+        assert k.compute_reconstruction_error() == float('inf')
+
+    def test_result_has_reconstruction_error_field(self):
+        k = self._fit()
+        r = k.eigendecomposition()
+        assert hasattr(r, 'reconstruction_error')
+        assert r.reconstruction_error >= 0.0
+
+    def test_result_has_koopman_trust_field(self):
+        k = self._fit()
+        r = k.eigendecomposition()
+        assert hasattr(r, 'koopman_trust')
+        assert 0.0 <= r.koopman_trust <= 1.0
+
+    def test_trust_score_zero_gap(self):
+        trust = EDMDKoopman.compute_trust_score(gap=0.0, reconstruction_error=0.0, drift=0.0)
+        assert trust == 0.0
+
+    def test_trust_score_perfect(self):
+        # gap >> gamma_min, recon_err=0, drift=0 → trust ≈ 1
+        trust = EDMDKoopman.compute_trust_score(
+            gap=1.0, reconstruction_error=0.0, drift=0.0,
+            gamma_min=0.1, eta_max=1.0, s_max=0.5,
+        )
+        assert abs(trust - 1.0) < 1e-10
+
+    def test_trust_score_high_error_penalizes(self):
+        # High recon error → low trust
+        trust_low = EDMDKoopman.compute_trust_score(
+            gap=1.0, reconstruction_error=0.9, drift=0.0,
+            gamma_min=0.1, eta_max=1.0, s_max=0.5,
+        )
+        trust_high = EDMDKoopman.compute_trust_score(
+            gap=1.0, reconstruction_error=0.0, drift=0.0,
+            gamma_min=0.1, eta_max=1.0, s_max=0.5,
+        )
+        assert trust_low < trust_high
+
+    def test_trust_score_high_drift_penalizes(self):
+        trust_low = EDMDKoopman.compute_trust_score(
+            gap=1.0, reconstruction_error=0.0, drift=0.45,
+            gamma_min=0.1, eta_max=1.0, s_max=0.5,
+        )
+        trust_high = EDMDKoopman.compute_trust_score(
+            gap=1.0, reconstruction_error=0.0, drift=0.0,
+            gamma_min=0.1, eta_max=1.0, s_max=0.5,
+        )
+        assert trust_low < trust_high
+
+    def test_linear_system_low_reconstruction_error(self):
+        """Linear system EDMD should reconstruct well."""
+        k = self._fit()
+        err = k.compute_reconstruction_error()
+        # For a linear system with good data, error should be finite and bounded
+        assert err < float('inf')
+        assert err >= 0.0

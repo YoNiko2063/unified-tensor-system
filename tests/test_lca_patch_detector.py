@@ -199,3 +199,49 @@ class TestCrossDomainPoC:
 
         assert rlc_result.commutator_norm < 0.5
         assert spring_result.commutator_norm < 0.5
+
+
+# ------------------------------------------------------------------
+# Tests: koopman_trust field (whattodo.md gap)
+# ------------------------------------------------------------------
+
+class TestKoopmanTrust:
+    def test_patch_classification_has_koopman_trust(self):
+        """PatchClassification must have koopman_trust field (whattodo.md spec)."""
+        detector = LCAPatchDetector(rlc_diode_system, n_states=2)
+        np.random.seed(0)
+        x_samples = np.random.randn(20, 2) * 0.05  # small signal
+        result = detector.classify_region(x_samples)
+        assert hasattr(result, 'koopman_trust')
+
+    def test_koopman_trust_is_bounded(self):
+        """koopman_trust must be in [0, 1]."""
+        detector = LCAPatchDetector(rlc_diode_system, n_states=2)
+        np.random.seed(1)
+        x_samples = np.random.randn(20, 2) * 0.05
+        result = detector.classify_region(x_samples)
+        assert 0.0 <= result.koopman_trust <= 1.0
+
+    def test_koopman_trust_spring_mass(self):
+        """Spring-mass system should yield a valid trust score."""
+        detector = LCAPatchDetector(spring_mass_system, n_states=2)
+        np.random.seed(2)
+        x_samples = np.random.randn(20, 2) * 0.1
+        result = detector.classify_region(x_samples)
+        assert 0.0 <= result.koopman_trust <= 1.0
+
+    def test_koopman_trust_default_zero_in_dataclass(self):
+        """Default koopman_trust=0.0 when constructed manually."""
+        from tensor.lca_patch_detector import PatchClassification
+        n = 2
+        pc = PatchClassification(
+            patch_type='lca',
+            operator_rank=1,
+            commutator_norm=0.0,
+            curvature_ratio=0.01,
+            spectral_gap=0.5,
+            basis_matrices=np.eye(n).reshape(1, n, n),
+            eigenvalues=np.array([-0.5 + 0j, -1.0 + 0j]),
+            centroid=np.zeros(n),
+        )
+        assert pc.koopman_trust == 0.0

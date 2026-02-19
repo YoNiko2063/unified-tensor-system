@@ -72,7 +72,9 @@ class Patch:
 
 class PatchGraph:
     """
-    Graph of HDVS patches connected by curvature-weighted transition edges.
+    Graph of HDVS patches connected by 3-component transition edges.
+
+    Edge cost (whattodo.md): w(P,Q) = α·∫ρ(t)dt + β·interval_alignment + γ·Koopman_risk
 
     Enables shortest-path navigation: find the minimum holonomy path
     between two algebraically equivalent (abelian) regions.
@@ -81,16 +83,27 @@ class PatchGraph:
         graph = PatchGraph()
         graph.add_patch(patch_a)
         graph.add_patch(patch_b)
-        graph.add_transition(patch_a, patch_b, curvature_cost=0.3)
+        graph.add_transition(patch_a, patch_b, curvature_cost=0.3,
+                             interval_cost=0.1, koopman_risk=0.2)
 
         path = graph.shortest_path(patch_a.id, patch_b.id)
         # [0, 1]  — directly connected
     """
 
-    def __init__(self):
+    def __init__(self, alpha: float = 1.0, beta: float = 0.5, gamma: float = 0.5):
+        """
+        Args:
+            alpha: weight for curvature cost (holonomy integral)
+            beta:  weight for interval alignment cost (spectral dissonance)
+            gamma: weight for Koopman risk (1 - koopman_trust)
+        """
         self._patches: Dict[int, Patch] = {}
-        self._edges: Dict[Tuple[int, int], float] = {}  # (i,j) → curvature cost
+        # (i,j) → (curvature_cost, interval_cost, koopman_risk)
+        self._edges: Dict[Tuple[int, int], Tuple[float, float, float]] = {}
         self._next_id: int = 0
+        self._alpha = alpha
+        self._beta = beta
+        self._gamma = gamma
 
     # ------------------------------------------------------------------
     # Node management
@@ -119,36 +132,63 @@ class PatchGraph:
     # Edge management
     # ------------------------------------------------------------------
 
+    @staticmethod
+    def combined_cost(
+        costs: Tuple[float, float, float],
+        alpha: float = 1.0,
+        beta: float = 0.5,
+        gamma: float = 0.5,
+    ) -> float:
+        """
+        Compute combined edge cost from 3-component tuple.
+
+        w = α·curvature + β·interval_alignment + γ·Koopman_risk
+        (whattodo.md specification)
+        """
+        c, ia, kr = costs
+        return alpha * c + beta * ia + gamma * kr
+
     def add_transition(
         self,
         patch1: Patch,
         patch2: Patch,
         curvature_cost: float,
+        interval_cost: float = 0.0,
+        koopman_risk: float = 0.0,
     ) -> None:
         """
         Add a directed transition edge between two patches.
 
-        Edge weight = curvature cost ≈ ∫ρ(x(t))dt along connecting trajectory.
-        Lower weight = smoother transition (preferred path).
+        Args:
+            curvature_cost:  α term — ∫ρ(x(t))dt holonomy integral
+            interval_cost:   β term — spectral dissonance τ(ωᵢ,ωⱼ) between patches
+            koopman_risk:    γ term — 1 - koopman_trust (risk of spectral hallucination)
+
+        Lower combined cost = smoother, more trustworthy transition (preferred path).
         """
         key = (patch1.id, patch2.id)
-        # Keep minimum cost if edge already exists
+        new_edge = (curvature_cost, interval_cost, koopman_risk)
         if key in self._edges:
-            self._edges[key] = min(self._edges[key], curvature_cost)
+            # Keep minimum combined cost edge
+            old_total = self.combined_cost(self._edges[key], self._alpha, self._beta, self._gamma)
+            new_total = self.combined_cost(new_edge, self._alpha, self._beta, self._gamma)
+            if new_total < old_total:
+                self._edges[key] = new_edge
         else:
-            self._edges[key] = curvature_cost
+            self._edges[key] = new_edge
 
         # Symmetric for undirected traversal
         key_rev = (patch2.id, patch1.id)
         if key_rev not in self._edges:
-            self._edges[key_rev] = curvature_cost
+            self._edges[key_rev] = new_edge
 
     def get_neighbors(self, patch_id: int) -> List[Tuple[int, float]]:
-        """Return [(neighbor_id, cost), ...] for patch_id."""
+        """Return [(neighbor_id, combined_cost), ...] for patch_id."""
         neighbors = []
-        for (i, j), cost in self._edges.items():
+        for (i, j), costs in self._edges.items():
             if i == patch_id:
-                neighbors.append((j, cost))
+                w = self.combined_cost(costs, self._alpha, self._beta, self._gamma)
+                neighbors.append((j, w))
         return neighbors
 
     # ------------------------------------------------------------------
@@ -200,12 +240,24 @@ class PatchGraph:
             current = prev[current]
         return list(reversed(path))
 
-    def path_cost(self, path: List[int]) -> float:
-        """Total curvature cost along a path."""
+    def path_cost(
+        self,
+        path: List[int],
+        alpha: Optional[float] = None,
+        beta: Optional[float] = None,
+        gamma: Optional[float] = None,
+    ) -> float:
+        """Total combined cost along a path."""
+        a = self._alpha if alpha is None else alpha
+        b = self._beta if beta is None else beta
+        g = self._gamma if gamma is None else gamma
         total = 0.0
         for i in range(len(path) - 1):
             key = (path[i], path[i + 1])
-            total += self._edges.get(key, float('inf'))
+            costs = self._edges.get(key)
+            if costs is None:
+                return float('inf')
+            total += self.combined_cost(costs, a, b, g)
         return total
 
     # ------------------------------------------------------------------

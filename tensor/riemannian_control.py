@@ -312,6 +312,109 @@ def riemannian_metric(
 
 
 # ------------------------------------------------------------------
+# SPDE: E_total[A] = ‖J − Π_A J‖² + λ‖F_A‖²
+#       A_{k+1} = A_k − η∇E_total(A_k) + √η σ ζ_k
+# (whattodo.md specification)
+# ------------------------------------------------------------------
+
+def projection_consistency(
+    A_basis: np.ndarray,
+    data_jacobians: list,
+) -> float:
+    """
+    Projection consistency term: E_proj = mean ‖J_i − Π_A J_i‖²_F
+
+    Measures how well the operator basis A spans the observed Jacobians.
+    Π_A J = A (A^†A)^{-1} A^† J  (projection onto column space of A in vec form)
+
+    Args:
+        A_basis: (r, n, n) operator basis matrices
+        data_jacobians: list of (n, n) observed Jacobians
+
+    Returns:
+        Mean squared projection residual (lower = better coverage)
+    """
+    if not data_jacobians:
+        return 0.0
+
+    r, n, _ = A_basis.shape
+    # Flatten each basis matrix to a column vector → M ∈ ℝ^{n² × r}
+    M = A_basis.reshape(r, -1).T   # (n², r)
+
+    total = 0.0
+    for J in data_jacobians:
+        j_vec = J.reshape(-1)                                  # (n²,)
+        # Least-squares projection: coeffs = argmin ‖M·c − j‖²
+        coeffs, _, _, _ = np.linalg.lstsq(M, j_vec, rcond=None)
+        proj = M @ coeffs                                       # (n²,) projected
+        residual = j_vec - proj
+        total += float(np.dot(residual, residual))
+
+    return total / len(data_jacobians)
+
+
+def _E_total(
+    A_basis: np.ndarray,
+    data_jacobians: list,
+    lambda_curv: float,
+) -> float:
+    """E_total = projection_consistency + λ·curvature_penalty"""
+    E_proj = projection_consistency(A_basis, data_jacobians)
+    E_curv = curvature_gradient(A_basis, normalize=False)
+    return E_proj + lambda_curv * E_curv
+
+
+def spde_update(
+    A_basis: np.ndarray,
+    data_jacobians: list,
+    eta: float = 0.01,
+    sigma: float = 0.1,
+    lambda_curv: float = 0.1,
+    h: float = 1e-4,
+) -> np.ndarray:
+    """
+    One SPDE update step for operator basis A (whattodo.md specification):
+
+        A_{k+1} = A_k − η·∇E_total(A_k) + √η·σ·ζ_k
+
+    where:
+        E_total[A] = ‖J − Π_A J‖²_F + λ·‖F_A‖²  (projection consistency + curvature penalty)
+        ζ_k ~ N(0, I)                              (stochastic exploration term)
+
+    The noise term is not an adversary — it perturbs the basis into Koopman
+    corridors, enabling discovery of new LCA patches (LOGIC_FLOW.md Section 5).
+
+    Args:
+        A_basis: (r, n, n) current operator basis
+        data_jacobians: list of (n, n) observed Jacobians for consistency term
+        eta: learning rate (step size)
+        sigma: noise magnitude (exploration strength; anneal over time)
+        lambda_curv: weight on curvature penalty (Yang-Mills regularization)
+        h: finite difference step for gradient
+
+    Returns:
+        A_new: (r, n, n) updated operator basis
+    """
+    r, n, _ = A_basis.shape
+    E0 = _E_total(A_basis, data_jacobians, lambda_curv)
+
+    # Numerical gradient ∇E_total w.r.t. each element of A_basis
+    grad = np.zeros_like(A_basis)
+    for i in range(r):
+        for a in range(n):
+            for b in range(n):
+                A_pert = A_basis.copy()
+                A_pert[i, a, b] += h
+                E_pert = _E_total(A_pert, data_jacobians, lambda_curv)
+                grad[i, a, b] = (E_pert - E0) / h
+
+    # Deterministic descent + stochastic exploration
+    noise = np.random.randn(*A_basis.shape)
+    A_new = A_basis - eta * grad + np.sqrt(eta) * sigma * noise
+    return A_new
+
+
+# ------------------------------------------------------------------
 # Fisher Information Matrix (LCA patch)
 # ------------------------------------------------------------------
 

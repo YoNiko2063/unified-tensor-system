@@ -28,6 +28,7 @@ class PatchClassification:
     basis_matrices: np.ndarray         # r × n × n operator basis
     eigenvalues: np.ndarray            # dominant eigenvalues at region centroid
     centroid: np.ndarray               # mean state in region
+    koopman_trust: float = 0.0         # Koopman trust gate ∈ [0,1] (whattodo.md)
 
 
 class LCAPatchDetector:
@@ -212,6 +213,19 @@ class LCAPatchDetector:
         # Step 5: Spectral gap
         gap = self.spectral_gap(centroid)
 
+        # Step 5b: Koopman trust via EDMD on Euler-forward pairs
+        koopman_trust = 0.0
+        try:
+            from tensor.koopman_edmd import EDMDKoopman
+            dt = 1e-2
+            pairs = [(x, x + dt * self.f(x)) for x in x_samples]
+            edmd = EDMDKoopman(observable_degree=2)
+            edmd.fit(pairs)
+            kr = edmd.eigendecomposition()
+            koopman_trust = kr.koopman_trust
+        except Exception:
+            pass
+
         # Step 6: Classify
         J_centroid = self.compute_jacobian(centroid)
         eigvals = np.linalg.eigvals(J_centroid)
@@ -241,6 +255,7 @@ class LCAPatchDetector:
             basis_matrices=basis,
             eigenvalues=eigvals,
             centroid=centroid,
+            koopman_trust=koopman_trust,
         )
 
     def classify_trajectory(

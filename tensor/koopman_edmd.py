@@ -27,6 +27,8 @@ class KoopmanResult:
     K_matrix: np.ndarray          # (k, k) Koopman operator matrix
     spectral_gap: float           # |Re(λ₁) - Re(λ₂)| of dominant modes
     is_stable: bool               # True if spectral gap > threshold
+    reconstruction_error: float = 0.0  # ‖ψ(x_{k+1}) - K·ψ(x_k)‖² mean
+    koopman_trust: float = 0.0         # combined trust gate score ∈ [0,1]
 
 
 class EDMDKoopman:
@@ -64,6 +66,8 @@ class EDMDKoopman:
         self.gap_threshold = spectral_gap_threshold
         self._K = None
         self._fitted = False
+        self._psi_k: Optional[np.ndarray] = None
+        self._psi_kp1: Optional[np.ndarray] = None
 
     # ------------------------------------------------------------------
     # Observable basis ψ(x)
@@ -136,6 +140,8 @@ class EDMDKoopman:
 
         # Koopman matrix K = G⁺ A
         self._K = np.linalg.lstsq(G, A, rcond=None)[0]
+        self._psi_k = psi_k
+        self._psi_kp1 = psi_kp1
         self._fitted = True
         return self
 
@@ -167,6 +173,8 @@ class EDMDKoopman:
 
         gap = self.spectral_gap(eigvals)
         stable = gap > self.gap_threshold
+        recon_err = self.compute_reconstruction_error()
+        trust = self.compute_trust_score(gap, recon_err, drift=0.0)
 
         return KoopmanResult(
             eigenvalues=eigvals,
@@ -174,6 +182,8 @@ class EDMDKoopman:
             K_matrix=self._K.copy(),
             spectral_gap=gap,
             is_stable=stable,
+            reconstruction_error=recon_err,
+            koopman_trust=trust,
         )
 
     def spectral_gap(self, eigenvalues: Optional[np.ndarray] = None) -> float:
@@ -219,6 +229,45 @@ class EDMDKoopman:
 
         min_len = min(len(prev_eigs), len(curr_eigs))
         return float(np.linalg.norm(curr_eigs[:min_len] - prev_eigs[:min_len]))
+
+    def compute_reconstruction_error(self) -> float:
+        """
+        Mean squared reconstruction error: E[‖ψ(x_{k+1}) - K·ψ(x_k)‖²].
+
+        Low error → Koopman model faithfully predicts next observable state.
+        whattodo.md: must satisfy recon_err < η_max for Koopman mode to be trusted.
+        """
+        if not self._fitted or self._psi_k is None or self._psi_kp1 is None:
+            return float('inf')
+        # predicted: psi_k @ K.T since rows of psi_k are ψ(x_k)ᵀ
+        pred = self._psi_k @ self._K.T                   # (m, k)
+        residuals = pred - self._psi_kp1                 # (m, k)
+        return float(np.mean(np.sum(residuals ** 2, axis=1)))
+
+    @staticmethod
+    def compute_trust_score(
+        gap: float,
+        reconstruction_error: float,
+        drift: float,
+        gamma_min: float = 0.1,
+        eta_max: float = 1.0,
+        s_max: float = 0.5,
+    ) -> float:
+        """
+        Combined Koopman trust gate ∈ [0, 1] (whattodo.md specification).
+
+        All three conditions must pass:
+          gap_score     = min(1, gap / γ_min)           — spectral gap gate
+          recon_score   = max(0, 1 - err / η_max)       — reconstruction gate
+          drift_score   = max(0, 1 - drift / s_max)     — eigenfunction stability gate
+
+        Trust = gap_score × recon_score × drift_score
+        A score near 1.0 means Koopman mode is safe to activate.
+        """
+        gap_score = min(1.0, gap / max(gamma_min, 1e-12))
+        recon_score = max(0.0, 1.0 - reconstruction_error / max(eta_max, 1e-12))
+        drift_score = max(0.0, 1.0 - drift / max(s_max, 1e-12))
+        return float(gap_score * recon_score * drift_score)
 
     def predict_next_observable(self, x: np.ndarray) -> np.ndarray:
         """

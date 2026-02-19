@@ -346,3 +346,88 @@ class TestSummary:
         g, pa, pb, pc = triangle_graph
         r = repr(g)
         assert 'patches=3' in r
+
+
+# ------------------------------------------------------------------
+# Tests: 3-component edge cost (whattodo.md gaps)
+# ------------------------------------------------------------------
+
+class TestThreeComponentEdgeCost:
+    def test_combined_cost_curvature_only(self):
+        costs = (0.4, 0.0, 0.0)
+        assert abs(PatchGraph.combined_cost(costs, 1.0, 0.5, 0.5) - 0.4) < 1e-10
+
+    def test_combined_cost_all_components(self):
+        costs = (0.2, 0.4, 0.6)
+        # 1.0*0.2 + 0.5*0.4 + 0.5*0.6 = 0.2 + 0.2 + 0.3 = 0.7
+        expected = 1.0 * 0.2 + 0.5 * 0.4 + 0.5 * 0.6
+        assert abs(PatchGraph.combined_cost(costs) - expected) < 1e-10
+
+    def test_add_transition_three_components(self):
+        g = PatchGraph()
+        p0 = make_patch(0)
+        p1 = make_patch(1)
+        g.add_patch(p0)
+        g.add_patch(p1)
+        g.add_transition(p0, p1, curvature_cost=0.3, interval_cost=0.1, koopman_risk=0.2)
+        neighbors = g.get_neighbors(0)
+        # combined = 1.0*0.3 + 0.5*0.1 + 0.5*0.2 = 0.3 + 0.05 + 0.1 = 0.45
+        expected = 1.0 * 0.3 + 0.5 * 0.1 + 0.5 * 0.2
+        costs = dict(neighbors)
+        assert abs(costs[1] - expected) < 1e-10
+
+    def test_keeps_min_combined_cost(self):
+        """Keep edge with lower combined cost, not just lower curvature."""
+        g = PatchGraph()
+        p0 = make_patch(0)
+        p1 = make_patch(1)
+        g.add_patch(p0)
+        g.add_patch(p1)
+        # First edge: combined = 1.0*0.8 + 0 + 0 = 0.8
+        g.add_transition(p0, p1, curvature_cost=0.8)
+        # Second edge: combined = 1.0*0.2 + 0 + 0 = 0.2 (cheaper)
+        g.add_transition(p0, p1, curvature_cost=0.2)
+        neighbors = g.get_neighbors(0)
+        cost = dict(neighbors)[1]
+        assert abs(cost - 0.2) < 1e-10
+
+    def test_custom_weights_in_constructor(self):
+        g = PatchGraph(alpha=2.0, beta=0.0, gamma=0.0)
+        p0 = make_patch(0)
+        p1 = make_patch(1)
+        g.add_patch(p0)
+        g.add_patch(p1)
+        g.add_transition(p0, p1, curvature_cost=0.5, interval_cost=0.9, koopman_risk=0.9)
+        # With beta=0, gamma=0: only curvature matters → 2.0 * 0.5 = 1.0
+        neighbors = g.get_neighbors(0)
+        cost = dict(neighbors)[1]
+        assert abs(cost - 1.0) < 1e-10
+
+    def test_path_cost_with_custom_weights(self):
+        g = PatchGraph()
+        patches = [make_patch(i) for i in range(3)]
+        for p in patches:
+            g.add_patch(p)
+        g.add_transition(patches[0], patches[1], curvature_cost=0.2, interval_cost=0.4, koopman_risk=0.0)
+        g.add_transition(patches[1], patches[2], curvature_cost=0.1, interval_cost=0.2, koopman_risk=0.0)
+        path = [0, 1, 2]
+        # alpha=1.0, beta=0.5, gamma=0.5
+        # edge(0,1): 0.2 + 0.5*0.4 = 0.4; edge(1,2): 0.1 + 0.5*0.2 = 0.2 → total 0.6
+        cost = g.path_cost(path)
+        expected = (0.2 + 0.5 * 0.4) + (0.1 + 0.5 * 0.2)
+        assert abs(cost - expected) < 1e-10
+
+    def test_shortest_path_uses_combined_cost(self):
+        """Shortest path chooses lower *combined* cost even if curvature alone differs."""
+        g = PatchGraph()
+        # 0→2 direct: curvature=0.1, interval=0.0 → combined=0.1
+        # 0→1→2: curvature=0.05+0.05=0.1, interval=0.4+0.4=0.8 → combined=0.1+0.5*0.8=0.5
+        patches = [make_patch(i) for i in range(3)]
+        for p in patches:
+            g.add_patch(p)
+        g.add_transition(patches[0], patches[2], curvature_cost=0.1, interval_cost=0.0)
+        g.add_transition(patches[0], patches[1], curvature_cost=0.05, interval_cost=0.4)
+        g.add_transition(patches[1], patches[2], curvature_cost=0.05, interval_cost=0.4)
+        path = g.shortest_path(0, 2)
+        # Direct [0,2] has cost 0.1; indirect [0,1,2] has cost 0.5 → direct wins
+        assert path == [0, 2]

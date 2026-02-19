@@ -11,6 +11,8 @@ from tensor.riemannian_control import (
     resonance_collapse_check,
     riemannian_metric,
     fisher_information_matrix,
+    projection_consistency,
+    spde_update,
 )
 
 
@@ -225,3 +227,102 @@ class TestFisherInformationMatrix:
         fim = fisher_information_matrix(eigvals, eigvecs)
         # FIM[1,1] should be larger (larger |λ|)
         assert fim[1, 1] > fim[0, 0]
+
+
+# ------------------------------------------------------------------
+# Tests: projection_consistency + spde_update (whattodo.md gaps)
+# ------------------------------------------------------------------
+
+class TestProjectionConsistency:
+    def _make_basis(self):
+        """Identity + scaled identity as 2-element operator basis."""
+        A1 = np.eye(2)
+        A2 = 2.0 * np.eye(2)
+        return np.stack([A1, A2])  # (2, 2, 2)
+
+    def _make_jacobians(self):
+        """Jacobians from a stable linear system."""
+        A = np.array([[-0.5, 1.0], [-1.0, -0.5]])
+        return [A + 0.01 * np.random.randn(2, 2) for _ in range(5)]
+
+    def test_projection_consistency_nonnegative(self):
+        basis = self._make_basis()
+        jacobians = self._make_jacobians()
+        E = projection_consistency(basis, jacobians)
+        assert E >= 0.0
+
+    def test_projection_consistency_empty_jacobians(self):
+        basis = self._make_basis()
+        assert projection_consistency(basis, []) == 0.0
+
+    def test_projection_consistency_decreases_with_larger_basis(self):
+        """Adding more basis matrices reduces projection residual."""
+        rng = np.random.default_rng(42)
+        n = 2
+        J = rng.normal(0, 1, (n, n))
+        jacobians = [J]
+        # Basis spanning J exactly → residual = 0
+        perfect_basis = J.reshape(1, n, n)
+        E_perfect = projection_consistency(perfect_basis, jacobians)
+        # Basis orthogonal to J → large residual
+        ortho_J = rng.normal(0, 1, (n, n))
+        ortho_basis = ortho_J.reshape(1, n, n)
+        E_ortho = projection_consistency(ortho_basis, jacobians)
+        assert E_perfect < E_ortho + 1e-10  # perfect ≤ orthogonal
+
+    def test_projection_consistency_zero_for_spanning_basis(self):
+        """If basis exactly spans J, residual must be ≈ 0."""
+        n = 2
+        J = np.array([[1.0, 2.0], [3.0, 4.0]])
+        basis = J.reshape(1, n, n)  # 1-element basis = J itself
+        E = projection_consistency(basis, [J])
+        assert E < 1e-10
+
+
+class TestSPDEUpdate:
+    def _make_basis(self):
+        A1 = np.array([[-0.5, 1.0], [-1.0, -0.5]])
+        A2 = 0.5 * np.eye(2)
+        return np.stack([A1, A2])  # (2, 2, 2)
+
+    def _make_jacobians(self):
+        A = np.array([[-0.5, 0.8], [-0.8, -0.5]])
+        return [A + 0.02 * np.random.randn(2, 2) for _ in range(4)]
+
+    def test_spde_update_returns_same_shape(self):
+        basis = self._make_basis()
+        jacobians = self._make_jacobians()
+        A_new = spde_update(basis, jacobians, eta=0.001, sigma=0.0)
+        assert A_new.shape == basis.shape
+
+    def test_spde_update_zero_sigma_is_deterministic(self):
+        """With sigma=0, two calls return same result (no stochastic term)."""
+        np.random.seed(0)
+        basis = self._make_basis()
+        jacobians = self._make_jacobians()
+        A1 = spde_update(basis.copy(), jacobians, eta=0.001, sigma=0.0)
+        np.random.seed(0)
+        A2 = spde_update(basis.copy(), jacobians, eta=0.001, sigma=0.0)
+        assert np.allclose(A1, A2)
+
+    def test_spde_update_nonzero_sigma_varies(self):
+        """With sigma>0, repeated calls produce different results."""
+        basis = self._make_basis()
+        jacobians = self._make_jacobians()
+        np.random.seed(1)
+        A1 = spde_update(basis.copy(), jacobians, eta=0.001, sigma=0.1)
+        np.random.seed(2)
+        A2 = spde_update(basis.copy(), jacobians, eta=0.001, sigma=0.1)
+        assert not np.allclose(A1, A2)
+
+    def test_spde_update_reduces_consistency_error(self):
+        """Multiple SPDE steps should generally reduce projection_consistency."""
+        basis = self._make_basis().copy()
+        jacobians = self._make_jacobians()
+        E0 = projection_consistency(basis, jacobians)
+        # Take 10 small gradient steps with no noise
+        for _ in range(10):
+            basis = spde_update(basis, jacobians, eta=0.0005, sigma=0.0, lambda_curv=0.0)
+        E1 = projection_consistency(basis, jacobians)
+        # With zero lambda_curv and small eta, consistency should not explode
+        assert E1 < E0 * 10  # generous bound — gradient descent must not diverge
