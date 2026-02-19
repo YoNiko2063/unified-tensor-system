@@ -41,6 +41,7 @@ from tensor.github_api_fallback import GitHubAPICapabilityExtractor
 from tensor.domain_registry import DomainRegistry
 from tensor.growing_network import GrowingNeuralNetwork
 from tensor.code_learning import RepoCodeLearner, CodeExecutor, UnknownUnknownDetector
+from tensor.simulation_trainer import SimulationTrainer
 
 
 _DEFAULT_REPOS = [
@@ -114,6 +115,11 @@ class AutonomousLearningSystem:
             self.domain_registry, self.discovery
         )
 
+        # Physical simulation trainer (circuit + mechanical)
+        self.simulation_trainer = SimulationTrainer(
+            self.hdv_system, self.discovery, self.domain_registry
+        )
+
         # Local repos the system has direct access to (no network needed)
         self._local_repos = [
             "ecemath",     # Circuit math: Jacobian, stability, MNA, regime detection
@@ -136,6 +142,7 @@ class AutonomousLearningSystem:
         self.stats: Dict = {
             "math_patterns": 0,
             "behavioral_patterns": 0,
+            "physical_patterns": 0,
             "universals_found": 0,
             "active_domains": self.domain_registry.n_active(),
             "growth_events": 0,
@@ -159,6 +166,7 @@ class AutonomousLearningSystem:
             ("domain-expand",    self._domain_expansion_thread,  ()),
             ("html-patterns",    self._html_pattern_thread,       ()),
             ("code-learning",    self._code_learning_thread,      ()),
+            ("simulation",       self._simulation_thread,         ()),
         ]
 
         for name, fn, args in thread_defs:
@@ -201,6 +209,7 @@ class AutonomousLearningSystem:
             f"\n[ALS Status @ {uptime_h:.2f}h]\n"
             f"  Math patterns:      {stats['math_patterns']}\n"
             f"  Behavioral patterns:{stats['behavioral_patterns']}\n"
+            f"  Physical patterns:  {stats['physical_patterns']}\n"
             f"  Universals found:   {stats['universals_found']}\n"
             f"  HDV domains:        {len(self.hdv_system.domain_masks)}\n"
             f"  Overlap dims:       {len(self.hdv_system.find_overlaps())}\n"
@@ -511,6 +520,46 @@ class AutonomousLearningSystem:
 
             # Re-scan every 5 minutes for new ingested papers
             self._stop_event.wait(300)
+
+    def _simulation_thread(self):
+        """
+        Thread: physical dimension.
+
+        Runs circuit and mechanical simulations via ecemath, encodes the
+        eigenvalue structure and stability information as HDV vectors in
+        the 'physical' dimension.
+
+        This populates the physical dimension so that CrossDimensionalDiscovery
+        can find universals between:
+          - 'physical' (eigenvalues from RC/RLC/spring-mass simulations)
+          - 'math' (arXiv papers on stability, eigenvalues, ODE systems)
+          - 'execution' (ecemath code: numerical_jacobian, stability_analysis)
+
+        PoC cross-domain proof: RLC ↔ spring-mass → same operator algebra
+        → shared Pontryagin characters → overlap similarity > threshold
+        (verifies LOGIC_FLOW.md Section 9 Phase 9).
+        """
+        # Initial pass: small sweep to bootstrap physical patterns quickly
+        try:
+            result = self.simulation_trainer.run_one_pass(n_sweep=3)
+            self.simulation_trainer.print_report(result)
+            with self._lock:
+                self.stats["physical_patterns"] = result["total_encoded"]
+        except Exception as e:
+            print(f"[SimThread] Initial pass failed: {e}")
+
+        # Extended sweep: more parameter points for richer coverage
+        while not self._stop_event.is_set():
+            self._stop_event.wait(600)  # every 10 minutes
+            if self._stop_event.is_set():
+                break
+            try:
+                result = self.simulation_trainer.run_one_pass(n_sweep=4)
+                self.simulation_trainer.print_report(result)
+                with self._lock:
+                    self.stats["physical_patterns"] = result["total_encoded"]
+            except Exception as e:
+                print(f"[SimThread] Extended pass failed: {e}")
 
     def _code_learning_thread(self):
         """
