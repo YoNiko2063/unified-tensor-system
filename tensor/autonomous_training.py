@@ -40,6 +40,7 @@ from tensor.deepwiki_integration import DeepWikiWorkflowParser
 from tensor.github_api_fallback import GitHubAPICapabilityExtractor
 from tensor.domain_registry import DomainRegistry
 from tensor.growing_network import GrowingNeuralNetwork
+from tensor.code_learning import RepoCodeLearner, CodeExecutor, UnknownUnknownDetector
 
 
 _DEFAULT_REPOS = [
@@ -104,6 +105,21 @@ class AutonomousLearningSystem:
             growth_error_threshold=0.5,
         )
 
+        # Code learning from local repos + execution feedback loop
+        self.code_learner = RepoCodeLearner(
+            self.hdv_system, self.discovery, self.domain_registry
+        )
+        self.code_executor = CodeExecutor(timeout=5.0)
+        self.unknown_detector = UnknownUnknownDetector(
+            self.domain_registry, self.discovery
+        )
+
+        # Local repos the system has direct access to (no network needed)
+        self._local_repos = [
+            "ecemath",     # Circuit math: Jacobian, stability, MNA, regime detection
+            "dev-agent",   # Agent code: multi-modal reasoning, planning, execution
+        ]
+
         # Dimension workers
         self.arxiv_parser = ArxivPDFSourceParser(rate_limit_seconds=1.5)
         self.function_library = FunctionBasisLibrary()
@@ -142,6 +158,7 @@ class AutonomousLearningSystem:
             ("discovery",        self._discovery_thread,          ()),
             ("domain-expand",    self._domain_expansion_thread,  ()),
             ("html-patterns",    self._html_pattern_thread,       ()),
+            ("code-learning",    self._code_learning_thread,      ()),
         ]
 
         for name, fn, args in thread_defs:
@@ -494,6 +511,98 @@ class AutonomousLearningSystem:
 
             # Re-scan every 5 minutes for new ingested papers
             self._stop_event.wait(300)
+
+    def _code_learning_thread(self):
+        """
+        Thread: learn from local git repositories (ecemath, dev-agent) and
+        from repos discovered by the unknown-unknown detector.
+
+        Workflow:
+          1. Learn from local repos on startup (ecemath: circuit math,
+             dev-agent: agent/reasoning code)
+          2. Periodically check for 'unknown unknown' domains (gaps in coverage)
+          3. For each gap domain, recommend and ingest target repos
+          4. Run code snippets from ecemath to generate execution feedback
+
+        This creates the self-reinforcing loop:
+          local code → HDV patterns → universals discovered → grow network →
+          detect gaps → find repos → ingest → more patterns → ...
+        """
+        # Phase 1: learn from local repos immediately
+        for repo_path in self._local_repos:
+            if self._stop_event.is_set():
+                return
+            n = self.code_learner.learn_from_repo(repo_path, max_files=300)
+            if n > 0:
+                print(f"[CodeThread] Learned {n} functions from '{repo_path}'")
+            with self._lock:
+                self.stats["active_domains"] = self.domain_registry.n_active()
+
+        # Phase 2: execute a few ecemath examples to generate execution patterns
+        _ECEMATH_SAMPLES = [
+            # Simple circuits that can run without ecemath import
+            "import numpy as np; J = np.array([[0, -1], [1, -2.0]]); print(np.linalg.eigvals(J))",
+            "import numpy as np; A = np.eye(3) * -1; print('stable:', all(np.real(np.linalg.eigvals(A)) < 0))",
+            "import numpy as np; x = np.linspace(0, 2*np.pi, 10); print('sin sum:', round(float(np.sum(np.sin(x))), 3))",
+        ]
+        for code_snippet in _ECEMATH_SAMPLES:
+            if self._stop_event.is_set():
+                return
+            hdv_vec = self.code_executor.execute_and_encode(code_snippet, self.hdv_system)
+            if hdv_vec is not None:
+                result = self.code_executor.execute(code_snippet)
+                self.discovery.record_pattern(
+                    "execution", hdv_vec,
+                    {
+                        "type": "executed_snippet",
+                        "success": result["success"],
+                        "output_type": result["output_type"],
+                        "code_preview": code_snippet[:60],
+                        "elapsed_ms": int(result["elapsed"] * 1000),
+                    },
+                )
+
+        # Phase 3: periodic gap analysis + new repo discovery
+        while not self._stop_event.is_set():
+            self._stop_event.wait(300)  # every 5 minutes
+            if self._stop_event.is_set():
+                break
+
+            # Report coverage gaps (unknown unknowns)
+            report = self.unknown_detector.coverage_report()
+            covered = report["covered"]
+            total = report["total_domains"]
+            if covered < total:
+                # Find the most important uncovered domain and recommend repos
+                top_uncovered = report["top_uncovered"][:3]
+                for domain_id in top_uncovered:
+                    suggested = self.unknown_detector.recommend_repos_for_domain(domain_id)
+                    for repo_url in suggested:
+                        # Ingest the suggested repo via GitHub API (fallback)
+                        try:
+                            cap = self.github.extract_capability_via_api(repo_url)
+                            if cap:
+                                hdv_vec = self.hdv_system.encode_workflow(
+                                    cap["workflow"], domain="execution"
+                                )
+                                self.discovery.record_pattern(
+                                    "execution", hdv_vec,
+                                    {
+                                        "type": "gap_fill_repo",
+                                        "gap_domain": domain_id,
+                                        "repo": repo_url,
+                                        "intent": cap["intent"][:60],
+                                    },
+                                )
+                                # Activate the gap domain
+                                self.domain_registry.activate_domain(
+                                    domain_id, self.hdv_system
+                                )
+                        except Exception:
+                            pass
+
+            with self._lock:
+                self.stats["active_domains"] = self.domain_registry.n_active()
 
 
 # ── Entry point ────────────────────────────────────────────────────────────────

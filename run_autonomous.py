@@ -96,6 +96,20 @@ def print_status():
     else:
         print(f"\n  Universals Discovered: 0")
 
+    # Domain coverage (150-domain expansion system)
+    dom_path = Path("tensor/data/active_domains.json")
+    if dom_path.exists():
+        try:
+            dom_data = json.loads(dom_path.read_text())
+            active = dom_data.get("active", [])
+            pct = round(100.0 * len(active) / 150, 1)
+            print(f"\n  Domain Coverage (150-domain expansion):")
+            print(f"    Active: {len(active)}/150 ({pct}%)")
+            if active:
+                print(f"    Domains: {', '.join(active[:6])}{'...' if len(active) > 6 else ''}")
+        except Exception:
+            pass
+
     # HDV state
     hdv_path = Path("tensor/data/hdv_state.json")
     if hdv_path.exists():
