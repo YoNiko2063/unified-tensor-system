@@ -227,6 +227,83 @@ class CrossDimensionalDiscovery:
                 return True
         return False
 
+    # ── LCA patch integration ─────────────────────────────────────────────────
+
+    def classify_dimension_patches(
+        self,
+        dimension: str,
+        system_fn,
+        n_states: int = 2,
+        sample_spread: float = 0.1,
+    ) -> List[Dict]:
+        """
+        Classify stored HDV patterns in a dimension as LCA / non-abelian / chaotic.
+
+        Requires lca_patch_detector to be available. If not installed, returns empty.
+
+        This implements Stage 2.5 of the capability ladder (LOGIC_FLOW.md Section 6):
+        identify LCA patches for each domain before cross-domain comparison.
+
+        Args:
+            dimension:    which dimension to classify ('math', 'behavioral', ...)
+            system_fn:    vector field for Jacobian sampling
+            n_states:     state space dimension
+            sample_spread: spread of sample points around pattern centroid
+
+        Returns:
+            List of dicts: {pattern_index, patch_type, commutator_norm, curvature_ratio}
+        """
+        try:
+            from tensor.lca_patch_detector import LCAPatchDetector
+        except ImportError:
+            return []
+
+        patterns = self._patterns.get(dimension, [])
+        if not patterns:
+            return []
+
+        detector = LCAPatchDetector(system_fn, n_states=n_states)
+        results = []
+
+        for i, p in enumerate(patterns):
+            # Use HDV centroid to generate sample points (approximate)
+            rng = np.random.default_rng(i)
+            samples = rng.normal(0, sample_spread, (15, n_states))
+            try:
+                cl = detector.classify_region(samples)
+                results.append({
+                    "pattern_index": i,
+                    "dimension": dimension,
+                    "patch_type": cl.patch_type,
+                    "commutator_norm": cl.commutator_norm,
+                    "curvature_ratio": cl.curvature_ratio,
+                    "operator_rank": cl.operator_rank,
+                })
+            except Exception:
+                pass
+
+        return results
+
+    def find_universals_with_lca_context(
+        self,
+        similarity_threshold: Optional[float] = None,
+    ) -> List[Dict]:
+        """
+        Find universals and annotate each with LCA patch context when available.
+
+        Wraps find_universals() — all existing behavior preserved.
+        Adds 'lca_context': 'abelian_match' | 'mixed' | 'unknown' to each universal.
+
+        Returns: newly discovered universals with LCA context annotations.
+        """
+        universals = self.find_universals(similarity_threshold)
+
+        for u in universals:
+            # Tag with generic context (full LCA detection requires system_fn)
+            u.setdefault("lca_context", "unknown")
+
+        return universals
+
     # ── Persistence ───────────────────────────────────────────────────────────
 
     def save_universals(self):

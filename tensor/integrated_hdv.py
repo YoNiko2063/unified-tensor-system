@@ -249,6 +249,35 @@ class IntegratedHDVSystem:
 
         return float(np.dot(v1, v2) / (n1 * n2))
 
+    # ── Patch-aware encoding (LCA geometry integration) ───────────────────────
+
+    def structural_encode_with_patch_info(
+        self, text: str, domain: str,
+        patch_type: Optional[str] = None,
+    ) -> tuple:
+        """
+        Encode text into HDV space and return patch geometry metadata.
+
+        Extends structural_encode() with optional LCA patch context.
+        Existing callers using structural_encode() are not affected.
+
+        Args:
+            text:       input text to encode
+            domain:     HDV domain name
+            patch_type: optional patch classification ('lca'|'nonabelian'|'chaotic')
+
+        Returns:
+            (hdv_vec, metadata_dict) where metadata has patch_type and overlap info
+        """
+        vec = self.structural_encode(text, domain)
+        metadata = {
+            "domain": domain,
+            "patch_type": patch_type,
+            "n_overlap_dims": len(self.find_overlaps()),
+            "n_domain_dims": int(np.sum(self.domain_masks.get(domain, np.zeros(self.hdv_dim)))),
+        }
+        return vec, metadata
+
     # ── Persistence ───────────────────────────────────────────────────────────
 
     def save_state(self, path: str = "tensor/data/hdv_state.json"):

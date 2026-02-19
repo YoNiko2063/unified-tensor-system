@@ -185,6 +185,61 @@ class DeepNeuralNetworkReasoner:
             return 0.0
         return float(np.dot(vec_a, vec_b) / (n_a * n_b))
 
+    # ── Mode-aware reasoning (LCA geometry integration) ───────────────────────
+
+    def reason_about_with_mode(
+        self,
+        query: str,
+        domain: str = "math",
+        mode: str = "lca",
+    ) -> Dict[str, Any]:
+        """
+        Mode-aware reasoning chain generation.
+
+        Extends reason_about() with patch-mode context:
+          - 'lca':       uses standard cosine similarity (Pontryagin character alignment)
+          - 'koopman':   uses overlap-only similarity (Koopman eigenfunction overlap)
+          - 'transition': uses overlap similarity with lower threshold
+
+        Args:
+            query:  input query text
+            domain: HDV domain
+            mode:   navigation mode ('lca' | 'transition' | 'koopman')
+
+        Returns:
+            Same structure as reason_about(), plus 'mode' key.
+        """
+        if self.hdv is None:
+            return {
+                "chain": [], "converged": False,
+                "final_energy": float("inf"), "steps": 0,
+                "energy_history": [], "mode": mode,
+            }
+
+        result = self.reason_about(query, domain)
+        result["mode"] = mode
+
+        # In Koopman/transition mode, also compute overlap-based similarity
+        if mode in ("koopman", "transition") and self._store:
+            query_vec = self.hdv.structural_encode(query, domain)
+            similar_overlap = self._find_similar_overlap(query_vec)
+            result["overlap_chain"] = [
+                {"text": s["text"], "domain": s["domain"], "overlap_sim": s["similarity"]}
+                for s in similar_overlap
+            ]
+
+        return result
+
+    def _find_similar_overlap(self, query: np.ndarray) -> List[Dict[str, Any]]:
+        """Find similar entries using overlap-only similarity (Koopman mode)."""
+        results = []
+        for entry in self._store:
+            v = entry["vec"]
+            sim = self.hdv.compute_overlap_similarity(query, v)
+            results.append({**entry, "similarity": sim})
+        results.sort(key=lambda x: x["similarity"], reverse=True)
+        return results[: self.top_k]
+
     # ── Internal ──────────────────────────────────────────────────────────────
 
     def _find_similar(self, query: np.ndarray) -> List[Dict[str, Any]]:
