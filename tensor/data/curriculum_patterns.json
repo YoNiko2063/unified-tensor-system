@@ -246,5 +246,117 @@
   {
     "source": "vuejs/vue",
     "type": "architecture"
+  },
+  {
+    "source": "freecodecamp",
+    "id": "daily-coding-challenge"
+  },
+  {
+    "source": "books",
+    "title": "![Awesome"
+  },
+  {
+    "source": "books",
+    "title": "![License: CC BY 4.0"
+  },
+  {
+    "source": "books",
+    "title": "![Hacktoberfest 2025 stats"
+  },
+  {
+    "source": "books",
+    "title": "https://ebookfoundation.github.io/free-programming-books-search/"
+  },
+  {
+    "source": "books",
+    "title": "![https://ebookfoundation.github.io/free-programming-books-search/"
+  },
+  {
+    "source": "books",
+    "title": "![https://ebookfoundation.github.io/free-programming-books/"
+  },
+  {
+    "source": "books",
+    "title": "StackOverflow - List of Freely Available Programming Books"
+  },
+  {
+    "source": "books",
+    "title": "GitHub's most popular repositories"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo forks"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo stars"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo contributors"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub org sponsors"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo watchers"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo size"
+  },
+  {
+    "source": "books",
+    "title": "Free Ebook Foundation"
+  },
+  {
+    "source": "books",
+    "title": "Donations"
+  },
+  {
+    "source": "books",
+    "title": "Contributor Covenant 1.3"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Issues"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Good Issues for newbies"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub Help Wanted issues"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo PRs"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub repo Merged PRs"
+  },
+  {
+    "source": "books",
+    "title": "![GitHub Help Wanted PRs"
+  },
+  {
+    "source": "isl-org/Open3D",
+    "type": "geometry"
+  },
+  {
+    "source": "prusa3d/PrusaSlicer",
+    "type": "geometry"
+  },
+  {
+    "source": "nodejs/node",
+    "type": "architecture"
+  },
+  {
+    "source": "vuejs/vue",
+    "type": "architecture"
   }
 ]

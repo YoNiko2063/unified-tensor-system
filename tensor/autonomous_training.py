@@ -30,6 +30,8 @@ import time
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import numpy as np
+
 from tensor.integrated_hdv import IntegratedHDVSystem
 from tensor.cross_dimensional_discovery import CrossDimensionalDiscovery
 from tensor.arxiv_pdf_parser import ArxivPDFSourceParser
@@ -47,6 +49,19 @@ _DEFAULT_REPOS = [
     "https://github.com/prusa3d/PrusaSlicer",
     "https://github.com/langchain-ai/langchain",
     "https://github.com/matplotlib/matplotlib",
+    # Math-adjacent repos (generate vocabulary shared with equations)
+    "https://github.com/scipy/scipy",
+    "https://github.com/sympy/sympy",
+    "https://github.com/statsmodels/statsmodels",
+    "https://github.com/tensorflow/tensorflow",
+    "https://github.com/openai/gym",
+    "https://github.com/networkx/networkx",
+    "https://github.com/cvxpy/cvxpy",
+    "https://github.com/casadi/casadi",
+    "https://github.com/gekko-package/gekko",
+    "https://github.com/python-control/python-control",
+    "https://github.com/josephmisiti/awesome-machine-learning",
+    "https://github.com/microsoft/onnxruntime",
 ]
 
 
@@ -72,7 +87,11 @@ class AutonomousLearningSystem:
 
         # Core systems
         self.hdv_system = IntegratedHDVSystem(hdv_dim, n_modes, embed_dim)
-        self.discovery = CrossDimensionalDiscovery(self.hdv_system)
+        # Threshold 0.15: appropriate for token-hash overlap similarity.
+        # - Random baseline cosine ≈ 0.0075 (25 active dims, 3333 universal dims)
+        # - 0.15 ≈ 20× above random → requires ≥3 shared vocabulary tokens
+        # - 0.85 (original) was for trained semantic embeddings; too strict for hashing
+        self.discovery = CrossDimensionalDiscovery(self.hdv_system, similarity_threshold=0.15)
 
         # Dimension workers
         self.arxiv_parser = ArxivPDFSourceParser(rate_limit_seconds=1.5)
@@ -197,10 +216,21 @@ class AutonomousLearningSystem:
                 title = data.get("article", {}).get("title", "")
                 domain = self.function_library._infer_domain(url, title)
 
+                # Paper title carries natural language shared with behavioral descriptions
+                # e.g. "Attention Is All You Need" → tokens "attention", "need" overlap
+                # with behavioral workflow steps mentioning the same concepts.
+                title_vec = self.hdv_system.structural_encode(title, domain) if title else None
+
                 for eq_latex in result["equations"]:
                     expr = self.eq_parser.parse(eq_latex)
                     func_type = self.eq_parser.classify_function_type(expr)
-                    hdv_vec = self.hdv_system.encode_equation(eq_latex, domain)
+                    # Blend: structured (SymPy type) + raw latex tokens + paper title words
+                    # This 3-way blend maximises shared vocabulary with behavioral patterns.
+                    structured_vec = self.hdv_system.encode_equation(eq_latex, domain)
+                    raw_vec = self.hdv_system.structural_encode(eq_latex, domain)
+                    hdv_vec = np.clip(structured_vec + raw_vec, 0.0, 1.0)
+                    if title_vec is not None:
+                        hdv_vec = np.clip(hdv_vec + title_vec, 0.0, 1.0)
 
                     self.discovery.record_pattern(
                         "math", hdv_vec,
@@ -243,52 +273,56 @@ class AutonomousLearningSystem:
 
         Tries DeepWiki first; falls back to GitHub API.
         Encodes workflows as HDVs and records for cross-dimensional discovery.
+        Loops indefinitely — re-processes repos every 10 minutes so behavioral
+        patterns keep growing alongside math patterns.
         """
-        for repo_url in repos:
-            if self._stop_event.is_set():
-                break
+        while not self._stop_event.is_set():
+            for repo_url in repos:
+                if self._stop_event.is_set():
+                    break
 
-            # Try DeepWiki first (high-signal, pre-analyzed)
-            capability = self.deepwiki.parse_deepwiki_summary(repo_url)
+                # Try DeepWiki first (high-signal, pre-analyzed)
+                capability = self.deepwiki.parse_deepwiki_summary(repo_url)
 
-            if capability:
-                hdv_vec = self.deepwiki.encode_workflow_to_hdv(
-                    capability, self.hdv_system
-                )
-                self.discovery.record_pattern(
-                    "behavioral", hdv_vec,
-                    {
-                        "type": "workflow",
-                        "intent": capability["intent"][:80],
-                        "repo": repo_url,
-                        "steps": len(capability["workflow"]),
-                        "source": capability.get("source", "deepwiki"),
-                    },
-                )
-                with self._lock:
-                    self.stats["behavioral_patterns"] += 1
-                continue
+                if capability:
+                    hdv_vec = self.deepwiki.encode_workflow_to_hdv(
+                        capability, self.hdv_system
+                    )
+                    self.discovery.record_pattern(
+                        "behavioral", hdv_vec,
+                        {
+                            "type": "workflow",
+                            "intent": capability["intent"][:80],
+                            "repo": repo_url,
+                            "steps": len(capability["workflow"]),
+                            "source": capability.get("source", "deepwiki"),
+                        },
+                    )
+                    with self._lock:
+                        self.stats["behavioral_patterns"] += 1
+                    continue
 
-            # Fallback: GitHub API
-            cap = self.github.extract_capability_via_api(repo_url)
-            if cap:
-                hdv_vec = self.hdv_system.encode_workflow(
-                    cap["workflow"], domain="behavioral"
-                )
-                self.discovery.record_pattern(
-                    "behavioral", hdv_vec,
-                    {
-                        "type": "workflow_github_api",
-                        "intent": cap["intent"][:80],
-                        "repo": repo_url,
-                        "steps": len(cap["workflow"]),
-                        "source": "github_api",
-                    },
-                )
-                with self._lock:
-                    self.stats["behavioral_patterns"] += 1
+                # Fallback: GitHub API
+                cap = self.github.extract_capability_via_api(repo_url)
+                if cap:
+                    hdv_vec = self.hdv_system.encode_workflow(
+                        cap["workflow"], domain="behavioral"
+                    )
+                    self.discovery.record_pattern(
+                        "behavioral", hdv_vec,
+                        {
+                            "type": "workflow_github_api",
+                            "intent": cap["intent"][:80],
+                            "repo": repo_url,
+                            "steps": len(cap["workflow"]),
+                            "source": "github_api",
+                        },
+                    )
+                    with self._lock:
+                        self.stats["behavioral_patterns"] += 1
 
-        print("[BehavioralThread] Finished processing repos")
+            print("[BehavioralThread] Completed one pass over repos; sleeping 600s")
+            self._stop_event.wait(600)
 
     def _discovery_thread(self):
         """

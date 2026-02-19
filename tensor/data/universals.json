@@ -1,1 +1,52 @@
-[]
+[
+  {
+    "dimensions": [
+      "math",
+      "behavioral"
+    ],
+    "similarity": 0.16367943584918976,
+    "mdl": 0.986513614654541,
+    "patterns": [
+      {
+        "type": "unknown",
+        "content": "%\\label{eq:sampling_explainer}\n%{\\phi}_{c,t} = \\frac{1}{P} \\sum_{p=1}^{P} \\left[ f\\left(\\mathbf{X}_{",
+        "domain": "general",
+        "paper_id": "2602.13231"
+      },
+      {
+        "type": "workflow",
+        "intent": "CasADi is a powerful symbolic framework for numerical optimization in systems en",
+        "repo": "https://github.com/casadi/casadi",
+        "steps": 10,
+        "source": "deepwiki"
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771502357.031672
+  },
+  {
+    "dimensions": [
+      "math",
+      "behavioral"
+    ],
+    "similarity": 0.22704514861106873,
+    "mdl": 0.9738841652870178,
+    "patterns": [
+      {
+        "type": "algebraic",
+        "content": "\\mu_{\\text{child}}=\\mu_k, \\qquad\n\\sigma_{\\text{child}}=\\sqrt{\\sigma_k^2+\\Delta\\sigma^2}.",
+        "domain": "general",
+        "paper_id": "2602.14697"
+      },
+      {
+        "type": "workflow",
+        "intent": "Scikit-learn is a comprehensive machine learning library for Python that provide",
+        "repo": "https://github.com/scikit-learn/scikit-learn",
+        "steps": 10,
+        "source": "deepwiki"
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771502462.354066
+  }
+]
