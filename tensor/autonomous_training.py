@@ -86,8 +86,28 @@ class AutonomousLearningSystem:
         embed_dim: int = 512,
         github_token: Optional[str] = None,
         ingested_dir: str = "tensor/data/ingested",
+        # Adaptive component flags (default OFF — existing behavior unchanged)
+        enable_adaptive_basis: bool = False,
+        enable_patch_explorer: bool = False,
     ):
         self.ingested_dir = ingested_dir
+
+        # Adaptive component feature flags — default False: no behaviour change
+        self._enable_adaptive_basis = enable_adaptive_basis
+        self._enable_patch_explorer = enable_patch_explorer
+
+        # Geometry monitor — always instantiated, adaptive rollback only fires when
+        # enable_adaptive_basis=True or enable_patch_explorer=True
+        from tensor.geometry_monitor import GeometryMonitor
+        self.geometry_monitor = GeometryMonitor(window_size=100)
+
+        # Patch explorer — instantiated always, active only when flag is True
+        from tensor.patch_graph import PatchGraph
+        from tensor.patch_explorer import PatchExplorationScheduler
+        self._patch_graph = PatchGraph()
+        self._patch_explorer = PatchExplorationScheduler(
+            self._patch_graph, n_states=2, region_std=0.1
+        )
 
         # Core systems
         self.hdv_system = IntegratedHDVSystem(hdv_dim, n_modes, embed_dim)
@@ -205,6 +225,8 @@ class AutonomousLearningSystem:
 
         dom_status = self.domain_registry.status()
         grow_status = self.growing_net.status()
+        geo_summary = self.geometry_monitor.summary()
+        expl_summary = self._patch_explorer.summary()
         print(
             f"\n[ALS Status @ {uptime_h:.2f}h]\n"
             f"  Math patterns:      {stats['math_patterns']}\n"
@@ -218,6 +240,15 @@ class AutonomousLearningSystem:
             f"({dom_status['coverage_pct']}%) active\n"
             f"  Network growth:     {grow_status['growth_events']} expansions, "
             f"worst-head err={grow_status['worst_head_error']}\n"
+            f"  Geometry monitor:   obs={geo_summary['n_observations']}, "
+            f"trust={geo_summary['mean_trust']:.3f}, "
+            f"curvature={geo_summary['mean_curvature']:.3f}, "
+            f"unstable={geo_summary['is_unstable']}, "
+            f"rollbacks={geo_summary['n_rollbacks']}\n"
+            f"  Patch explorer:     recorded={expl_summary['n_recorded']}, "
+            f"max_uncertainty={expl_summary['max_uncertainty']:.3f}\n"
+            f"  Adaptive flags:     basis={self._enable_adaptive_basis}, "
+            f"explorer={self._enable_patch_explorer}\n"
         )
 
     # ── Worker threads ─────────────────────────────────────────────────────────
@@ -558,6 +589,17 @@ class AutonomousLearningSystem:
                 self.simulation_trainer.print_report(result)
                 with self._lock:
                     self.stats["physical_patterns"] = result["total_encoded"]
+
+                # Patch explorer: record geometry metrics and log top uncertain regions.
+                # Active only when enable_patch_explorer=True; otherwise records
+                # baseline stats to geometry_monitor for passive monitoring.
+                if self._enable_patch_explorer:
+                    expl_summary = self._patch_explorer.summary()
+                    if expl_summary["n_recorded"] > 0:
+                        top = self._patch_explorer.top_uncertain(k=3)
+                        print(f"[SimThread] Top uncertain patches: "
+                              f"{[(round(self._patch_explorer.uncertainty(p), 3), p.patch_type) for p in top]}")
+
             except Exception as e:
                 print(f"[SimThread] Extended pass failed: {e}")
 

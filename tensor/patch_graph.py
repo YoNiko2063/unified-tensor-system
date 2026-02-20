@@ -90,12 +90,22 @@ class PatchGraph:
         # [0, 1]  — directly connected
     """
 
-    def __init__(self, alpha: float = 1.0, beta: float = 0.5, gamma: float = 0.5):
+    def __init__(
+        self,
+        alpha: float = 1.0,
+        beta: float = 0.5,
+        gamma: float = 0.5,
+        normalize: bool = False,
+    ):
         """
         Args:
             alpha: weight for curvature cost (holonomy integral)
             beta:  weight for interval alignment cost (spectral dissonance)
             gamma: weight for Koopman risk (1 - koopman_trust)
+            normalize: if True, normalize curvature and interval costs by running
+                       maximum before weighting, so all three components live in [0,1].
+                       koopman_risk is already [0,1] by definition.
+                       Default False preserves original raw-cost behavior.
         """
         self._patches: Dict[int, Patch] = {}
         # (i,j) → (curvature_cost, interval_cost, koopman_risk)
@@ -104,6 +114,12 @@ class PatchGraph:
         self._alpha = alpha
         self._beta = beta
         self._gamma = gamma
+        self._normalize = normalize
+        # Running maxima for normalization (only used when normalize=True).
+        # koopman_risk ∈ [0,1] by definition; curvature and interval are unbounded.
+        # Normalizing keeps α/β/γ interpretable as true proportional weights.
+        self._max_c: float = 1.0    # running max curvature cost (init=1 avoids div-by-zero)
+        self._max_ia: float = 1.0   # running max interval cost
 
     # ------------------------------------------------------------------
     # Node management
@@ -132,21 +148,32 @@ class PatchGraph:
     # Edge management
     # ------------------------------------------------------------------
 
-    @staticmethod
     def combined_cost(
+        self,
         costs: Tuple[float, float, float],
-        alpha: float = 1.0,
-        beta: float = 0.5,
-        gamma: float = 0.5,
+        alpha: Optional[float] = None,
+        beta: Optional[float] = None,
+        gamma: Optional[float] = None,
     ) -> float:
         """
         Compute combined edge cost from 3-component tuple.
 
-        w = α·curvature + β·interval_alignment + γ·Koopman_risk
-        (whattodo.md specification)
+        When normalize=False (default): w = α·c + β·ia + γ·kr  (raw costs)
+        When normalize=True:           w = α·(c/max_c) + β·(ia/max_ia) + γ·kr
+          — running-max normalization keeps all three components in [0,1],
+            making α/β/γ interpretable as true proportional weights.
+            koopman_risk ∈ [0,1] by definition; no normalization needed there.
         """
+        a = self._alpha if alpha is None else alpha
+        b = self._beta if beta is None else beta
+        g = self._gamma if gamma is None else gamma
         c, ia, kr = costs
-        return alpha * c + beta * ia + gamma * kr
+        if self._normalize:
+            c_n  = c  / (self._max_c  + 1e-9)
+            ia_n = ia / (self._max_ia + 1e-9)
+        else:
+            c_n, ia_n = c, ia
+        return a * c_n + b * ia_n + g * kr
 
     def add_transition(
         self,
@@ -166,12 +193,16 @@ class PatchGraph:
 
         Lower combined cost = smoother, more trustworthy transition (preferred path).
         """
+        # Update running maxima for normalization BEFORE comparing costs
+        self._max_c  = max(self._max_c,  curvature_cost)
+        self._max_ia = max(self._max_ia, interval_cost)
+
         key = (patch1.id, patch2.id)
         new_edge = (curvature_cost, interval_cost, koopman_risk)
         if key in self._edges:
             # Keep minimum combined cost edge
-            old_total = self.combined_cost(self._edges[key], self._alpha, self._beta, self._gamma)
-            new_total = self.combined_cost(new_edge, self._alpha, self._beta, self._gamma)
+            old_total = self.combined_cost(self._edges[key])
+            new_total = self.combined_cost(new_edge)
             if new_total < old_total:
                 self._edges[key] = new_edge
         else:

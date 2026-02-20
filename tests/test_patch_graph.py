@@ -354,14 +354,17 @@ class TestSummary:
 
 class TestThreeComponentEdgeCost:
     def test_combined_cost_curvature_only(self):
+        # Use instance method (not static) — normalize=False (default) gives raw costs
+        g = PatchGraph()
         costs = (0.4, 0.0, 0.0)
-        assert abs(PatchGraph.combined_cost(costs, 1.0, 0.5, 0.5) - 0.4) < 1e-10
+        assert abs(g.combined_cost(costs, 1.0, 0.5, 0.5) - 0.4) < 1e-10
 
     def test_combined_cost_all_components(self):
+        g = PatchGraph()
         costs = (0.2, 0.4, 0.6)
         # 1.0*0.2 + 0.5*0.4 + 0.5*0.6 = 0.2 + 0.2 + 0.3 = 0.7
         expected = 1.0 * 0.2 + 0.5 * 0.4 + 0.5 * 0.6
-        assert abs(PatchGraph.combined_cost(costs) - expected) < 1e-10
+        assert abs(g.combined_cost(costs) - expected) < 1e-10
 
     def test_add_transition_three_components(self):
         g = PatchGraph()
@@ -411,7 +414,7 @@ class TestThreeComponentEdgeCost:
         g.add_transition(patches[0], patches[1], curvature_cost=0.2, interval_cost=0.4, koopman_risk=0.0)
         g.add_transition(patches[1], patches[2], curvature_cost=0.1, interval_cost=0.2, koopman_risk=0.0)
         path = [0, 1, 2]
-        # alpha=1.0, beta=0.5, gamma=0.5
+        # alpha=1.0, beta=0.5, gamma=0.5 (normalize=False: raw costs)
         # edge(0,1): 0.2 + 0.5*0.4 = 0.4; edge(1,2): 0.1 + 0.5*0.2 = 0.2 → total 0.6
         cost = g.path_cost(path)
         expected = (0.2 + 0.5 * 0.4) + (0.1 + 0.5 * 0.2)
@@ -431,3 +434,30 @@ class TestThreeComponentEdgeCost:
         path = g.shortest_path(0, 2)
         # Direct [0,2] has cost 0.1; indirect [0,1,2] has cost 0.5 → direct wins
         assert path == [0, 2]
+
+    def test_normalize_flag_scales_costs(self):
+        """normalize=True: all three components live in [0,1] after scaling."""
+        g = PatchGraph(normalize=True)
+        p0, p1 = make_patch(0), make_patch(1)
+        g.add_patch(p0)
+        g.add_patch(p1)
+        # Add edge with curvature=2.0 (sets max_c=2.0)
+        g.add_transition(p0, p1, curvature_cost=2.0, interval_cost=0.0, koopman_risk=0.0)
+        neighbors = g.get_neighbors(0)
+        # c_n = 2.0 / 2.0 = 1.0 → combined = 1.0 * 1.0 = 1.0
+        assert abs(dict(neighbors)[1] - 1.0) < 1e-9
+
+    def test_normalize_makes_costs_comparable(self):
+        """With normalize=True, a large curvature and large interval have equal weight."""
+        g = PatchGraph(alpha=1.0, beta=1.0, gamma=0.0, normalize=True)
+        p0, p1, p2 = make_patch(0), make_patch(1), make_patch(2)
+        g.add_patch(p0)
+        g.add_patch(p1)
+        g.add_patch(p2)
+        # Edge A: curvature=10, interval=0 → after normalization c_n=1.0, ia_n=0 → cost=1.0
+        # Edge B: curvature=0, interval=10 → after normalization c_n=0, ia_n=1.0 → cost=1.0
+        g.add_transition(p0, p1, curvature_cost=10.0, interval_cost=0.0, koopman_risk=0.0)
+        g.add_transition(p0, p2, curvature_cost=0.0, interval_cost=10.0, koopman_risk=0.0)
+        n = dict(g.get_neighbors(0))
+        # Both edges should have equal cost (both normalized to 1.0 in their respective component)
+        assert abs(n[1] - n[2]) < 1e-9

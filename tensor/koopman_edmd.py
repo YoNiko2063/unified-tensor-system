@@ -68,6 +68,7 @@ class EDMDKoopman:
         self._fitted = False
         self._psi_k: Optional[np.ndarray] = None
         self._psi_kp1: Optional[np.ndarray] = None
+        self._gram_cond: float = 1.0   # condition number of G (1.0 = well-conditioned)
 
     # ------------------------------------------------------------------
     # Observable basis ψ(x)
@@ -138,6 +139,13 @@ class EDMDKoopman:
         G = (psi_k.T @ psi_k) / m        # (k, k) auto-correlation
         A = (psi_k.T @ psi_kp1) / m      # (k, k) cross-correlation
 
+        # Gram matrix condition number — ill-conditioned G means ψ basis has
+        # nearly linearly-dependent columns; EDMD fits noise rather than dynamics.
+        try:
+            self._gram_cond = float(np.linalg.cond(G))
+        except Exception:
+            self._gram_cond = float('inf')
+
         # Koopman matrix K = G⁺ A
         self._K = np.linalg.lstsq(G, A, rcond=None)[0]
         self._psi_k = psi_k
@@ -174,7 +182,8 @@ class EDMDKoopman:
         gap = self.spectral_gap(eigvals)
         stable = gap > self.gap_threshold
         recon_err = self.compute_reconstruction_error()
-        trust = self.compute_trust_score(gap, recon_err, drift=0.0)
+        trust = self.compute_trust_score(gap, recon_err, drift=0.0,
+                                         gram_cond=self._gram_cond)
 
         return KoopmanResult(
             eigenvalues=eigvals,
@@ -252,22 +261,32 @@ class EDMDKoopman:
         gamma_min: float = 0.1,
         eta_max: float = 1.0,
         s_max: float = 0.5,
+        gram_cond: float = 1.0,
+        kappa_max: float = 1e6,
     ) -> float:
         """
-        Combined Koopman trust gate ∈ [0, 1] (whattodo.md specification).
+        Combined Koopman trust gate ∈ [0, 1].
 
-        All three conditions must pass:
-          gap_score     = min(1, gap / γ_min)           — spectral gap gate
-          recon_score   = max(0, 1 - err / η_max)       — reconstruction gate
-          drift_score   = max(0, 1 - drift / s_max)     — eigenfunction stability gate
+        Four multiplicative gates — ALL must pass:
+          gap_score   = min(1, gap / γ_min)           — spectral gap gate
+          recon_score = max(0, 1 - err / η_max)       — reconstruction gate
+          drift_score = max(0, 1 - drift / s_max)     — eigenfunction stability gate
+          gram_score  = exp(-max(0, κ(G) - κ_max) / κ_max) — Gram conditioning gate
 
-        Trust = gap_score × recon_score × drift_score
-        A score near 1.0 means Koopman mode is safe to activate.
+        Gram gate rationale: ill-conditioned G (κ(G) > κ_max) means the ψ basis
+        has near-linear-dependent columns — EDMD fits noise, not dynamics.
+        lstsq silently handles this via SVD truncation, but trust must reflect it.
+
+        Trust = gap_score × recon_score × drift_score × gram_score
+        Score near 1.0 → Koopman mode is safe to activate.
         """
         gap_score = min(1.0, gap / max(gamma_min, 1e-12))
         recon_score = max(0.0, 1.0 - reconstruction_error / max(eta_max, 1e-12))
         drift_score = max(0.0, 1.0 - drift / max(s_max, 1e-12))
-        return float(gap_score * recon_score * drift_score)
+        # Gram conditioning: exponential decay when cond > kappa_max
+        excess = max(0.0, gram_cond - kappa_max) / max(kappa_max, 1e-12)
+        gram_score = float(np.exp(-excess))
+        return float(gap_score * recon_score * drift_score * gram_score)
 
     def predict_next_observable(self, x: np.ndarray) -> np.ndarray:
         """

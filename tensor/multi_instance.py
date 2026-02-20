@@ -10,6 +10,7 @@ Classes:
 
 from __future__ import annotations
 
+import math
 import multiprocessing as mp
 import time
 from typing import Callable, Dict, List, Optional
@@ -23,13 +24,25 @@ class MultiInstanceCoordinator:
     """
     Parent instance manages child InstanceWorker processes.
     Each child explores a different HDV region (chart).
+
+    When system_fn and n_states are provided, workers compute real Jacobian-based
+    uncertainty metrics (curvature / (koopman_trust + ε)) instead of random values.
     """
 
-    def __init__(self, max_instances: int = 4):
+    def __init__(
+        self,
+        max_instances: int = 4,
+        system_fn: Optional[Callable] = None,
+        n_states: int = 3,
+    ):
         self.max_instances = max_instances
+        self._system_fn = system_fn
+        self._n_states = n_states
         self.instances: List[InstanceWorker] = []
         self.result_queue: mp.Queue = mp.Queue()
         self.chart_centers: Dict[int, np.ndarray] = {}
+        # Rolling record of top uncertain regions found by workers
+        self._top_uncertain: List[Dict] = []
 
     def should_spawn_child(self, ignorance_map: np.ndarray,
                            learning_priority: np.ndarray) -> bool:
@@ -50,6 +63,8 @@ class MultiInstanceCoordinator:
             chart_center=chart_center,
             radius=exploration_radius,
             result_queue=self.result_queue,
+            system_fn=self._system_fn,
+            n_states=self._n_states,
         )
         child.start()
         self.instances.append(child)
@@ -63,7 +78,20 @@ class MultiInstanceCoordinator:
                 results.append(self.result_queue.get(timeout=timeout))
             except Exception:
                 break
+
+        # Update top-uncertain regions from discovery messages
+        discoveries = [r for r in results if r.get('type') == 'discovery']
+        if discoveries:
+            all_disc = self._top_uncertain + discoveries
+            self._top_uncertain = sorted(
+                all_disc, key=lambda d: d.get('value', 0.0), reverse=True
+            )[:10]
+
         return results
+
+    def top_uncertain_regions(self, k: int = 3) -> List[Dict]:
+        """Return top-k most uncertain discovered regions (highest value)."""
+        return self._top_uncertain[:k]
 
     def shutdown_all(self):
         for inst in self.instances:
@@ -74,15 +102,30 @@ class MultiInstanceCoordinator:
 
 
 class InstanceWorker(mp.Process):
-    """Child instance: samples a local HDV neighbourhood and reports discoveries."""
+    """
+    Child instance: samples a local HDV neighbourhood and reports discoveries.
 
-    def __init__(self, instance_id: int, chart_center: np.ndarray,
-                 radius: float, result_queue: mp.Queue):
+    When system_fn is provided, uses real Jacobian + EDMD to compute uncertainty
+    = tanh(curvature / (koopman_trust + 0.1) / 10) ∈ [0, 1].
+    Falls back to random values when system_fn is None.
+    """
+
+    def __init__(
+        self,
+        instance_id: int,
+        chart_center: np.ndarray,
+        radius: float,
+        result_queue: mp.Queue,
+        system_fn: Optional[Callable] = None,
+        n_states: int = 3,
+    ):
         super().__init__()
         self.instance_id = instance_id
         self.chart_center = chart_center
         self.radius = radius
         self.result_queue = result_queue
+        self._system_fn = system_fn
+        self._n_states = n_states
 
     def run(self):
         samples = self._sample_neighborhood(100)
@@ -103,7 +146,35 @@ class InstanceWorker(mp.Process):
         ]
 
     def _evaluate_sample(self, point: np.ndarray) -> float:
-        return float(np.random.rand())
+        """
+        Compute exploration value for a state sample.
+
+        With system_fn: uncertainty = tanh(curvature / (trust + 0.1) / 10) ∈ [0,1]
+          High curvature + low Koopman trust → high uncertainty → high value.
+          tanh normalization maps [0,∞) → [0,1) so threshold comparison is meaningful.
+
+        Without system_fn: random value (backward compatibility).
+        """
+        if self._system_fn is None:
+            return float(np.random.rand())
+
+        try:
+            from tensor.lca_patch_detector import LCAPatchDetector
+            n = self._n_states
+            # Clip point to state dimension if needed
+            pt = point[:n] if len(point) >= n else np.zeros(n)
+            local_samples = np.array([
+                pt + 0.01 * np.random.randn(n) for _ in range(10)
+            ])
+            detector = LCAPatchDetector(self._system_fn, n)
+            classification = detector.classify_region(local_samples)
+            raw_uncertainty = classification.curvature_ratio / (
+                classification.koopman_trust + 0.1
+            )
+            # tanh maps [0,∞) → [0,1); scale so uncertainty=10 → ≈0.76 (above 0.7 threshold)
+            return float(math.tanh(raw_uncertainty / 10.0))
+        except Exception:
+            return float(np.random.rand())
 
     def _report_discovery(self, point: np.ndarray, value: float):
         self.result_queue.put({

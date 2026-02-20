@@ -70,6 +70,7 @@ class LCAPatchDetector:
         self.delta_commutator = delta_commutator
         self.rank_tol = rank_tol
         self.h = h
+        self.koopman_trust_threshold: float = 0.3  # min trust to classify nonabelian (not chaotic)
 
     # ------------------------------------------------------------------
     # Step 1: Sample Jacobian field
@@ -238,10 +239,12 @@ class LCAPatchDetector:
         low_rank = r <= max(self.n - 1, 1)
 
         if low_rank and low_commutator:
-            # Abelian algebra regardless of curvature — this is the primary LCA condition
+            # Abelian algebra — primary LCA condition (commutator test beats curvature)
             patch_type = 'lca'
-        elif low_rank and moderate_curvature:
-            # Low rank but non-abelian commutator → Tannaka-Krein regime
+        elif low_rank and (moderate_curvature or koopman_trust >= self.koopman_trust_threshold):
+            # Non-abelian but tractable: either smooth enough OR Koopman tracks it well.
+            # koopman_trust acts as an OR-gate: high trust → Koopman can navigate even if
+            # commutator is large (Tannaka-Krein regime, spectrally trackable).
             patch_type = 'nonabelian'
         else:
             patch_type = 'chaotic'

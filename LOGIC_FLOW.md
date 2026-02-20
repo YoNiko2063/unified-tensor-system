@@ -712,13 +712,227 @@ Week 5: PoC integration test, MEMORY.md update
 | `dnn_reasoning.py` | Softmax-attention HDVS navigator |
 | `math_connections.py` | FIM = Riemannian metric on operator manifold |
 | `trajectory.py` | Path tracking in HDVS; Lyapunov energy |
-| `lca_patch_detector.py` | 6-step LCA classification pipeline [NEW] |
-| `koopman_edmd.py` | EDMD Koopman spectrum [NEW] |
-| `bifurcation_detector.py` | Eigenvalue-crossing boundary [NEW] |
-| `hdvs_navigator.py` | 3-mode runtime state machine [NEW] |
-| `pontryagin_dual.py` | Character extraction from abelian patches [NEW] |
-| `patch_graph.py` | Global topological patch map [NEW] |
-| `harmonic_atlas.py` | Auto-building spectral atlas [NEW] |
-| `spectral_path.py` | Interval operators + dissonance metric [NEW] |
-| `riemannian_control.py` | Curvature-gradient control law [NEW] |
-| `operator_reasoner.py` | 5-head DNN for geometric reasoning [NEW] |
+| `lca_patch_detector.py` | 6-step LCA classification pipeline |
+| `koopman_edmd.py` | EDMD Koopman spectrum + 4-gate trust score |
+| `bifurcation_detector.py` | Eigenvalue-crossing boundary |
+| `hdvs_navigator.py` | 3-mode runtime state machine |
+| `pontryagin_dual.py` | Character extraction from abelian patches |
+| `patch_graph.py` | Global topological patch map (3-component edges) |
+| `harmonic_atlas.py` | Auto-building spectral atlas |
+| `spectral_path.py` | Interval operators + dissonance metric |
+| `riemannian_control.py` | SPDE operator update (Ito convention, projection consistency) |
+| `operator_reasoner.py` | 5-head DNN for geometric reasoning |
+| `adaptive_basis.py` | Lift-and-reduce Koopman observable degree controller |
+| `operator_equivalence.py` | Wasserstein-1 spectral distance → cross-system equivalence |
+| `patch_explorer.py` | Uncertainty-prioritized geometric frontier scheduler |
+| `geometry_monitor.py` | Rolling stability monitor + rollback for adaptive components |
+
+---
+
+## Section 0G: Koopman Trust Gating — Preventing Spectral Hallucination
+
+The Koopman operator `K = G⁺A` is computed via `lstsq`, which silently handles
+ill-conditioned problems. If the Gram matrix `G = (1/m)Σψψᵀ` is nearly singular,
+the observable basis `ψ` has nearly linearly dependent columns — EDMD is fitting
+noise, not dynamics. The trust score must reflect this.
+
+### Four-Gate Trust Formula
+
+```
+trust = gap_score × recon_score × drift_score × gram_score
+```
+
+**gram_score** = exp(-max(0, κ(G) - κ_max) / κ_max)
+
+When `κ(G) ≤ κ_max = 10⁶`: gram_score = 1.0 (no penalty).
+When `κ(G) = 2·10⁶`: gram_score = exp(-1) ≈ 0.37.
+When `κ(G) → ∞`: gram_score → 0 (complete trust collapse).
+
+This exponential decay is correct: conditioning degrades trust
+continuously, not with a hard threshold that would cause discontinuous behavior.
+
+**Code:** `tensor/koopman_edmd.py` — `EDMDKoopman.compute_trust_score(gram_cond, kappa_max)`
+
+---
+
+## Section 0H: Patch Classification — Correct Ordering
+
+The 6-step pipeline produces three outputs:
+- `commutator_norm`: max `‖[Aᵢ,Aⱼ]‖_F` (abelian test)
+- `mean_curvature_ratio`: mean `ρ(x)` over samples
+- `koopman_trust`: 4-gate score from EDMD
+
+Classification branch (in priority order):
+
+```python
+if low_rank AND low_commutator:
+    → 'lca'        # Pontryagin duality valid, Laplace applies
+
+elif low_rank AND (moderate_curvature OR koopman_trust ≥ 0.3):
+    → 'nonabelian' # Tannaka-Krein regime: Koopman-trackable
+
+else:
+    → 'chaotic'    # Avoid: no tractable spectral decomposition
+```
+
+**The koopman_trust OR-gate is critical:** A region with high commutator norms but
+high Koopman trust is in the Tannaka-Krein regime — nonlinear but spectrally
+trackable. Without this gate, such regions would be misclassified as chaotic,
+blocking Koopman-based navigation that actually works.
+
+**Code:** `tensor/lca_patch_detector.py` — `LCAPatchDetector.classify_region()`
+
+---
+
+## Section 0I: Edge Cost Normalization
+
+The 3-component edge cost formula:
+
+```
+w(P → Q) = α·c + β·ia + γ·kr
+```
+
+where `c = ∫ρ(t)dt` is unbounded, `ia = τ(ωᵢ,ωⱼ)` is unbounded, `kr = 1-trust ∈ [0,1]`.
+
+Raw addition means `c` and `ia` dominate regardless of α,β,γ values. Fix: running-max
+normalization within each `PatchGraph` instance:
+
+```
+c_n  = c  / max(max_c,  ε)    ∈ [0,1]
+ia_n = ia / max(max_ia, ε)    ∈ [0,1]
+kr   = 1 - koopman_trust       ∈ [0,1]  (already bounded)
+
+w = α·c_n + β·ia_n + γ·kr
+```
+
+`max_c` and `max_ia` are running maxima updated on each `add_transition()` call.
+This means costs are normalized relative to the hardest transition seen so far —
+a natural scale reference without requiring domain knowledge of absolute values.
+
+**Code:** `tensor/patch_graph.py` — `PatchGraph(normalize=True)`, `combined_cost()`
+
+Note: `normalize=False` (default) preserves original raw-cost behavior for
+backward compatibility with systems calibrated to absolute curvature values.
+
+---
+
+## Section 0J: Operator Equivalence — Cross-System Reasoning
+
+Two dynamical systems are **Koopman-equivalent** if their spectra are close.
+
+### Wasserstein-1 Distance on 1D Spectra
+
+```
+d(A, B) = E_W1[|Re(λ_A)| - |Re(λ_B)|]
+        = (1/k) Σᵢ |sort(|Re(λ_A)|)ᵢ - sort(|Re(λ_B)|)ᵢ|
+```
+
+The 1D Wasserstein-1 (Earth Mover's Distance) has a closed form: sort both
+distributions and compute the L1 distance of sorted arrays. This is O(k log k)
+and exact — no optimization required.
+
+**Physical examples:**
+- RLC with `ζ=0.5, ω_n=1` and spring-mass with `ζ=0.5, ω_n=1` → d ≈ 0.02 (**equivalent**)
+- RLC with `ω_n=1` and high-frequency oscillator `ω_n=4` → d ≈ 1.5 (**different**)
+
+**Code:** `tensor/operator_equivalence.py` — `OperatorEquivalenceDetector`
+
+**Growth frontier:** Non-abelian patches require Tannaka-Krein representation theory.
+For abelian (LCA) patches, the spectrum fully determines the operator algebra.
+For non-abelian patches, the spectrum alone is insufficient — representations of
+the Lie algebra must be compared (Weyl character formula, Cartan decomposition).
+
+---
+
+## Section 0K: Adaptive Basis — The Lift-and-Reduce Loop
+
+The Koopman observable basis `ψ` is polynomial of degree `d`.
+When `d` is too low: cannot model high-order dynamics (trust low).
+When `d` is too high: overfitting noise (rank high, curvature low).
+
+### Expansion Policy
+
+If `koopman_trust < τ_expand = 0.3`: insufficient modeling capacity.
+Increase `d → d+1` (add degree-3 monomials to a degree-2 basis).
+
+New observable dimension: `1 + n + C(n,2) + n` (for degree 3).
+The lifted basis can capture cubic interactions that were invisible before.
+
+### Pruning Policy
+
+If `curvature_ratio < τ_prune = 0.05` AND `operator_rank > n/2`:
+dynamics are smooth (nearly linear) but basis is over-expressive.
+Decrease `d → d-1` (remove highest-degree monomials).
+
+### Why Expansion Beats Pruning
+
+Trust recovery is urgent (failing to model = wrong path decisions).
+Over-expressiveness is self-correcting (EDMD regularization suppresses noise modes).
+So expansion always takes priority when both conditions simultaneously hold.
+
+**Code:** `tensor/adaptive_basis.py` — `AdaptiveBasisController.adapt()`
+
+**Growth frontier:** Random Fourier Features (RFF) approximating shift-invariant kernels:
+`ψ_ω(x) = cos(ωᵀx + b)` where `ω ~ p(ω)` (spectral density of the kernel).
+This gives O(k) features with any kernel's expressive power, breaking the O(n^d)
+polynomial curse of dimensionality.
+
+---
+
+## Section 0L: Geometric Exploration Scheduling
+
+Uniform random sampling of state space is inefficient: most samples fall in
+well-understood (low-curvature, high-trust) regions. Directed exploration:
+
+### Uncertainty Metric
+
+```
+U(patch) = ρ_mean / (trust + ε)
+```
+
+- High ρ, low trust = system is geometrically blind here = highest exploration value
+- Low ρ, high trust = well-understood = low exploration value
+
+### Next-Region Selection
+
+Sample Gaussian noise around the centroid of the highest-U patch:
+```
+x_new = centroid_top + σ · ξ,  ξ ~ N(0, I_n)
+```
+
+This focuses simulation effort on the frontier of geometric knowledge.
+Over time, the entire state space becomes well-classified: no unexplored high-U regions.
+
+**Code:** `tensor/patch_explorer.py` — `PatchExplorationScheduler`
+
+**Growth frontier:** Thompson sampling — maintain a Gaussian process over U(x)
+and sample from the posterior. This correctly handles the explore-exploit tradeoff
+and accounts for spatial correlation between nearby patches.
+
+---
+
+## Section 0M: Geometry Monitor — Adaptive Safety
+
+When `enable_adaptive_basis=True`, the basis degree can change each cycle.
+Without safeguards, runaway expansion (degree 1 → 2 → 3 → 4) could happen in
+< 10 steps if trust is persistently low (e.g., due to a noisy data stream).
+
+### Instability Conditions (any one triggers rollback):
+
+1. **Monotonic curvature increase** over entire rolling window → diverging dynamics
+2. **Mean trust < 0.2** → basis expressive enough to fit noise, not dynamics
+3. **Degree jump > +1** within window → expansion outpaced by monitoring frequency
+4. **Patch count > 2× baseline rate** → state space partition exploding
+5. **Equivalence spike > 3σ** → false-positive cross-domain matches flooding system
+
+### Rollback Mechanism
+
+```
+snapshot_state(degree, patch_summary)   # save on each stable cycle
+rollback() → snapshot                   # restore on instability
+```
+
+Caller must reset `edmd.degree = snapshot['degree']` and temporarily set
+both adaptive flags to `False` for one cycle (cooldown).
+
+**Code:** `tensor/geometry_monitor.py` — `GeometryMonitor`

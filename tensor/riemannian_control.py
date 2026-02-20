@@ -408,7 +408,12 @@ def spde_update(
                 E_pert = _E_total(A_pert, data_jacobians, lambda_curv)
                 grad[i, a, b] = (E_pert - E0) / h
 
-    # Deterministic descent + stochastic exploration
+    # Deterministic descent + stochastic exploration (Ito SDE discretization).
+    # ζ_k ~ N(0, I) with shape (r, n, n): E[‖ζ_k‖²] = r·n·n = basis dimension D.
+    # Noise scaling √η·σ follows the Ito convention: the variance of the stochastic
+    # increment scales as η (not η²), matching continuous-time SPDE dA = -∇E dt + σ dW.
+    # Convergence condition: σ² < 2·η·min_eigenvalue(∇²E) (noise smaller than curvature).
+    # Anneal σ over training episodes to transition from exploration to exploitation.
     noise = np.random.randn(*A_basis.shape)
     A_new = A_basis - eta * grad + np.sqrt(eta) * sigma * noise
     return A_new
