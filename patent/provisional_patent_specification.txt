@@ -678,6 +678,207 @@ to minimize reconstruction error. The trust metric — reconstruction error
 relative to random-noise baseline — applies directly to the neural
 approximation.
 
+────────────────────────────────────────────────────────────────────────────────
+SECTION 8: DOMAIN APPLICABILITY — THE UNIVERSAL GEOMETRIC PATTERN
+────────────────────────────────────────────────────────────────────────────────
+
+8.1 The Unifying Mathematical Structure
+
+All domains covered by this invention share the same normalized governing
+equation. Any physical, computational, or biological system that can be
+characterized — exactly or approximately — by a second-order ordinary
+differential equation:
+
+    M·ẍ + D·ẋ + K·x = F(t)                                     (GEN-1)
+
+or its discrete-time equivalent, is characterizable by the domain-invariant
+triple (ω₀, Q, ζ) where ω₀ = √(K/M), Q = Mω₀/D, ζ = 1/(2Q).
+
+The invention's methods — domain-invariant indexing, energy-conditioned
+retrieval, topology discrimination, EDMD trust classification, and universal
+correction scalar fitting — apply to any system of this form, regardless of
+the physical interpretation of the variables x, M, D, K.
+
+The core IP claim: the geometric structure of the invariant manifold
+(log_ω₀_norm, log_Q_norm, ζ) is universal. Any domain-specific quantity
+whose characteristic time T_char satisfies the universality condition:
+
+    ω₀ · T_char = f(loading_ratio_only)                         (UNI-1)
+
+admits a loading-class-specific scalar correction a such that:
+
+    T_corrected = T_analytic / (1 − a·ζ)                        (UNI-2)
+
+where a is invariant across all instances within the same loading class.
+This is the geometric fingerprint of the equal-area / separatrix structure
+in the invariant manifold.
+
+8.2 Validated Domains
+
+The following domains have been explicitly validated in this invention:
+
+    Domain 1 — RLC Electrical Circuits
+    Parameters: L (inductance), R (resistance), C (capacitance)
+    ω₀ = 1/√(LC), Q = ω₀L/R
+    Application: cross-domain warm-start retrieval (2708× speedup validated)
+
+    Domain 2 — Spring-Mass-Damper Mechanical Systems
+    Parameters: k (stiffness), m (mass), b (damping coefficient)
+    ω₀ = √(k/m), Q = mω₀/b
+    Application: cross-domain source for RLC retrieval (3.7× improvement)
+
+    Domain 3 — Gradient Descent with Momentum
+    Parameters: lr (learning rate), κ (curvature), β (momentum coefficient)
+    ω₀ = √(lr·κ) [rad/step], Q = ω₀/(1−β)
+    Application: optimizer regime indexing; stability gate (ω₀² < 2(1+β)·0.95)
+
+    Domain 4 — Duffing Oscillator (Hardening and Softening)
+    Parameters: α (linear stiffness), β (cubic coefficient), δ (damping)
+    ω₀_linear = √α, Q = √α/δ; E_sep = α²/(4|β|) for β < 0
+    Application: topology discrimination, separatrix gate, bifurcation detection
+
+    Domain 5 — Power Grid SMIB (Transient Stability)
+    Parameters: M (inertia), D (damping), Pₘ (mechanical), Pₑ (electrical)
+    ω₀ = √(Pₑcos(δs)/M), Q = Mω₀/D; E_sep = 2Pₑcos(δs) − Pₘ(π−2δs)
+    Application: CCT estimation — 57,946× speedup, 2.73% max error validated
+
+8.3 Claimed Domains by Analogy
+
+The following domains are claimed as embodiments of the invention by direct
+mathematical analogy to GEN-1. For each, the domain-invariant triple (ω₀, Q)
+is identified and the applicable inventive contribution is stated.
+
+    Domain 6 — Superconducting Quantum Circuits (Transmon Qubits)
+    Governing equation: the Josephson junction circuit is governed by:
+        C·φ̈ + (1/R)·φ̇ + Ic·sin(φ) = I_ext
+    where φ is the superconducting phase. This is exactly the SMIB swing
+    equation under the substitution δ → φ, Pₘ → I_ext, Pₑ → Ic. The
+    cosine potential creates a separatrix at the junction critical current.
+    The Kerr nonlinearity of a transmon qubit is the β < 0 Duffing term.
+    ω₀ = √(Ic/C·ħ/2e) (plasma frequency), Q = ω₀·C·R.
+    Applicable contributions: Contributions 2, 3, 5 (energy-conditioned gate,
+    topology discrimination, universal characteristic-time correction).
+    The escape time from the superconducting state (switching time) is the
+    quantum analog of CCT and admits the universal correction (UNI-2).
+
+    Domain 7 — Phase-Locked Loops (PLLs)
+    A second-order charge-pump PLL with loop filter has:
+        φ̈ + (Kd·Kv·τ₂/τ₁)·φ̇ + (Kd·Kv/τ₁)·φ = ω_ref
+    where Kd is detector gain, Kv is VCO gain, τ₁, τ₂ are filter constants.
+    ω₀ = √(Kd·Kv/τ₁), Q = ω₀·τ₁/(1 + Kd·Kv·τ₂).
+    Lock acquisition time T_lock is the PLL analog of CCT. When ω₀·T_lock is
+    loop-bandwidth-determined (fixed ω₀/ω_ref ratio), the universal correction
+    (UNI-2) applies for damping ζ in the PLL's operating range.
+    Applicable contributions: Contributions 1, 5.
+
+    Domain 8 — Structural / Civil Engineering (Seismic Response)
+    A single-degree-of-freedom building model under seismic excitation obeys:
+        m·ẍ + c·ẋ + k·x = −m·ẍ_ground
+    This is GEN-1 with F = −m·ẍ_ground. ω₀ = √(k/m) (natural frequency),
+    Q = mω₀/c. The collapse capacity ratio (CCR) — maximum ground motion
+    intensity before structural collapse — is structurally identical to CCT.
+    At fixed ductility ratio (loading ratio equivalent), ω₀·T_collapse is
+    approximately constant across structures, admitting the universal correction.
+    Applicable contributions: Contributions 1, 5.
+
+    Domain 9 — Nuclear Reactor Point Kinetics (Prompt Criticality)
+    The one-group point kinetics equation with a single delayed neutron group:
+        (1/v)·dφ/dt = (k−1)·φ/L + λ·C
+        dC/dt = β·k·φ/L − λ·C
+    near steady state linearizes to a second-order system with:
+        ω₀² ≈ λ·(k−1)/L (for k near 1), Q ≈ ω₀·L/β·v
+    The scram time (time to shut down on a reactivity transient) is the
+    nuclear analog of CCT. Applicable contributions: Contributions 1, 5.
+
+    Domain 10 — Acoustic Resonators (Loudspeakers, Microphones, MEMS)
+    An electrodynamic loudspeaker moving mass obeys:
+        Mₘₛ·ẍ + Rₘₛ·ẋ + (1/Cₘₛ)·x = Bl·i
+    where Mₘₛ, Rₘₛ, Cₘₛ are mechanical mass, resistance, compliance; Bl is
+    the force factor; i is coil current.
+    ω₀ = 1/√(Mₘₛ·Cₘₛ) (resonance frequency), Q = Mₘₛ·ω₀/Rₘₛ.
+    MEMS gyroscopes and accelerometers are spring-mass systems at microscale
+    with identical mathematical form (Q = 10³–10⁶ typical).
+    Applicable contributions: Contributions 1, 2, 3.
+
+    Domain 11 — Laser Cavities and Optical Resonators
+    A laser cavity with gain saturation near threshold obeys a rate equation
+    system linearizable to GEN-1 around steady-state photon density:
+        ω₀² ≈ g₀·(1/τₚ·τₑ), Q ≈ ω₀·τₑ
+    where g₀ is small-signal gain, τₚ photon lifetime, τₑ carrier lifetime.
+    The relaxation oscillation frequency is ω₀; damping ratio ζ ≈ 1/(2Q).
+    Turn-on delay (time to reach threshold photon density from injection) is
+    the laser analog of CCT. Applicable contributions: Contributions 1, 5.
+
+    Domain 12 — RF / Antenna Resonators and Tank Circuits
+    Any parallel or series RLC tank circuit in RF systems:
+        ω₀ = 1/√(LC), Q = R·√(C/L) (parallel), Q = (1/R)·√(L/C) (series)
+    Transmitter frequency stabilization, impedance matching networks, and
+    crystal oscillators (Q = 10⁴–10⁶) are embodiments.
+    Applicable contributions: Contributions 1, 3, 4.
+
+    Domain 13 — Thermodynamic / Thermal Systems
+    A two-body thermal system (e.g., building HVAC, heat exchanger):
+        C_th·dT/dt = (T_env − T)/R_th + P_heater
+    Second-order thermal systems (two-zone models) obey GEN-1 with:
+        ω₀ = 1/√(C₁·C₂·R₁·R₂), Q = ω₀·√(C₁·C₂)/(1/R₁ + 1/R₂)
+    The thermal settling time (time to reach setpoint from disturbance) is
+    the thermal analog of T_char. Applicable contributions: Contributions 1, 5.
+
+    Domain 14 — Biological Neural Oscillators
+    The Hodgkin-Huxley model linearized around resting potential is:
+        Cm·dV/dt ≈ −gL·V − gNa·m∞(V)·V − gK·n∞(V)·V + I_ext
+    which at the subthreshold regime reduces to GEN-1 with effective:
+        ω₀ ≈ √(gNa·gK/Cm²), Q ≈ Cm·ω₀/gL
+    Firing threshold crossing time (interspike interval) is the neural analog
+    of CCT. Applicable contributions: Contributions 1, 2, 5.
+
+    Domain 15 — Economic and Business Cycle Oscillators
+    The Samuelson-Hicks multiplier-accelerator model and its extensions obey:
+        Ÿ + (s − α)·Ẏ + s·Y = G
+    where Y is output, s is the marginal propensity to save, α is the
+    accelerator coefficient. ω₀ = √(s), Q = s/(s−α) for α < s.
+    The recession depth and recovery time are business-cycle analogs of CCT.
+    Applicable contributions: Contributions 1, 5 (universality of recovery
+    time correction when ω₀·T_recovery is savings-rate-determined).
+
+    Domain 16 — Railway Vehicle Hunting Oscillations
+    Lateral hunting of a railway bogie obeys:
+        m·ÿ + b·ẏ + (kψ/R²)·y = 0
+    where m is bogie mass, b is lateral damping, kψ is yaw stiffness, R is
+    wheel conicity radius. ω₀ = √(kψ/(m·R²)), Q = m·ω₀/b.
+    Critical speed (speed above which hunting becomes unstable) is structurally
+    equivalent to a CCT threshold. Applicable contributions: Contributions 1, 5.
+
+    Domain 17 — Transmission Lines (Distributed RLC)
+    A finite transmission line segment (telegrapher's equations) reduces to
+    a lumped RLC model for wavelength >> segment length:
+        L'·C'·Ÿ + R'·C'·Ẏ + Y = Y_source
+    ω₀ = 1/√(L'C'), Q = √(L'/C')/R'. Signal propagation delay (time for
+    step to traverse line within tolerance) is the transmission analog of CCT.
+    Applicable contributions: Contributions 1, 5.
+
+    Domain 18 — Gyroscope Precession Dynamics
+    A gyroscope with rotor spin angular momentum H and applied torque τ:
+        I·θ̈ + b·θ̇ + (H²/I)·θ = τ
+    ω₀ = H/I (precession frequency), Q = ω₀·I/b.
+    Settling time after angular disturbance is the gyroscope analog of CCT.
+    Applicable contributions: Contributions 1, 2.
+
+8.4 The Universal Correction Principle (Domain-Agnostic Claim)
+
+For any system in any domain satisfying GEN-1 with a characteristic time
+T_char(params, loading) that obeys universality condition (UNI-1):
+
+    STEP 1: Compute T_analytic using the undamped (D=0) analytic formula
+            applicable to that domain.
+    STEP 2: Compute ζ = D/(2Mω₀) from domain parameters.
+    STEP 3: Apply correction: T_corrected = T_analytic / (1 − a·ζ)
+    STEP 4: Fit a once per loading class by OLS across representative
+            instances; verify universality by cross-validation.
+
+This procedure is claimed for all domains listed in Sections 8.2 and 8.3,
+and for any future domain where universality condition (UNI-1) holds.
+
 ================================================================================
 CLAIMS
 ================================================================================
@@ -791,6 +992,103 @@ The method of Claim 8, further comprising verifying universality of a by:
 (c) confirming universality when (max(a) − min(a))/mean(a) < a stability
     threshold across all subsets, indicating a is determined by loading-ratio
     geometry rather than by the specific generators in the training set.
+
+CLAIM 10 (Broad — Universal Geometric Pattern, Domain-Agnostic):
+A computer-implemented method for cross-domain invariant indexing and
+characteristic-time correction applicable to any physical, computational, or
+biological dynamical system governed by a second-order differential equation:
+    M·ẍ + D·ẋ + K·x = F(t)
+or its discrete-time equivalent, comprising:
+(a) characterizing a system by its natural frequency ω₀ = √(K/M) and quality
+    factor Q = Mω₀/D to form a domain-invariant triple (log_ω₀_norm, log_Q_norm,
+    ζ) where ζ = 1/(2Q) and ω₀_norm is normalized to a domain-specific reference;
+(b) storing the domain-invariant triple and associated system behavior data in
+    a memory indexed by said triple;
+(c) retrieving stored behavior data for a query system by nearest-neighbor
+    search in triple-space, enabling cross-domain transfer from any stored domain
+    to any query domain sharing the same triple coordinates; and
+(d) when a domain-specific analytic formula T_analytic exists for a
+    characteristic time T_char under the assumption D=0, applying the universal
+    first-order correction:
+        T_corrected = T_analytic / (1 − a·ζ)
+    where a is a scalar fitted once per loading class from reference data
+    by the method of Claims 7–9.
+
+CLAIM 11 (Embodiment — Superconducting Quantum Circuits):
+The method of Claim 10, wherein the dynamical system is a Josephson junction
+superconducting circuit, the governing equation is:
+    C·φ̈ + (1/R)·φ̇ + Ic·sin(φ) = I_bias
+where φ is superconducting phase, C is junction capacitance, Ic is critical
+current, and the characteristic time is the switching time from the zero-voltage
+to finite-voltage state, and wherein the loading ratio is I_bias/Ic and the
+separatrix energy is the Josephson energy EJ = (ħ/2e)·Ic.
+
+CLAIM 12 (Embodiment — Phase-Locked Loops):
+The method of Claim 10, wherein the dynamical system is a second-order
+charge-pump phase-locked loop with a passive loop filter, the natural frequency
+is ω₀ = √(Kd·Kv/τ₁), the quality factor is Q = ω₀·τ₁/(1 + Kd·Kv·τ₂), and
+the characteristic time is the lock acquisition time T_lock, and wherein the
+loading ratio is the ratio of input frequency step to loop bandwidth.
+
+CLAIM 13 (Embodiment — Structural Seismic Response):
+The method of Claim 10, wherein the dynamical system is a single-degree-of-
+freedom structural model under seismic excitation, the natural frequency is
+ω₀ = √(k/m), the quality factor is Q = mω₀/c, and the characteristic time is
+the collapse capacity time or maximum displacement time under a normalized ground
+motion, and wherein the loading ratio is the spectral demand-to-capacity ratio.
+
+CLAIM 14 (Embodiment — Nuclear Reactor Scram):
+The method of Claim 10, wherein the dynamical system is a nuclear reactor
+described by one-group point kinetics equations, the linearized natural frequency
+is ω₀ ≈ √(λ·(k−1)/L), and the characteristic time is the scram time (time to
+reach safe shutdown flux level following a reactivity transient), and wherein
+the loading ratio is the reactivity insertion normalized to prompt critical.
+
+CLAIM 15 (Embodiment — Acoustic and MEMS Resonators):
+The method of Claim 10, wherein the dynamical system is an acoustic resonator,
+electrodynamic transducer, or MEMS sensor characterized by mechanical mass Mₘₛ,
+mechanical resistance Rₘₛ, and mechanical compliance Cₘₛ, with natural frequency
+ω₀ = 1/√(Mₘₛ·Cₘₛ) and quality factor Q = Mₘₛ·ω₀/Rₘₛ.
+
+CLAIM 16 (Embodiment — Laser Relaxation Oscillations):
+The method of Claim 10, wherein the dynamical system is a semiconductor or
+solid-state laser near threshold described by coupled photon and carrier rate
+equations, linearized to GEN-1 with natural frequency ω₀ = √(g₀/(τₚ·τₑ)) and
+quality factor Q = ω₀·τₑ, and the characteristic time is the turn-on delay.
+
+CLAIM 17 (Embodiment — Biological Neural Subthreshold Dynamics):
+The method of Claim 10, wherein the dynamical system is a biological neuron
+operating in the subthreshold (non-spiking) regime, modeled as a leaky
+integrate-and-fire or linearized Hodgkin-Huxley system with membrane capacitance
+Cm and total conductance g_total, with ω₀ = √(g_Na·g_K/Cm²) and ζ = g_total/
+(2Cm·ω₀), and the characteristic time is the interspike interval or first-spike
+latency.
+
+CLAIM 18 (Embodiment — Thermal Systems):
+The method of Claim 10, wherein the dynamical system is a two-zone thermal
+system (building envelope, heat exchanger, electronic package) with thermal
+capacitances C₁, C₂ and thermal resistances R₁, R₂, characterized by
+ω₀ = 1/√(C₁·C₂·R₁·R₂), and the characteristic time is the thermal settling
+time to a prescribed temperature tolerance following a disturbance.
+
+CLAIM 19 (Broad — Universal Correction Scalar Principle):
+A method for computing a universal first-order correction scalar a applicable
+to any parameterized family of dynamical systems satisfying:
+    ω₀ · T_analytic = f(loading_class)
+where T_analytic is an analytic characteristic time computed under zero-damping
+assumptions and f depends only on the system loading class (not on individual
+system parameters within the class), comprising:
+(a) collecting (T_analytic,i, T_ref,i, ζᵢ) across a plurality of instances i
+    within the same loading class, where T_ref,i is a reference value computed
+    by numerical integration or direct measurement;
+(b) fitting a = −Σ(eᵢ·xᵢ)/Σ(xᵢ²) where eᵢ = T_analytic,i − T_ref,i and
+    xᵢ = ζᵢ·T_ref,i; and
+(c) applying T_corrected = T_analytic / (1 − a·ζ) to any new instance in the
+    same loading class without additional numerical integration,
+wherein the universality of a within a loading class is guaranteed when the
+condition ω₀·T_analytic = f(loading_class) holds, and wherein a is applicable
+to all domains enumerated in Section 8 and any future domain satisfying said
+condition.
 
 ================================================================================
 ABSTRACT
