@@ -36,6 +36,7 @@ from dataclasses import dataclass
 from typing import List
 
 from optimization.power_grid_evaluator import PowerGridParams, estimate_cct
+from optimization.koopman_signature import _LOG_OMEGA0_REF, _LOG_OMEGA0_SCALE
 
 
 # ── Module constants ──────────────────────────────────────────────────────────
@@ -312,4 +313,232 @@ def print_ieee39_table(results: List[BenchmarkResult]) -> None:
         f"  ANCHOR: \"EAC method: {summary['mean_speedup']:.0f}\u00d7 faster CCT screening "
         f"with {summary['mean_error_pct']:.1f}% error on IEEE 39-bus.\""
     )
+    print("=" * W)
+
+
+# ── Damping sweep ─────────────────────────────────────────────────────────────
+
+
+@dataclass
+class DampingSweepResult:
+    """
+    Per-(generator, ζ) result from run_damping_sweep().
+
+    Invariant metrics are analytic (no EDMD) — fast and exact.
+    CCT reference uses actual D in RK4 binary search.
+    """
+
+    gen_name:         str    # "G1" … "G10"
+    bus:              int
+    H:                float  # inertia constant [s]
+    zeta:             float  # target damping ratio ζ = D/(2Mω₀)
+    D:                float  # actual damping coefficient [pu·s/rad]
+
+    # ── Analytic invariant metrics ────────────────────────────────────────────
+    omega0_linear:    float  # undamped ω₀ = √(P_e·cos(δ_s)/M)  [rad/s]
+    omega0_damped:    float  # ω₀·√(1−ζ²)  — effective resonance under damping [rad/s]
+    omega0_drift_pct: float  # (ω₀_damped/ω₀_linear − 1) × 100  [%]  (≤ 0)
+    Q_analytic:       float  # 1/(2ζ)
+    embed_dist:       float  # ‖v(ζ) − v(ζ_ref)‖ in 3D invariant space, ζ_ref = min(sweep)
+
+    # ── CCT accuracy ─────────────────────────────────────────────────────────
+    cct_eac:          float  # EAC formula (D=0 assumption)  [s]
+    cct_ref:          float  # RK4 binary search with actual D  [s]
+    cct_error_pct:    float  # signed: (CCT_EAC − CCT_ref)/CCT_ref × 100
+                             #   negative → EAC conservative (underestimates CCT)
+
+
+def _invariant_embed_dist(
+    omega0: float,
+    zeta: float,
+    zeta_ref: float,
+) -> float:
+    """
+    Euclidean distance in 3D normalised invariant space between ζ and ζ_ref.
+
+    v(ζ) = (log_ω₀_norm_damped, log_Q_norm, ζ)
+
+        log_ω₀_norm_damped = (log(ω₀·√(1−ζ²)) − _LOG_OMEGA0_REF) / _LOG_OMEGA0_SCALE
+        log_Q_norm          = log(1/(2ζ)) / _LOG_OMEGA0_SCALE
+
+    Key property: Δlog_ω₀_norm is independent of ω₀ (cancels in the difference),
+    so embed_dist is the same for all generators at a given (ζ, ζ_ref).
+    """
+    d_log_w0 = (
+        0.5 * math.log(max((1.0 - zeta ** 2) / (1.0 - zeta_ref ** 2), 1e-30))
+        / _LOG_OMEGA0_SCALE
+    )
+    d_log_Q  = math.log(zeta_ref / max(zeta, 1e-30)) / _LOG_OMEGA0_SCALE
+    d_zeta   = zeta - zeta_ref
+    return float(math.sqrt(d_log_w0 ** 2 + d_log_Q ** 2 + d_zeta ** 2))
+
+
+def run_damping_sweep(
+    zeta_values: tuple = (0.01, 0.03, 0.05, 0.10, 0.20),
+    ref_tol: float = 1e-3,
+    ref_dt:  float = 0.01,
+) -> List[DampingSweepResult]:
+    """
+    Sweep damping ratio ζ across all 10 IEEE 39-bus generators.
+
+    For each (generator, ζ):
+      - Set D = 2·M·ω₀_linear·ζ  (exact ζ targeting)
+      - Compute analytic invariant metrics: ω₀_drift, Q_analytic, embed_dist
+      - Compute CCT via EAC (D=0 formula) and RK4 reference (actual D)
+      - Record signed CCT error: negative = EAC is conservative (safe side)
+
+    Args:
+        zeta_values: tuple of damping ratios to sweep
+        ref_tol:     binary-search tolerance [s]
+        ref_dt:      RK4 timestep [s]
+
+    Returns:
+        List ordered by (ζ outer, generator inner).
+    """
+    zeta_ref = min(zeta_values)
+    results: List[DampingSweepResult] = []
+
+    for zeta in zeta_values:
+        for gen in IEEE39_GENERATORS:
+            params_d0  = to_power_grid_params(gen)          # D=0 reference
+            omega0_lin = params_d0.omega0_linear
+            M          = params_d0.M
+
+            D_actual = 2.0 * M * omega0_lin * zeta
+            params_damped = PowerGridParams(
+                M=M, D=D_actual, P_m=gen.P_m, P_e=gen.P_e
+            )
+
+            omega0_damp   = omega0_lin * math.sqrt(max(1.0 - zeta ** 2, 0.0))
+            drift_pct     = (omega0_damp / omega0_lin - 1.0) * 100.0
+            Q_an          = 1.0 / (2.0 * zeta)
+            embed         = _invariant_embed_dist(omega0_lin, zeta, zeta_ref)
+
+            cct_eac = eac_cct(params_d0)
+            cct_ref = estimate_cct(
+                params_damped,
+                fault_duration_range=(0.0, 5.0),
+                fault_factor=0.0,
+                dt=ref_dt,
+                tol=ref_tol,
+            ).cct
+
+            signed_err = (cct_eac - cct_ref) / max(cct_ref, 1e-12) * 100.0
+
+            results.append(DampingSweepResult(
+                gen_name         = gen.name,
+                bus              = gen.bus,
+                H                = gen.H,
+                zeta             = zeta,
+                D                = D_actual,
+                omega0_linear    = omega0_lin,
+                omega0_damped    = omega0_damp,
+                omega0_drift_pct = drift_pct,
+                Q_analytic       = Q_an,
+                embed_dist       = embed,
+                cct_eac          = cct_eac,
+                cct_ref          = cct_ref,
+                cct_error_pct    = signed_err,
+            ))
+
+    return results
+
+
+def compute_sweep_summary(results: List[DampingSweepResult]) -> dict:
+    """
+    Aggregate sweep results per ζ.
+
+    Returns dict keyed by ζ with per-ζ stats, plus top-level 'zeta_star':
+    largest ζ where max |CCT error| across all generators < 5%.
+    """
+    zeta_values = sorted(set(r.zeta for r in results))
+    per_zeta: dict = {}
+
+    for zeta in zeta_values:
+        subset = [r for r in results if r.zeta == zeta]
+        errs   = [r.cct_error_pct for r in subset]
+        per_zeta[zeta] = {
+            "mean_cct_error_pct": sum(errs) / len(errs),
+            "max_abs_cct_error":  max(abs(e) for e in errs),
+            "omega0_drift_pct":   subset[0].omega0_drift_pct,  # generator-independent
+            "Q_analytic":         subset[0].Q_analytic,
+            "embed_dist":         subset[0].embed_dist,         # generator-independent
+        }
+
+    zeta_star = None
+    for zeta in sorted(zeta_values):
+        if per_zeta[zeta]["max_abs_cct_error"] < 5.0:
+            zeta_star = zeta
+    per_zeta["zeta_star"] = zeta_star
+
+    return per_zeta
+
+
+def print_damping_table(results: List[DampingSweepResult]) -> None:
+    """
+    Print two tables to stdout:
+
+    Table 1 — Per-ζ summary: mean/max CCT error + invariant geometry metrics.
+    Table 2 — Per-generator signed CCT error [%] for each ζ.
+    """
+    summary     = compute_sweep_summary(results)
+    zeta_values = sorted(set(r.zeta for r in results))
+    zeta_star   = summary["zeta_star"]
+    W = 88
+
+    # ── Table 1: summary by ζ ─────────────────────────────────────────────────
+    print("\n" + "=" * W)
+    print("  IEEE 39-Bus — Damping Sweep: EAC formula vs. RK4 reference")
+    print("  D = 2Mω₀ζ per generator.  Signed error < 0 → EAC conservative.")
+    print("=" * W)
+    print(
+        f"  {'ζ':>5}  {'Q':>6}  {'ω₀ drift':>9}  {'embed dist':>10}  "
+        f"{'mean err%':>9}  {'max|err|%':>9}  {'<5% gate':>8}"
+    )
+    print("-" * W)
+
+    for zeta in zeta_values:
+        s    = summary[zeta]
+        gate = "PASS" if s["max_abs_cct_error"] < 5.0 else "FAIL"
+        star = " ← ζ*" if zeta == zeta_star else ""
+        print(
+            f"  {zeta:>5.2f}  {s['Q_analytic']:>6.1f}  "
+            f"{s['omega0_drift_pct']:>8.3f}%  "
+            f"{s['embed_dist']:>10.4f}  "
+            f"{s['mean_cct_error_pct']:>+9.2f}%  "
+            f"{s['max_abs_cct_error']:>9.2f}%  "
+            f"{gate:>8}{star}"
+        )
+
+    print("=" * W)
+    if zeta_star is not None:
+        print(
+            f"  ζ* = {zeta_star:.2f}  "
+            f"(EAC max |error| < 5% for all 10 generators at ζ ≤ ζ*)"
+        )
+        print(
+            f"  Claim scope: EAC valid for lightly-damped grids  "
+            f"ζ ≤ {zeta_star:.2f}  (Q ≥ {1.0/(2*zeta_star):.0f})"
+        )
+    else:
+        print("  ζ* < min tested ζ  (EAC exceeds 5% gate at all tested values)")
+    print("=" * W)
+
+    # ── Table 2: per-generator error grid ─────────────────────────────────────
+    print("\n" + "=" * W)
+    print("  Per-generator signed CCT error [%]  (EAC formula − RK4 with actual D)")
+    print("=" * W)
+    header = f"  {'Gen':<5}  {'H[s]':>6}" + "".join(
+        f"  {f'ζ={z:.2f}':>9}" for z in zeta_values
+    )
+    print(header)
+    print("-" * W)
+
+    for gen in IEEE39_GENERATORS:
+        row = {r.zeta: r for r in results if r.gen_name == gen.name}
+        errs = "".join(
+            f"  {row[z].cct_error_pct:>+8.2f}%" for z in zeta_values
+        )
+        print(f"  {gen.name:<5}  {gen.H:>6.1f}{errs}")
+
     print("=" * W)
