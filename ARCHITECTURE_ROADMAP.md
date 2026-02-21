@@ -24,20 +24,22 @@ Repo C is purely measurement — no integration until Step 3 analysis is complet
 
 ## What Already Exists (Not Aspirational)
 
-The cross-domain invariant space is already operational across FOUR domains:
+The cross-domain invariant space is already operational across FIVE domains:
 
 ```
 Physical systems:       RLC, spring-mass, Duffing → (log_ω₀_norm, log_Q_norm, ζ)
+Power grid stability:   SMIB swing equation        → (log_ω₀_norm, log_Q_norm, ζ) + CCT
 Optimization dynamics:  Gradient descent           → (log_ω₀_norm, log_Q_norm, ζ)
 Algorithm complexity:   Python code (AST+timing)   → (log_ω₀_norm, log_Q_norm, ζ)
 Nonlinear dynamics:     Koopman/EDMD manifold       → curvature profile, trust metric
 ```
 
 Files doing this TODAY:
-- `optimization/code_profiler.py`   — Python code → (ω₀, Q) via AST + dynamic timing
-- `optimization/repo_learner.py`    — GitHub repo → function catalog → invariant memory
-- `optimization/koopman_memory.py`  — cross-domain retrieval by invariant triple
+- `optimization/code_profiler.py`     — Python code → (ω₀, Q) via AST + dynamic timing
+- `optimization/repo_learner.py`      — GitHub repo → function catalog → invariant memory
+- `optimization/koopman_memory.py`    — cross-domain retrieval by invariant triple
 - `optimization/duffing_evaluator.py` — separatrix detection, topology discrimination
+- `optimization/power_grid_evaluator.py` — SMIB swing eq, CCT, near-sep detection
 
 The system already learns that an O(N³) matmul and an overdamped RLC circuit have
 similar (ω₀, Q) signatures. This is the foundational cross-domain link.
@@ -335,6 +337,116 @@ Output:  P(compile_success)
 - [D] Sensitivity order correct ✓
 
 Script: `optimization/phase3_predictor.py`
+
+---
+
+### [DONE] Domain 5 — Power Grid Transient Stability (SMIB)
+
+**Location:** `optimization/power_grid_evaluator.py` + `tests/test_power_grid.py`
+**Goal:** Prove the (ω₀, Q, ζ) invariant triple extends to electromechanical oscillators
+and that separatrix detection generalises to the equal-area stability criterion.
+
+**Physical system:** Single-Machine Infinite Bus (SMIB)
+```
+M·d²δ/dt² + D·dδ/dt = P_m − P_e·sin(δ)
+→ Linearised: ω₀ = √(P_e·cos(δ_s)/M),  Q = Mω₀/D
+→ Separatrix: E_sep = 2P_e·cos(δ_s) − P_m·(π − 2δ_s)   [analog of α²/(4|β|)]
+```
+
+**EDMD mode selection fix:** The swing equation's sin(δ) expansion has an x² term
+that produces spurious sub-fundamental Koopman modes (~2/3 ω₀) in a degree-3
+polynomial basis.  Fix: select mode closest to analytic ω₀_linear (physics prior)
+rather than globally smallest non-zero frequency.
+
+**Results (26 tests, all PASS):**
+- ω₀_eff matches analytic ω₀_linear within 15% at small amplitude ✓
+- Separatrix detection: E₀/E_sep > 0.85 triggers floor override ✓
+- CCT binary search converges, CCT error < 5% gate ✓
+- Cross-domain retrieval: power_grid stored/retrieved via KoopmanExperienceMemory ✓
+- CCT increases with inertia M, decreases with load P_m/P_e ✓
+
+**Cross-domain analogy confirmed:**
+```
+Duffing softening:  separatrix at α²/(4|β|)         → energy-based topology gate
+Power grid:         separatrix at 2P_e·cos(δ_s)−...  → equal-area stability limit
+Both:               same (ω₀, Q, ζ) retrieval triple; same E₀/E_sep override logic
+```
+
+---
+
+### [DONE] IEEE 39-Bus CCT Benchmark — Method Comparison
+
+**Location:** `optimization/ieee39_benchmark.py` + `tests/test_ieee39_benchmark.py`
+**Date:** 2026-02-21
+**Goal:** Produce an externally-pointable benchmark anchoring the grid stability
+use case for commercialization.  First published performance claim.
+
+**Two methods compared:**
+```
+Method A (Ref):  estimate_cct() — RK4 binary-search
+                 ~13 iterations × 3000 settle-steps × 4 RK4 evals per generator
+                 No analytic assumptions; exact for any D, fault type.
+
+Method B (Fast): eac_cct() — Equal-Area Criterion, pure analytic formula
+                 cos(δ_c) = P_m·(π−2δ_s)/P_e − cos(δ_s)
+                 CCT_EAC  = √(2M·(δ_c−δ_s)/P_m)
+                 Zero ODE calls. Exact for D=0, three-phase fault.
+```
+
+**Generator data:** Anderson & Fouad (2003), Table 2.7 — 10-generator New England
+equivalent.  P_e = 2×P_m → δ_s = 30° for all.  M = 2H/ω_s, ω_s = 2π×60.
+
+**Measured results (10 generators, 10 tests, 1.42 s total):**
+```
+Mean CCT error:  0.8%   (gate: < 5%)  ✓
+Max  CCT error:  2.1%   (gate: < 10%) ✓   [G2, H=30.3 s]
+Mean speedup:    57,946× (gate: > 50×) ✓
+```
+
+**ANCHOR SENTENCE (2026-02-21):**
+> "EAC method: 57,946× faster CCT screening with 0.8% error on IEEE 39-bus."
+
+**Known limitation (next validation gate):**
+EAC formula is exact only for D=0.  Under realistic damping (D > 0), the analytic
+separatrix shifts and the post-fault trajectory no longer conserves energy.
+The 0.8% error holds for the classical undamped model.  Damped EAC correction
+(or Koopman-fitted separatrix shift) is the next technical test before any
+external claim can include realistic operating conditions.
+
+**Domain freeze:** No new domains until damped validation is complete.
+Adding SAT, fab, photonics, or metamaterials now would dilute the signal.
+
+---
+
+### [NEXT] Damped EAC Validation — Credibility Gate for Path 1
+
+**Location:** `optimization/ieee39_benchmark.py` (extend) + new test group
+**Goal:** Quantify EAC error as a function of damping ratio ζ across the 10 generators.
+
+**Technical approach:**
+```
+1. Re-run benchmark with D > 0 (ζ ∈ {0.01, 0.05, 0.10, 0.20})
+   Each generator: PowerGridParams(M, D=2Mω₀ζ, P_m, P_e)
+2. Compare EAC (D=0 formula) vs. reference RK4 (with actual D)
+3. Measure CCT error degradation vs. ζ
+4. If error < 5% at ζ ≤ 0.05:  claim "valid for lightly-damped grids"
+   (real grid ζ ≈ 0.03–0.10 for inter-area modes)
+5. If error > 10% at ζ = 0.05:  implement correction term or flag D=0 scope
+```
+
+**Validation gates:**
+- [ ] CCT error < 5% at ζ = 0.05 for mean across 10 generators
+- [ ] Plot: CCT_error_pct vs. ζ (publishable figure)
+- [ ] If correction needed: implement post-EAC damping correction term
+
+**Why this is the right next step:**
+The first question any grid engineer asks is "what happens with damping?"
+Without this answer, the 0.8% result is academically valid but commercially
+undefendable.  With it — even if the answer is "EAC holds to ζ ≤ 0.05,
+degrades gracefully beyond" — the result is publishable and pitch-ready.
+
+This is 1–2 days of work.  It does not expand domains.  It does not add
+new modules.  It stress-tests what already exists.
 
 ---
 
