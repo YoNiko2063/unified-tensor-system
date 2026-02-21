@@ -119,24 +119,41 @@ class SpringMassResult:
     params: SpringMassParams
     natural_freq_hz: float    # f₀ = ω₀/(2π) [Hz]
     target_hz: float
-    objective: float          # fractional error
+    objective: float          # combined J = w_freq·freq_err + w_Q·Q_err
     Q_factor: float
     energy_loss: float
     constraints_ok: bool
     constraint_detail: Dict[str, Tuple[bool, float, float]]
+    Q_target: Optional[float] = None   # Q target (None = freq-only mode)
+    Q_error: float = 0.0              # |Q - Q_target| / Q_target
+    freq_error: float = 0.0           # |f - f_target| / f_target
 
 
 class SpringMassEvaluator:
     """
     Evaluate a spring-mass-damper design.
 
-    Objective: minimise |f₀ - f_target| / f_target
+    Objective (multi-objective when Q_target is set):
+        J = w_freq * |f₀ - f_target| / f_target
+          + w_Q    * |Q  - Q_target| / Q_target
     Constraints: Q ≤ max_Q, energy_loss ≤ max_loss, k/m/b > 0
+
+    When Q_target is None: reduces to pure frequency-error objective.
     """
 
-    def __init__(self, max_Q: float = 10.0, max_energy_loss: float = 0.5) -> None:
+    def __init__(
+        self,
+        max_Q: float = 10.0,
+        max_energy_loss: float = 0.5,
+        Q_target: Optional[float] = None,
+        w_freq: float = 1.0,
+        w_Q: float = 1.0,
+    ) -> None:
         self.max_Q = max_Q
         self.max_energy_loss = max_energy_loss
+        self.Q_target = Q_target
+        self.w_freq = w_freq
+        self.w_Q = w_Q
 
     def natural_frequency_rad(self, p: SpringMassParams) -> float:
         """ω₀ = √(k/m)  [rad/s]"""
@@ -162,8 +179,22 @@ class SpringMassEvaluator:
         zeta = 1.0 / (2.0 * Q)
         return float(omega0), float(Q), float(zeta)
 
-    def objective(self, p: SpringMassParams, target_hz: float) -> float:
+    def freq_error(self, p: SpringMassParams, target_hz: float) -> float:
+        """Fractional frequency error |f₀ - f_target| / f_target."""
         return abs(self.natural_frequency_hz(p) - target_hz) / max(abs(target_hz), 1e-12)
+
+    def Q_error_val(self, p: SpringMassParams) -> float:
+        """Fractional Q error |Q - Q_target| / Q_target (0 if Q_target is None)."""
+        if self.Q_target is None:
+            return 0.0
+        q = self.Q_factor(p)
+        return abs(q - self.Q_target) / max(abs(self.Q_target), 1e-12)
+
+    def objective(self, p: SpringMassParams, target_hz: float) -> float:
+        """Combined J = w_freq * freq_error + w_Q * Q_error."""
+        fe = self.freq_error(p, target_hz)
+        qe = self.Q_error_val(p)
+        return self.w_freq * fe + self.w_Q * qe
 
     def constraints(self, p: SpringMassParams) -> Dict[str, Tuple[bool, float, float]]:
         q = self.Q_factor(p)
@@ -179,15 +210,20 @@ class SpringMassEvaluator:
     def evaluate(self, p: SpringMassParams, target_hz: float) -> SpringMassResult:
         c_detail = self.constraints(p)
         ok = all(v[0] for v in c_detail.values())
+        fe = self.freq_error(p, target_hz)
+        qe = self.Q_error_val(p)
         return SpringMassResult(
             params=p,
             natural_freq_hz=self.natural_frequency_hz(p),
             target_hz=target_hz,
-            objective=self.objective(p, target_hz),
+            objective=self.w_freq * fe + self.w_Q * qe,
             Q_factor=self.Q_factor(p),
             energy_loss=self.energy_loss_estimate(p),
             constraints_ok=ok,
             constraint_detail=c_detail,
+            Q_target=self.Q_target,
+            Q_error=qe,
+            freq_error=fe,
         )
 
 

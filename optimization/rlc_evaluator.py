@@ -8,8 +8,14 @@ where:
     ω₀ = 1/√(LC)        resonant / cutoff frequency  [rad/s]
     Q  = (1/R)√(L/C)    quality factor               [dimensionless]
 
-Objective:   minimize fractional cutoff error |f_computed - f_target| / f_target
+Objective (multi-objective when Q_target is set):
+    J = w_freq * |f_computed - f_target| / f_target
+      + w_Q    * |Q_computed - Q_target| / Q_target
+
 Constraints: Q ≤ max_Q, energy_loss ≤ max_loss, R/L/C > 0
+
+When Q_target is None the evaluator reduces to the original single-objective
+(frequency-only) mode, preserving full backward compatibility.
 
 verify_with_simulation() grounds the analytic prediction in physics via an
 ecemath-compatible simulator interface.  When simulator=None it falls back
@@ -31,17 +37,23 @@ class EvaluationResult:
     params: RLCParams
     cutoff_hz: float          # computed cutoff frequency [Hz]
     target_hz: float          # target cutoff frequency   [Hz]
-    objective: float          # fractional error ∈ [0, ∞)
+    objective: float          # combined objective J ∈ [0, ∞)
     Q_factor: float
     energy_loss: float
     constraints_ok: bool
     constraint_detail: Dict[str, Tuple[bool, float, float]]  # name→(ok, value, limit)
+    Q_target: Optional[float] = None   # Q target (None = frequency-only mode)
+    Q_error: float = 0.0              # |Q - Q_target| / Q_target  (0 if no Q_target)
+    freq_error: float = 0.0           # |f - f_target| / f_target (always computed)
 
     def __str__(self) -> str:
         ok_str = "✓" if self.constraints_ok else "✗"
+        q_str = f"  Q_target={self.Q_target:.2f}  Q_err={self.Q_error:.4f}" \
+            if self.Q_target is not None else ""
         return (
             f"{self.params}  f₀={self.cutoff_hz:.2f} Hz  "
-            f"Q={self.Q_factor:.3f}  err={self.objective:.4f}  constraints={ok_str}"
+            f"Q={self.Q_factor:.3f}  J={self.objective:.4f}"
+            f"{q_str}  constraints={ok_str}"
         )
 
 
@@ -50,17 +62,26 @@ class RLCEvaluator:
     Numerically evaluate an RLC filter design.
 
     Args:
-        max_Q:          upper bound on quality factor          (default 10)
-        max_energy_loss: upper bound on fractional energy loss (default 0.5)
+        max_Q:           upper bound on quality factor          (default 10)
+        max_energy_loss: upper bound on fractional energy loss  (default 0.5)
+        Q_target:        desired Q factor for multi-objective mode (None = freq-only)
+        w_freq:          weight on frequency error term          (default 1.0)
+        w_Q:             weight on Q error term                  (default 1.0)
     """
 
     def __init__(
         self,
         max_Q: float = 10.0,
         max_energy_loss: float = 0.5,
+        Q_target: Optional[float] = None,
+        w_freq: float = 1.0,
+        w_Q: float = 1.0,
     ) -> None:
         self.max_Q = max_Q
         self.max_energy_loss = max_energy_loss
+        self.Q_target = Q_target
+        self.w_freq = w_freq
+        self.w_Q = w_Q
 
     # ── Core formulas ──────────────────────────────────────────────────────────
 
@@ -88,10 +109,29 @@ class RLCEvaluator:
 
     # ── Objective + constraints ────────────────────────────────────────────────
 
-    def objective(self, params: RLCParams, target_hz: float) -> float:
-        """Fractional cutoff error (non-negative, lower is better)."""
+    def freq_error(self, params: RLCParams, target_hz: float) -> float:
+        """Fractional cutoff error |f - f_target| / f_target."""
         computed = self.cutoff_frequency_hz(params)
         return abs(computed - target_hz) / max(abs(target_hz), 1e-12)
+
+    def Q_error_val(self, params: RLCParams) -> float:
+        """Fractional Q error |Q - Q_target| / Q_target (0 if Q_target is None)."""
+        if self.Q_target is None:
+            return 0.0
+        q = self.Q_factor(params)
+        return abs(q - self.Q_target) / max(abs(self.Q_target), 1e-12)
+
+    def objective(self, params: RLCParams, target_hz: float) -> float:
+        """
+        Combined objective J = w_freq * freq_error + w_Q * Q_error.
+
+        In single-objective mode (Q_target=None): J = freq_error.
+        In multi-objective mode: J penalises both frequency and Q deviation.
+        Lower is better.
+        """
+        fe = self.freq_error(params, target_hz)
+        qe = self.Q_error_val(params)
+        return self.w_freq * fe + self.w_Q * qe
 
     def constraints(
         self, params: RLCParams
@@ -114,15 +154,20 @@ class RLCEvaluator:
         """Full evaluation of one design point."""
         c_detail = self.constraints(params)
         ok = all(v[0] for v in c_detail.values())
+        fe = self.freq_error(params, target_hz)
+        qe = self.Q_error_val(params)
         return EvaluationResult(
             params=params,
             cutoff_hz=self.cutoff_frequency_hz(params),
             target_hz=target_hz,
-            objective=self.objective(params, target_hz),
+            objective=self.w_freq * fe + self.w_Q * qe,
             Q_factor=self.Q_factor(params),
             energy_loss=self.energy_loss_estimate(params),
             constraints_ok=ok,
             constraint_detail=c_detail,
+            Q_target=self.Q_target,
+            Q_error=qe,
+            freq_error=fe,
         )
 
     # ── Domain-invariant dynamical quantities ─────────────────────────────────
