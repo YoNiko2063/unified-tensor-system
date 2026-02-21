@@ -21,6 +21,7 @@ from typing import Dict, List, Optional, Tuple
 
 from tensor.lca_patch_detector import LCAPatchDetector, PatchClassification
 from tensor.patch_graph import Patch, PatchGraph
+from tensor.harmonic_closure import HarmonicClosureChecker
 
 
 @dataclass
@@ -74,6 +75,28 @@ class HarmonicAtlas:
         self._n_merges: int = 0
         self._transition_history: List[Tuple[int, int, float]] = []  # (id1, id2, cost)
 
+        # CRITICAL-3: algebraic closure checker — gates both auto_merge and merge_similar()
+        self._closure_checker = HarmonicClosureChecker()
+
+    # ------------------------------------------------------------------
+    # Spectral proxy (internal)
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _cl_to_k_proxy(cl: PatchClassification) -> np.ndarray:
+        """
+        Diagonal spectral proxy from eigenvalues: diag(sorted |Re(λ)|, descending).
+
+        Used by HarmonicClosureChecker in place of a full Koopman K matrix when
+        only PatchClassification is available (K matrices live on EDMDKoopman,
+        not on PatchClassification). The diagonal structure preserves spectral
+        identity: two patches with the same eigenvalues produce identical proxies
+        (r=0 → "redundant"), while patches with very different eigenvalues produce
+        high projection residuals (r >> ε_closure → not redundant).
+        """
+        r = np.sort(np.abs(np.real(cl.eigenvalues)))[::-1]
+        return np.diag(r).astype(float)
+
     # ------------------------------------------------------------------
     # Building the atlas
     # ------------------------------------------------------------------
@@ -97,16 +120,20 @@ class HarmonicAtlas:
             The Patch (new or existing after merge)
         """
         if auto_merge and self._patches:
-            # Find most similar existing patch
-            best_idx, best_sim = self._find_most_similar(classification)
-            if best_sim < self.merge_tol:
+            # CRITICAL-3: use HarmonicClosureChecker instead of raw similarity threshold.
+            # Find most similar existing patch (by raw metric) as candidate, then
+            # confirm with algebraic closure test — only merge if "redundant".
+            best_idx, _ = self._find_most_similar(classification)
+            K_new = self._cl_to_k_proxy(classification)
+            K_existing = self._cl_to_k_proxy(self._classifications[best_idx])
+            closure_result = self._closure_checker.check(
+                K_new, [K_existing], trust_new=classification.koopman_trust
+            )
+            if closure_result == "redundant":
                 # Merge: update centroid as running mean
                 p = self._patches[best_idx]
-                cl = self._classifications[best_idx]
                 # Update centroid (running average)
-                new_centroid = (p.centroid + classification.centroid) / 2.0
-                # Update with newer classification metadata
-                p.centroid = new_centroid
+                p.centroid = (p.centroid + classification.centroid) / 2.0
                 p.curvature_ratio = (p.curvature_ratio + classification.curvature_ratio) / 2.0
                 p.commutator_norm = (p.commutator_norm + classification.commutator_norm) / 2.0
                 self._n_merges += 1
@@ -216,28 +243,34 @@ class HarmonicAtlas:
         Returns:
             Number of merges performed in this call
         """
-        tol = tol if tol is not None else self.merge_tol
+        # tol parameter kept for backward compatibility but no longer drives the decision.
+        # CRITICAL-3: merge decisions are now made exclusively by HarmonicClosureChecker.
+        # Only pairs classified as "redundant" are merged.
+        del tol  # explicitly unused after CRITICAL-3 patch
         n_merges = 0
 
         while True:
-            best_pair = None
-            best_sim = float('inf')
+            redundant_pair = None
 
             for i in range(len(self._patches)):
                 for j in range(i + 1, len(self._patches)):
-                    sim = self.similarity(
-                        self._classifications[i],
-                        self._classifications[j],
+                    K_i = self._cl_to_k_proxy(self._classifications[i])
+                    K_j = self._cl_to_k_proxy(self._classifications[j])
+                    result = self._closure_checker.check(
+                        K_j, [K_i],
+                        trust_new=self._classifications[j].koopman_trust,
                     )
-                    if sim < best_sim:
-                        best_sim = sim
-                        best_pair = (i, j)
+                    if result == "redundant":
+                        redundant_pair = (i, j)
+                        break
+                if redundant_pair is not None:
+                    break
 
-            if best_pair is None or best_sim >= tol:
+            if redundant_pair is None:
                 break
 
             # Merge j into i
-            i, j = best_pair
+            i, j = redundant_pair
             pi = self._patches[i]
             pj = self._patches[j]
             cj = self._classifications[j]

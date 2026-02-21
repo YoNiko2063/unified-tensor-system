@@ -48,5 +48,254 @@
     ],
     "type": "cross_dimensional_universal",
     "discovered_at": 1771502462.354066
+  },
+  {
+    "dimensions": [
+      "math",
+      "execution"
+    ],
+    "similarity": 0.21380898356437683,
+    "mdl": 0.9768754839897156,
+    "patterns": [
+      {
+        "type": "html_structural",
+        "heading_count": 13,
+        "eq_count": 0,
+        "code_count": 0,
+        "domain": "literature_synthesis",
+        "paper": "577992cb5fd4"
+      },
+      {
+        "type": "code_function",
+        "name": "current_balance",
+        "repo": "ecemath",
+        "file": "dc_sweep.py",
+        "domain": "ocean_modeling",
+        "complexity": 164,
+        "docstring_preview": ""
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771507726.570724
+  },
+  {
+    "dimensions": [
+      "math",
+      "execution"
+    ],
+    "similarity": 0.15396007895469666,
+    "mdl": 0.9880771040916443,
+    "patterns": [
+      {
+        "type": "html_structural",
+        "heading_count": 13,
+        "eq_count": 0,
+        "code_count": 0,
+        "domain": "literature_synthesis",
+        "paper": "577992cb5fd4"
+      },
+      {
+        "type": "code_function",
+        "name": "_nmos_current",
+        "repo": "ecemath",
+        "file": "inverter_theory.py",
+        "domain": "ocean_modeling",
+        "complexity": 77,
+        "docstring_preview": "NMOS current."
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771507726.575555
+  },
+  {
+    "dimensions": [
+      "math",
+      "execution"
+    ],
+    "similarity": 0.2916666567325592,
+    "mdl": 0.9565199613571167,
+    "patterns": [
+      {
+        "type": "html_structural",
+        "heading_count": 13,
+        "eq_count": 0,
+        "code_count": 0,
+        "domain": "literature_synthesis",
+        "paper": "84cbbf7e1e20"
+      },
+      {
+        "type": "code_function",
+        "name": "equivalence_summary",
+        "repo": "ecemath",
+        "file": "equivalence.py",
+        "domain": "unknown",
+        "complexity": 145,
+        "docstring_preview": "Generate text summary of equivalence check."
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771507728.2874827
+  },
+  {
+    "dimensions": [
+      "behavioral",
+      "execution"
+    ],
+    "similarity": 0.15622952580451965,
+    "mdl": 0.987720787525177,
+    "patterns": [
+      {
+        "type": "workflow",
+        "intent": "This document provides a comprehensive overview of the Transformers library arch",
+        "repo": "https://github.com/huggingface/transformers",
+        "steps": 10,
+        "source": "deepwiki"
+      },
+      {
+        "type": "code_function",
+        "name": "_fallback_synthesis",
+        "repo": "dev-agent",
+        "file": "intent_synthesis.py",
+        "domain": "drug_generation",
+        "complexity": 167,
+        "docstring_preview": "Fallback rule-based synthesis when LLM is unavailable.\n\nThis"
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771509916.6936178
+  },
+  {
+    "dimensions": [
+      "behavioral",
+      "execution"
+    ],
+    "similarity": 0.21213559806346893,
+    "mdl": 0.9772403240203857,
+    "patterns": [
+      {
+        "type": "workflow",
+        "intent": "This document provides a comprehensive introduction to SymPy, a Python library f",
+        "repo": "https://github.com/sympy/sympy",
+        "steps": 10,
+        "source": "deepwiki"
+      },
+      {
+        "type": "code_function",
+        "name": "bind_structural_proposals_bootstrap_only",
+        "repo": "dev-agent",
+        "file": "bind_structural_proposals.py",
+        "domain": "structural_health",
+        "complexity": 254,
+        "docstring_preview": "Bootstrap-only binding of structural proposals into a pendin"
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771509919.190704
+  },
+  {
+    "dimensions": [
+      "behavioral",
+      "execution"
+    ],
+    "similarity": 0.2676861882209778,
+    "mdl": 0.9635062217712402,
+    "patterns": [
+      {
+        "type": "workflow",
+        "intent": "This document provides a high-level introduction to the TensorFlow repository ar",
+        "repo": "https://github.com/tensorflow/tensorflow",
+        "steps": 10,
+        "source": "deepwiki"
+      },
+      {
+        "type": "code_function",
+        "name": "plan_external_terminal_command",
+        "repo": "dev-agent",
+        "file": "agent.py",
+        "domain": "architectural_design",
+        "complexity": 23,
+        "docstring_preview": "Build a one-step plan to run a shell command in an external "
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771509919.6828449
+  },
+  {
+    "dimensions": [
+      "execution",
+      "physical"
+    ],
+    "similarity": 0.15192003548145294,
+    "mdl": 0.9883927702903748,
+    "patterns": [
+      {
+        "type": "code_function",
+        "name": "dc_sweep_2d",
+        "repo": "ecemath",
+        "file": "dc_sweep.py",
+        "domain": "circuit_nonlinear",
+        "complexity": 581,
+        "docstring_preview": "Compute 2D DC sweep for 2-input gate (NAND/NOR/AND/OR/XOR).\n"
+      },
+      {
+        "type": "simulation",
+        "circuit": "spring_mass",
+        "params": {
+          "m": 0.001,
+          "b": 1.0,
+          "k": 1.0
+        },
+        "stable": true,
+        "n_states": 2,
+        "natural_freq": 5.032921210448704,
+        "damping_ratio": 15.811388300841898,
+        "time_constant": 0.002,
+        "eigenvalue_summary": [
+          "-1.001+0.000j",
+          "-998.999+0.000j"
+        ]
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771509941.4317105
+  },
+  {
+    "dimensions": [
+      "execution",
+      "physical"
+    ],
+    "similarity": 0.21550898253917694,
+    "mdl": 0.9765018820762634,
+    "patterns": [
+      {
+        "type": "code_function",
+        "name": "minnaert_frequency",
+        "repo": "ecemath",
+        "file": "bubble.py",
+        "domain": "rf_signal",
+        "complexity": 50,
+        "docstring_preview": "Natural oscillation frequency of bubble."
+      },
+      {
+        "type": "simulation",
+        "circuit": "spring_mass",
+        "params": {
+          "m": 0.001,
+          "b": 0.01,
+          "k": 10000.0
+        },
+        "stable": true,
+        "n_states": 2,
+        "natural_freq": 503.2921210448704,
+        "damping_ratio": 0.0015811388300841897,
+        "time_constant": 0.2,
+        "eigenvalue_summary": [
+          "-5.000+3162.274j",
+          "-5.000+-3162.274j"
+        ]
+      }
+    ],
+    "type": "cross_dimensional_universal",
+    "discovered_at": 1771509965.0206828
   }
 ]

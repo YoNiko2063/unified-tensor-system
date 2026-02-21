@@ -116,19 +116,35 @@ class TestComputeInvariants:
 
 class TestToRetrievalVector:
 
-    def test_length_is_2k(self):
+    def test_length_is_2k_plus_centroid(self):
+        # shape = 2*k + len(param_centroid); default centroid is zeros(3)
         eigvals = np.array([0.9 + 0.1j, 0.5 - 0.2j, 0.3 + 0j])
         inv = compute_invariants(eigvals, _make_eigvecs(3), _OPS[:3], k=5)
         rv = inv.to_retrieval_vector()
-        assert rv.shape == (10,)    # 2 * k=5
+        assert rv.shape == (13,)    # 2*5 + 3
 
-    def test_first_half_is_real_second_is_imag(self):
-        eigvals = np.array([0.9 + 0.4j])
-        inv = compute_invariants(eigvals, _make_eigvecs(1), _OPS[:1], k=3)
+    def test_length_with_custom_centroid(self):
+        centroid = np.array([0.1, -0.2, 0.3])
+        eigvals = np.array([0.9 + 0.1j, 0.5 - 0.2j, 0.3 + 0j])
+        inv = compute_invariants(eigvals, _make_eigvecs(3), _OPS[:3], k=5,
+                                 param_centroid=centroid)
         rv = inv.to_retrieval_vector()
-        assert rv[:3] is not rv[3:]   # different arrays
-        np.testing.assert_array_equal(rv[:3], inv.top_k_real)
-        np.testing.assert_array_equal(rv[3:], inv.top_k_imag)
+        assert rv.shape == (13,)
+        np.testing.assert_array_almost_equal(rv[10:], centroid)
+
+    def test_retrieval_vector_structure(self):
+        """
+        Retrieval vector layout: [top_k_real * 0.1, top_k_imag * 0.1, param_centroid].
+        Eigenvalue components are dampened so centroid dominates L2 distance.
+        """
+        eigvals = np.array([0.9 + 0.4j])
+        centroid = np.array([0.1, -0.2, 0.3])
+        inv = compute_invariants(eigvals, _make_eigvecs(1), _OPS[:1], k=3,
+                                 param_centroid=centroid)
+        rv = inv.to_retrieval_vector()
+        np.testing.assert_array_almost_equal(rv[:3], inv.top_k_real * 0.1)
+        np.testing.assert_array_almost_equal(rv[3:6], inv.top_k_imag * 0.1)
+        np.testing.assert_array_almost_equal(rv[6:], inv.param_centroid)
 
     def test_different_imag_produces_different_retrieval_vector(self):
         """Systems with same |λ| but different Im(λ) should have different vectors."""

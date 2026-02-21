@@ -42,6 +42,12 @@ class KoopmanInvariantDescriptor:
     top_k_imag              Im(λ) for same ordering,  shape (k,) — zero-padded
     dominant_operator_histogram  normalized |eigvec[:,0]|, shape (n_ops,)
     operator_basis_order    ordered list of operator type names
+    param_centroid          normalized mean of accepted log-parameter steps,
+                            shape (d,); encodes WHERE in parameter space the
+                            optimization converged.  Zero-vector if unavailable.
+                            This is the physical-location anchor that prevents
+                            the purely spectral descriptor from collapsing when
+                            different targets produce similar optimization dynamics.
     """
 
     spectral_radius: float
@@ -51,16 +57,38 @@ class KoopmanInvariantDescriptor:
     top_k_imag: np.ndarray          # shape (k,)
     dominant_operator_histogram: np.ndarray   # shape (n_ops,)
     operator_basis_order: List[str]
+    param_centroid: np.ndarray = None  # shape (d,); set after __post_init__
+
+    def __post_init__(self):
+        if self.param_centroid is None:
+            self.param_centroid = np.zeros(3)
 
     def to_retrieval_vector(self) -> np.ndarray:
         """
-        Concatenate [top_k_real, top_k_imag] → shape (2k,) retrieval key.
+        Concatenate [top_k_real, top_k_imag, param_centroid] retrieval key.
 
-        Including imaginary parts means two systems with the same magnitude
-        spectrum but different frequencies (Im(λ)) produce distinct vectors,
-        preventing false first-stage matches.
+        Shape: (2k + d,) where d = len(param_centroid).
+
+        Two-component design:
+          - top_k_real / top_k_imag: encodes HOW the optimization ran
+            (spectral dynamics, convergence rate, oscillatory modes).
+          - param_centroid: encodes WHERE the optimization converged in
+            parameter space.  This is the physical anchor that ensures
+            descriptors from different physical targets are separated.
+
+        Without param_centroid, different targets can produce similar
+        spectral dynamics (all RLC optimizations look similar once near
+        the solution) causing the retrieval vector to collapse.
         """
-        return np.concatenate([self.top_k_real, self.top_k_imag])
+        # Eigenvalue components are dampened (×0.1) so the physically-meaningful
+        # param_centroid (location in parameter space) dominates the L2 distance.
+        # Without this, near-identical eigenvalues across different targets swamp
+        # the centroid signal, collapsing the retrieval metric.
+        return np.concatenate([
+            self.top_k_real * 0.1,
+            self.top_k_imag * 0.1,
+            self.param_centroid,
+        ])
 
 
 def compute_invariants(
@@ -68,6 +96,7 @@ def compute_invariants(
     eigenvectors: np.ndarray,
     operator_types: List[str],
     k: int = 5,
+    param_centroid: np.ndarray = None,
 ) -> KoopmanInvariantDescriptor:
     """
     Compute KoopmanInvariantDescriptor from a Koopman eigendecomposition.
@@ -80,10 +109,15 @@ def compute_invariants(
         eigenvectors:   (d, d) right eigenvectors (columns)
         operator_types: ordered list of operator type names (one per state dim)
         k:              number of top eigenvalues to include in descriptor
+        param_centroid: optional (d,) float array encoding WHERE in parameter
+                        space the optimization converged (e.g. normalized mean
+                        of accepted log-parameter steps).  Zero-vector if None.
 
     Returns:
         KoopmanInvariantDescriptor
     """
+    centroid = np.asarray(param_centroid, dtype=float) if param_centroid is not None else np.zeros(3)
+
     if len(eigenvalues) == 0:
         zero_k = np.zeros(k)
         return KoopmanInvariantDescriptor(
@@ -94,6 +128,7 @@ def compute_invariants(
             top_k_imag=zero_k,
             dominant_operator_histogram=np.zeros(max(len(operator_types), 1)),
             operator_basis_order=list(operator_types),
+            param_centroid=centroid,
         )
 
     magnitudes = np.abs(eigenvalues)
@@ -131,4 +166,5 @@ def compute_invariants(
         top_k_imag=top_k_imag,
         dominant_operator_histogram=hist,
         operator_basis_order=list(operator_types),
+        param_centroid=centroid,
     )

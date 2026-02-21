@@ -224,6 +224,23 @@ class IntegratedHDVSystem:
         
         return set(range(universal_count))
     
+    def extend_capacity(self, n: int) -> None:
+        """
+        Extend HDV dimension by n (called by RecursiveGrowthScheduler).
+
+        Expands dimension tracking arrays; new dims have zero usage until
+        patterns are encoded into them.  The neural network (fixed-size) is
+        not resized — HDV masking is the growth surface.
+        """
+        self.hdv_dim += n
+        self._domain_dim_usage = np.concatenate(
+            [self._domain_dim_usage, np.zeros(n, dtype=np.int32)]
+        )
+        for domain in self.domain_masks:
+            self.domain_masks[domain] = np.concatenate(
+                [self.domain_masks[domain], np.zeros(n, dtype=bool)]
+            )
+
     def compute_overlap_similarity(
         self, vec1: np.ndarray, vec2: np.ndarray
     ) -> float:

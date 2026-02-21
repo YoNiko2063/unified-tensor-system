@@ -93,15 +93,20 @@ class ConstrainedHDVOptimizer:
 
     # ── Public API ─────────────────────────────────────────────────────────────
 
-    def optimize(self, target_hz: float) -> EvaluationResult:
+    def optimize(self, target_hz: float, pilot_steps: int = 40) -> EvaluationResult:
         """
         Search for an RLC design whose cutoff frequency matches target_hz.
 
         Returns the best EvaluationResult found, with constraints satisfied.
         Also stores a new OptimizationExperience in memory for future warm starts.
+
+        Args:
+            pilot_steps: steps in the exploratory pilot used to compute a
+                         Koopman fingerprint for memory retrieval.  Set to 0
+                         to skip the pilot (always cold-starts from memory).
         """
-        # 1. Warm start from memory
-        z = self._warm_start_from_memory(target_hz)
+        # 1. Invariant-based warm start — no frequency formula, purely spectral
+        z = self._invariant_warm_start(target_hz, pilot_steps)
         if z is None:
             z = self._rng.standard_normal(self.mapper.hdv_dim)
 
@@ -164,25 +169,66 @@ class ConstrainedHDVOptimizer:
             np.log(max(params.C, 1e-30)),
         ]))
 
-    def _warm_start_from_memory(self, target_hz: float) -> Optional[np.ndarray]:
+    def _invariant_warm_start(
+        self, target_hz: float, pilot_steps: int
+    ) -> Optional[np.ndarray]:
         """
-        Find the stored experience whose best_params produce a cutoff closest
-        to target_hz and encode back to HDV z as a warm start.
+        Run a short pilot to compute a Koopman fingerprint for this problem,
+        then retrieve the nearest stored experience by invariant distance.
+
+        Purely spectral retrieval — no frequency formula heuristic.
+        The pilot uses an independent RNG so it does not consume the main
+        optimizer's RNG state.
+
+        Returns an encoded HDV z ready to use as the main-loop start,
+        or None if memory is empty or Koopman fit fails.
         """
-        if not self.memory._entries:
+        if not self.memory._entries or pilot_steps <= 0:
             return None
 
-        def stored_cutoff(entry: _MemoryEntry) -> float:
-            bp = entry.experience.best_params
-            L, C = bp.get("L", 1.0), bp.get("C", 1.0)
-            return 1.0 / (2.0 * np.pi * np.sqrt(max(L * C, 1e-30)))
+        # Independent RNG so the pilot does not shift the main-loop RNG stream
+        pilot_rng = np.random.default_rng(self._rng.integers(2 ** 32))
+        pilot_buffer: deque = deque(maxlen=_WINDOW_SIZE * 20)
+        pilot_params: List[np.ndarray] = []
 
-        best_entry = min(
-            self.memory._entries,
-            key=lambda e: abs(stored_cutoff(e) - target_hz),
-        )
-        params = RLCParams(**best_entry.experience.best_params)
-        return self.mapper.encode(params)
+        z_p = pilot_rng.standard_normal(self.mapper.hdv_dim)
+        step = self.step_init
+        best = self._eval_and_log(z_p, target_hz, pilot_buffer, force_log=True)
+        if best.constraints_ok:
+            self._log_param_step(best.params, pilot_params)
+
+        for _ in range(pilot_steps):
+            z_cand = z_p + pilot_rng.standard_normal(self.mapper.hdv_dim) * step
+            r = self._eval_and_log(z_cand, target_hz, pilot_buffer)
+            if r.constraints_ok and r.objective < best.objective:
+                best = r
+                z_p = z_cand
+                step = min(step * 1.1, 3.0)
+                self._log_param_step(r.params, pilot_params)
+                pilot_buffer.append("accepted")
+            else:
+                step = max(step * 0.95, 1e-3)
+
+        # Fit Koopman to pilot traces (operator trace preferred, param fallback)
+        op_trace = self._build_operator_trace(pilot_buffer)
+        fit = self._fit_koopman(op_trace)
+        if fit is None and len(pilot_params) >= _MIN_TRACE_FOR_KOOPMAN:
+            fit = self._fit_koopman(np.array(pilot_params))
+        if fit is None:
+            return None
+
+        _, query_invariant = fit
+
+        # Retrieve nearest stored experience by invariant L2 distance
+        candidates = self.memory.retrieve_candidates(query_invariant, top_n=1)
+        if not candidates:
+            return None
+
+        bp = candidates[0].experience.best_params
+        try:
+            return self.mapper.encode(RLCParams(**bp))
+        except Exception:
+            return None
 
     def _build_operator_trace(self, event_buffer: deque) -> Optional[np.ndarray]:
         """
@@ -227,6 +273,28 @@ class ConstrainedHDVOptimizer:
         )
         return result, invariant
 
+    def _param_centroid(self, param_trace: List[np.ndarray]) -> np.ndarray:
+        """
+        Normalized mean of accepted log-parameter steps.
+
+        Returns a 3-vector in the same space as the mapper's log-ratio
+        coordinates: (log_R - log_R_center) / max_exp, similarly for L, C.
+        Values lie in [-1, 1] and encode WHERE in parameter space the
+        optimization converged, anchoring the descriptor physically.
+        """
+        if not param_trace:
+            return np.zeros(3)
+        mean_log = np.mean(np.array(param_trace), axis=0)   # [log_R, log_L, log_C]
+        log_centers = np.array([
+            np.log(max(self.mapper.R_center, 1e-30)),
+            np.log(max(self.mapper.L_center, 1e-30)),
+            np.log(max(self.mapper.C_center, 1e-30)),
+        ])
+        return np.clip(
+            (mean_log - log_centers) / max(self.mapper._max_exp, 1e-9),
+            -1.0, 1.0,
+        )
+
     def _store_experience(
         self,
         event_buffer: deque,
@@ -238,6 +306,7 @@ class ConstrainedHDVOptimizer:
 
         Uses operator trace (event buffer) for Koopman signature.
         Falls back to parameter trace if operator trace is too short.
+        Attaches param_centroid to the invariant to anchor it physically.
         """
         op_trace = self._build_operator_trace(event_buffer)
         fit = self._fit_koopman(op_trace)
@@ -249,7 +318,13 @@ class ConstrainedHDVOptimizer:
         if fit is None:
             return  # not enough data — skip storage
 
-        signature, invariant = fit
+        # Compute physical-location anchor and attach to invariant
+        centroid = self._param_centroid(param_trace)
+        signature, raw_inv = fit
+        invariant = compute_invariants(
+            signature.eigenvalues, signature.eigenvectors, _TRACE_OPS,
+            param_centroid=centroid,
+        )
 
         # Identify dominant operator from invariant histogram
         if len(invariant.dominant_operator_histogram) > 0:
