@@ -542,3 +542,172 @@ def print_damping_table(results: List[DampingSweepResult]) -> None:
         print(f"  {gen.name:<5}  {gen.H:>6.1f}{errs}")
 
     print("=" * W)
+
+
+# ── Global damping correction ─────────────────────────────────────────────────
+
+
+def fit_damping_correction(results: List[DampingSweepResult]) -> float:
+    """
+    Fit global scalar `a` for the first-order damping correction:
+
+        CCT_corrected = CCT_EAC / (1 − a·ζ)
+
+    OLS derivation
+    --------------
+    Rearranging: CCT_ref·(1 − a·ζ) ≈ CCT_EAC
+    → (CCT_EAC − CCT_ref) + a·(ζ·CCT_ref) = 0
+    → eᵢ + a·xᵢ = residual,   eᵢ = CCT_EAC − CCT_ref < 0,  xᵢ = ζ·CCT_ref > 0
+
+    Minimise Σ(eᵢ + a·xᵢ)²  →  a_opt = −Σ(eᵢ·xᵢ) / Σ(xᵢ²)
+
+    Why the correction is generator-independent
+    -------------------------------------------
+    For all IEEE-39 generators P_e = 2·P_m → δ_s = 30° for all.
+    Under this constraint ω₀·CCT_EAC = √(2·√3·(δ_c−δ_s)) = constant ≈ 1.732.
+    The first-order perturbation gives CCT_ref/CCT_EAC ≈ 1 + C·ζ/3 where
+    C = ω₀·CCT_EAC is the same for every generator — hence a single global `a`.
+    The invariant embedding distance being generator-independent is the
+    geometric signature of this universal perturbation structure.
+
+    Args:
+        results: output of run_damping_sweep() (all ζ values included)
+
+    Returns:
+        Fitted scalar a > 0.
+    """
+    num = 0.0
+    den = 0.0
+    for r in results:
+        e_i = r.cct_eac - r.cct_ref      # < 0 for D > 0
+        x_i = r.zeta * r.cct_ref         # > 0
+        num += e_i * x_i
+        den += x_i * x_i
+    return float(-num / max(den, 1e-30))
+
+
+def compute_corrected_errors(
+    results: List[DampingSweepResult],
+    a: float,
+) -> List[dict]:
+    """
+    Apply CCT_corrected = CCT_EAC / (1 − a·ζ) and return residual errors.
+
+    Returns list of dicts with keys:
+        gen_name, H, zeta, cct_eac, cct_corr, cct_ref,
+        raw_err_pct, corr_err_pct
+    """
+    out = []
+    for r in results:
+        denom    = max(1.0 - a * r.zeta, 1e-6)
+        cct_corr = r.cct_eac / denom
+        corr_err = (cct_corr - r.cct_ref) / max(r.cct_ref, 1e-12) * 100.0
+        out.append({
+            "gen_name":    r.gen_name,
+            "H":           r.H,
+            "zeta":        r.zeta,
+            "cct_eac":     r.cct_eac,
+            "cct_corr":    cct_corr,
+            "cct_ref":     r.cct_ref,
+            "raw_err_pct":  r.cct_error_pct,
+            "corr_err_pct": corr_err,
+        })
+    return out
+
+
+def compute_corrected_summary(corrected: List[dict]) -> dict:
+    """
+    Per-ζ aggregates of raw vs corrected CCT errors, plus zeta_star_corrected.
+    """
+    zeta_values = sorted(set(c["zeta"] for c in corrected))
+    per_zeta: dict = {}
+
+    for zeta in zeta_values:
+        subset     = [c for c in corrected if c["zeta"] == zeta]
+        raw_errs   = [c["raw_err_pct"]  for c in subset]
+        corr_errs  = [c["corr_err_pct"] for c in subset]
+        per_zeta[zeta] = {
+            "mean_raw_err":  sum(raw_errs)  / len(raw_errs),
+            "max_abs_raw":   max(abs(e) for e in raw_errs),
+            "mean_corr_err": sum(corr_errs) / len(corr_errs),
+            "max_abs_corr":  max(abs(e) for e in corr_errs),
+        }
+
+    zeta_star_corr = None
+    for zeta in sorted(zeta_values):
+        if per_zeta[zeta]["max_abs_corr"] < 5.0:
+            zeta_star_corr = zeta
+    per_zeta["zeta_star_corrected"] = zeta_star_corr
+
+    return per_zeta
+
+
+def print_correction_table(results: List[DampingSweepResult]) -> None:
+    """
+    Fit a, apply correction, print raw-vs-corrected comparison tables.
+
+    Table 1 — Per-ζ summary: mean/max error before and after correction.
+    Table 2 — Per-generator corrected errors at each ζ.
+    """
+    a         = fit_damping_correction(results)
+    corrected = compute_corrected_errors(results, a)
+    summary   = compute_corrected_summary(corrected)
+    zeta_vals = sorted(set(c["zeta"] for c in corrected))
+    zeta_star = summary["zeta_star_corrected"]
+    W = 92
+
+    # ── Table 1: raw vs corrected summary ─────────────────────────────────────
+    print("\n" + "=" * W)
+    print(f"  IEEE 39-Bus — Damping Correction: CCT_corr = CCT_EAC / (1 − a·ζ)")
+    print(f"  Fitted: a = {a:.4f}  (OLS, 10 generators × {len(zeta_vals)} ζ values)")
+    print(f"  Analytic basis: ω₀·CCT_EAC ≈ √(2√3·(δ_c−δ_s)) ≈ 1.73 for all generators")
+    print("=" * W)
+    print(
+        f"  {'ζ':>5}  {'mean raw%':>10}  {'max|raw|%':>10}  "
+        f"{'mean corr%':>11}  {'max|corr|%':>11}  {'gate':>6}"
+    )
+    print("-" * W)
+
+    for zeta in zeta_vals:
+        s    = summary[zeta]
+        gate = "PASS" if s["max_abs_corr"] < 5.0 else "FAIL"
+        star = " ← ζ*" if zeta == zeta_star else ""
+        print(
+            f"  {zeta:>5.2f}  {s['mean_raw_err']:>+10.2f}%  "
+            f"{s['max_abs_raw']:>10.2f}%  "
+            f"{s['mean_corr_err']:>+11.2f}%  "
+            f"{s['max_abs_corr']:>11.2f}%  "
+            f"{gate:>6}{star}"
+        )
+
+    print("=" * W)
+    if zeta_star is not None:
+        print(
+            f"  ζ*_corrected = {zeta_star:.2f}  "
+            f"(corrected EAC: max |error| < 5% for all 10 generators)"
+        )
+        print(
+            f"  Corrected anchor: "
+            f"\"EAC+correction valid for ζ ≤ {zeta_star:.2f}  "
+            f"(Q ≥ {1.0/(2*zeta_star):.0f}) on IEEE 39-bus.\""
+        )
+    else:
+        print("  Corrected formula did not extend ζ* beyond uncorrected sweep.")
+    print("=" * W)
+
+    # ── Table 2: per-generator corrected errors ────────────────────────────────
+    print("\n" + "=" * W)
+    print("  Per-generator corrected CCT error [%]  (CCT_corr − CCT_ref) / CCT_ref")
+    print("=" * W)
+    header = f"  {'Gen':<5}  {'H[s]':>6}" + "".join(
+        f"  {f'ζ={z:.2f}':>9}" for z in zeta_vals
+    )
+    print(header)
+    print("-" * W)
+
+    for gen in IEEE39_GENERATORS:
+        row  = {c["zeta"]: c for c in corrected if c["gen_name"] == gen.name}
+        errs = "".join(f"  {row[z]['corr_err_pct']:>+8.2f}%" for z in zeta_vals)
+        print(f"  {gen.name:<5}  {gen.H:>6.1f}{errs}")
+
+    print("=" * W)
