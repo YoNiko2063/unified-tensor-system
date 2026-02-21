@@ -53,6 +53,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 
 from tensor.spectral_path import DissonanceMetric
+from tensor.bifurcation_detector import BifurcationDetector
 from optimization.koopman_memory import KoopmanExperienceMemory
 from optimization.koopman_signature import (
     KoopmanInvariantDescriptor,
@@ -138,6 +139,75 @@ class HarmonicPath:
         sig = np.interp(x_new, x_orig, c)
         norm = np.linalg.norm(sig)
         return sig / max(norm, 1e-12)
+
+    def detect_bifurcation_approach(
+        self,
+        curvature_spike_tol: float = 5.0,
+        omega_ratio_tol: float = 0.2,
+        unit_circle_margin: float = 0.95,
+        dt: float = 0.05,
+    ) -> Optional[int]:
+        """
+        Return the index of the first AbelianRegion showing bifurcation approach.
+
+        Three detection criteria (checked in order, first hit wins):
+
+        1. Curvature spike: |curvature[i]| > curvature_spike_tol
+           Signal: d(log ω₀_eff)/d(log E) diverges as ω₀_eff → 0 near separatrix.
+
+        2. ω₀_eff near zero: omega0_ratio() < omega_ratio_tol
+           Signal: frequency collapses (period → ∞) approaching homoclinic orbit.
+
+        3. Koopman eigenvalue near unit circle via BifurcationDetector:
+           Converts discrete-time λ → continuous-time s = log(λ)/dt.
+           Fires when Re(s) ≈ 0 (marginal stability, eigenvalue on unit circle).
+
+        Returns None if no bifurcation approach is detected (stable regime).
+
+        Note: curvature index i maps to region i (the region just BEFORE the spike).
+        """
+        # ── Criterion 1: curvature spike ──────────────────────────────────────
+        for i, c in enumerate(self.curvature_profile):
+            if abs(c) > curvature_spike_tol:
+                return i  # region i is just before the curvature divergence
+
+        # ── Criterion 2: ω₀_eff near zero ────────────────────────────────────
+        for i, region in enumerate(self.regions):
+            if region.omega0_ratio() < omega_ratio_tol:
+                return i
+
+        # ── Criterion 3: dominant Koopman eigenvalue near unit circle ────────
+        # Check only the DOMINANT oscillatory eigenvalue (smallest |Im(log λ)| > ε),
+        # NOT all EDMD polynomial eigenvalues — those contain spurious near-unit modes.
+        # Use BifurcationDetector in continuous-time (log-space) representation.
+        # Discrete λ → continuous s = log(λ)/dt; Re(s) = log|λ|/dt → 0 at |λ|→1.
+        detector = BifurcationDetector(zero_tol=0.05, dt=1.0)
+        for i, region in enumerate(self.regions):
+            eigs = region.eigenvalues
+            if eigs is None or len(eigs) == 0:
+                continue
+
+            # Filter to physically meaningful oscillatory eigenvalues:
+            # complex, stable (|λ| ≤ 1.05), non-trivial imaginary part
+            osc = eigs[
+                (np.abs(eigs) <= 1.05)
+                & (np.abs(np.imag(eigs)) > 1e-4)
+            ]
+            if len(osc) == 0:
+                continue
+
+            # Pick the dominant pair (smallest |Im(log λ)| = fundamental frequency)
+            log_osc = np.log(osc + 1e-30 + 0j)
+            freqs = np.abs(np.imag(log_osc))
+            dominant = osc[np.argmin(freqs)]
+
+            # Continuous-time representation of the dominant mode
+            ct_dominant = np.log(dominant + 1e-30 + 0j) / max(dt, 1e-12)
+            status = detector.check(np.array([ct_dominant, ct_dominant.conjugate()]))
+            if status.status in ("critical", "bifurcation"):
+                return i
+
+        return None
 
 
 # ── Navigator ─────────────────────────────────────────────────────────────────
@@ -275,15 +345,21 @@ class HarmonicNavigator:
         physical domain) will return similarity ≈ 1.  Linear systems (β=0)
         will have near-zero curvature and similarity ≈ 1 to each other.
         """
-        # Flat paths: β=0 → both have trivially zero curvature → same geometry
+        # Both flat: trivially same (zero-curvature) geometry
         if path_a.is_flat(tol=flat_tol) and path_b.is_flat(tol=flat_tol):
             return 1.0
+
+        # One flat, one non-flat: categorically different topology.
+        # The flat path has no curvature signal; the non-flat one does.
+        # Normalizing and comparing would give misleading high similarity
+        # (both would project onto the same direction from numerical noise).
+        if path_a.is_flat(tol=flat_tol) or path_b.is_flat(tol=flat_tol):
+            return 0.0
 
         sig_a = path_a.geometric_signature(n_bins)
         sig_b = path_b.geometric_signature(n_bins)
 
         if np.linalg.norm(sig_a) < 1e-10 or np.linalg.norm(sig_b) < 1e-10:
-            # One flat, one nonlinear → different geometry
             return 0.0
 
         return float(np.dot(sig_a, sig_b))   # already normalised

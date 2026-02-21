@@ -781,12 +781,13 @@ def test_find_universal_patterns_returns_dict():
 
 
 def test_duffing_params_validation():
-    """Invalid parameters raise ValueError."""
+    """Invalid parameters raise ValueError; β<0 is now valid (softening spring)."""
     with pytest.raises(ValueError, match="alpha"):
         DuffingParams(alpha=-1.0, beta=0.1, delta=0.5)
 
-    with pytest.raises(ValueError, match="beta"):
-        DuffingParams(alpha=1.0, beta=-0.1, delta=0.5)
+    # beta < 0 is now valid: softening spring with separatrix at A_s = √(α/|β|)
+    p_soft = DuffingParams(alpha=1.0, beta=-0.1, delta=0.5)
+    assert p_soft.is_softening is True
 
     with pytest.raises(ValueError, match="delta"):
         DuffingParams(alpha=1.0, beta=0.1, delta=-0.1)

@@ -80,6 +80,8 @@ _DUFFING_LOG_E_REF: float = 0.0          # reference energy = 1.0 (x₀²-normal
 _DUFFING_OBS_DEGREE: int = 3             # degree-3 polynomial observables
 _MIN_TRAJ_STEPS: int = 50               # minimum steps for EDMD fit
 _STABILITY_TOL: float = 1.05            # |λ| ≤ this → stable Koopman mode
+_OMEGA_FLOOR_FRACTION: float = 0.005    # ω floor = 0.5% of ω₀_linear (prevents log→-∞)
+_NEAR_SEP_ENERGY_RATIO: float = 0.85    # E₀/E_s > this → near_separatrix flag
 
 
 # ── Parameters ────────────────────────────────────────────────────────────────
@@ -105,20 +107,49 @@ class DuffingParams:
     def __post_init__(self) -> None:
         if self.alpha <= 0:
             raise ValueError(f"alpha must be > 0, got {self.alpha}")
-        if self.beta < 0:
-            raise ValueError(f"beta must be ≥ 0, got {self.beta}")
+        # beta < 0 → softening spring: saddle at A_s = √(α/|β|), orbit escapes for E > E_s
+        # beta = 0 → linear harmonic oscillator
+        # beta > 0 → hardening spring (no separatrix, always bounded)
         if self.delta < 0:
             raise ValueError(f"delta must be ≥ 0, got {self.delta}")
 
     @property
     def omega0_linear(self) -> float:
-        """ω₀ = √α  [rad/s]  — exact at β=0, approximate for β>0."""
+        """ω₀ = √α  [rad/s]  — exact at β=0, approximate for β≠0."""
         return float(math.sqrt(self.alpha))
 
     @property
     def Q_linear(self) -> float:
-        """Q = √α/δ — exact at β=0; a lower bound for β>0 (hardening raises ω₀_eff)."""
+        """Q = √α/δ — exact at β=0; changes with amplitude for β≠0."""
         return float(self.omega0_linear / max(self.delta, 1e-30))
+
+    @property
+    def is_softening(self) -> bool:
+        """True for β < 0 (softening spring with separatrix)."""
+        return self.beta < 0
+
+    @property
+    def separatrix_energy(self) -> float:
+        """
+        Separatrix energy E_s = α²/(4|β|) for softening spring (β<0).
+
+        This is the energy of the homoclinic orbit connecting the saddle points
+        at ±A_s = ±√(α/|β|).  Trajectories with E < E_s are trapped; E ≥ E_s escape.
+
+        Topology is energy-defined: the separatrix IS an energy surface.
+
+        Returns float('inf') for β≥0 (no separatrix).
+        """
+        if self.beta >= 0:
+            return float("inf")
+        return float(self.alpha**2 / (4.0 * abs(self.beta)))
+
+    @property
+    def separatrix_amplitude(self) -> float:
+        """A_s = √(α/|β|) — saddle-point position for β<0. Returns inf for β≥0."""
+        if self.beta >= 0:
+            return float("inf")
+        return float(math.sqrt(self.alpha / abs(self.beta)))
 
     def nonlinearity_strength(self, amplitude: float) -> float:
         """β·A²/α — dimensionless nonlinearity parameter.  << 1 → linear regime."""
@@ -149,26 +180,58 @@ class DuffingSimulator:
         ax = -(p.delta * v + p.alpha * x + p.beta * x**3)
         return np.array([v, ax])
 
+    def potential_energy(self, x: float) -> float:
+        """V(x) = αx²/2 + βx⁴/4  (Duffing potential)."""
+        p = self.params
+        return 0.5 * p.alpha * x**2 + 0.25 * p.beta * x**4
+
+    def total_energy(self, x: float, v: float) -> float:
+        """E = ½v² + V(x) = ½v² + αx²/2 + βx⁴/4."""
+        return 0.5 * v**2 + self.potential_energy(x)
+
     def system_fn(self) -> Callable[[np.ndarray], np.ndarray]:
         """Return a Callable compatible with LCAPatchDetector(system_fn=...)."""
         return self.rhs
 
     def run(self, x0: float, v0: float, n_steps: int) -> np.ndarray:
         """
-        Integrate for n_steps steps.
+        Integrate for n_steps steps with RK4.
 
-        Returns trajectory of shape (n_steps + 1, 2) — each row is [x, ẋ].
+        For softening springs (β<0): applies an energy-based separatrix guard.
+        The guard fires when E_total > 0.9 × E_s, preventing numerical escape.
+        Topology is energy-defined: the separatrix IS an energy surface, so the
+        guard is energy-based — NOT position-based — to maintain invariant consistency.
+
+        Returns trajectory of shape (k+1, 2), k ≤ n_steps.
         """
+        E_sep = self.params.separatrix_energy  # inf for β≥0
+        E_guard = 0.9 * E_sep
+
+        # Guard: if initial energy already exceeds separatrix, return trivial trajectory
+        E_init = self.total_energy(x0, v0)
+        if E_init >= E_sep:
+            return np.array([[x0, v0]])
+
         state = np.array([x0, v0], dtype=float)
         traj = [state.copy()]
         dt = self.dt
+
         for _ in range(n_steps):
             k1 = self.rhs(state)
             k2 = self.rhs(state + 0.5 * dt * k1)
             k3 = self.rhs(state + 0.5 * dt * k2)
             k4 = self.rhs(state + dt * k3)
-            state = state + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
+            new_state = state + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
+
+            # Energy guard: stop before numerical drift across separatrix (β<0 only)
+            if E_sep < float("inf"):
+                E_new = self.total_energy(float(new_state[0]), float(new_state[1]))
+                if E_new >= E_guard:
+                    break
+
+            state = new_state
             traj.append(state.copy())
+
         return np.array(traj)
 
 
@@ -192,6 +255,9 @@ class DuffingResult:
     is_linear_regime: bool    # |ω₀_eff − ω₀_linear| / ω₀_linear < 0.05
     omega0_shift: float       # (ω₀_eff − ω₀_linear) / ω₀_linear  [fractional]
     nonlinearity: float       # β·x₀²/α  — dimensionless nonlinearity at x₀
+    # Bifurcation extension (β<0 softening support)
+    near_separatrix: bool = False       # E₀/E_sep > 0.85 — approaching homoclinic orbit
+    max_eigenvalue_modulus: float = 0.0 # max|λ| from EDMD; → 1 near bifurcation
 
     def __str__(self) -> str:
         lin = "linear" if self.is_linear_regime else "nonlinear"
@@ -247,8 +313,23 @@ class DuffingEvaluator:
         E = float(np.max(E_seq))
         log_E = float(math.log10(max(E, 1e-30)))
 
+        # Near-separatrix detection: energy-based (topology is energy-defined).
+        # Use initial mechanical energy E₀ = ½v₀² + V(x₀) vs separatrix energy E_s.
+        E_sep = self.params.separatrix_energy
+        E0 = self._sim.total_energy(x0, v0)
+        near_sep = (E_sep < float("inf")) and (E0 / max(E_sep, 1e-30) > _NEAR_SEP_ENERGY_RATIO)
+
         # EDMD Koopman fit
         koop_result, omega0_eff, Q_eff = self._fit_koopman(traj)
+        max_eig_mod = float(np.max(np.abs(koop_result.eigenvalues)))
+
+        # Near-separatrix override: EDMD cannot reliably detect ω₀_eff → 0 when
+        # the period greatly exceeds the simulation window (less than one full cycle).
+        # Use the ω floor directly — the physics dictates ω₀_eff → 0 near E_s.
+        # This is an energy-based override: near_sep is determined by E₀/E_sep ratio.
+        if near_sep:
+            omega_min = max(_OMEGA_FLOOR_FRACTION * omega0_lin, 1e-6)
+            omega0_eff = omega_min   # force to floor: period → ∞ as E₀ → E_s
 
         is_linear = (
             abs(omega0_eff - omega0_lin) / max(omega0_lin, 1e-30) < 0.05
@@ -269,6 +350,8 @@ class DuffingEvaluator:
             is_linear_regime=is_linear,
             omega0_shift=shift,
             nonlinearity=self.params.nonlinearity_strength(abs(x0)),
+            near_separatrix=near_sep,
+            max_eigenvalue_modulus=max_eig_mod,
         )
 
     def dynamical_quantities(
@@ -390,6 +473,12 @@ class DuffingEvaluator:
 
         if freq < 1e-12:
             return omega0_fallback, Q_fallback
+
+        # ω floor: near the separatrix (β<0), ω₀_eff → 0 and log(ω) → -∞.
+        # Floor at 0.5% of ω₀_linear to keep curvature_profile finite and log_omega0_norm
+        # clipped. This is geometric regularisation, not physical approximation.
+        omega_min = max(_OMEGA_FLOOR_FRACTION * omega0_fallback, 1e-6)
+        freq = max(freq, omega_min)
 
         Q_eff = freq / max(2.0 * decay, 1e-12)
         return float(freq), float(Q_eff)
