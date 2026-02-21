@@ -1,0 +1,38 @@
+{
+  "R_ohm": 39.72992184627276,
+  "L_henry": 0.01359883670046699,
+  "C_farad": 1.8629245512902236e-06,
+  "cutoff_hz": 999.9346528918221,
+  "target_hz": 1000.0,
+  "objective": 6.534710817788891e-05,
+  "Q_factor": 2.1504806317684033,
+  "energy_loss": 0.2325061628612927,
+  "constraints_ok": true,
+  "constraints": {
+    "Q_limit": {
+      "satisfied": true,
+      "value": 2.1504806317684033,
+      "limit": 10.0
+    },
+    "energy_loss": {
+      "satisfied": true,
+      "value": 0.2325061628612927,
+      "limit": 0.5
+    },
+    "R_positive": {
+      "satisfied": true,
+      "value": 39.72992184627276,
+      "limit": 0.0
+    },
+    "L_positive": {
+      "satisfied": true,
+      "value": 0.01359883670046699,
+      "limit": 0.0
+    },
+    "C_positive": {
+      "satisfied": true,
+      "value": 1.8629245512902236e-06,
+      "limit": 0.0
+    }
+  }
+}
