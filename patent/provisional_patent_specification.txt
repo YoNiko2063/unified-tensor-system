@@ -876,8 +876,534 @@ T_char(params, loading) that obeys universality condition (UNI-1):
     STEP 4: Fit a once per loading class by OLS across representative
             instances; verify universality by cross-validation.
 
-This procedure is claimed for all domains listed in Sections 8.2 and 8.3,
+This procedure is claimed for all domains listed in Sections 8.2, 8.3, and 9,
 and for any future domain where universality condition (UNI-1) holds.
+
+────────────────────────────────────────────────────────────────────────────────
+SECTION 9: EXTENDED DOMAIN APPLICABILITY
+────────────────────────────────────────────────────────────────────────────────
+
+The inventive methods of Contributions 1–5 apply to any domain in which a
+dynamical regime can be characterized by a frequency-like scale ω₀, a
+dissipation-like ratio Q (or ζ = 1/(2Q)), and a topological energy boundary
+(separatrix or stability limit). This section enumerates additional domains
+organized by field. For each domain, the role of ω₀, Q, T_char, and the
+applicable inventive contribution are identified.
+
+────────────────────────────────
+9.A COMPUTATIONAL SCIENCE AND PHYSICS-INFORMED AI
+────────────────────────────────
+
+9.A.1 Nonlinear PDE Solving and Physics-Informed Neural Networks (PINNs)
+PINNs embed a PDE residual into a neural network loss and minimize over a
+collocation grid. The loss landscape near a trained solution is governed by
+the PDE's spectral structure: the dominant eigenvalue of the linearized
+residual operator defines an effective ω₀, and the ratio of dominant to
+subdominant eigenvalues defines an effective Q. The invention's domain-invariant
+triple indexes PINN training regimes; the energy-conditioned gate identifies when
+residual energy exceeds a stability threshold (separatrix analog in loss space);
+and the EDMD trust metric classifies whether training has converged to a periodic
+attractor (limit cycle in gradient flow) or is chaotic (stochastic gradient noise
+dominated). The universal correction (UNI-2) applies to convergence time
+estimates: T_convergence = T_analytic_linear / (1 − a·ζ_eff) where ζ_eff is the
+effective damping ratio of the gradient flow around the solution manifold.
+
+9.A.2 Neural Operators for Parametric PDE Families
+Neural operators (DeepONet, Fourier Neural Operator) learn mappings from PDE
+parameters to solution fields. For a parametric family sharing the same operator
+topology (same differential order, same boundary condition type, same coupling
+structure), solutions share a dominant frequency ω₀(parameters) and quality
+factor Q(parameters). The invention indexes neural operator regimes by the
+domain-invariant triple of the PDE's linearized spectral profile; retrieves
+stored operator weights from a nearby regime as warm initialization; and applies
+the topology discriminator (Contribution 3) to reject initialization from
+topologically distinct operator classes (e.g., elliptic vs. parabolic PDE).
+
+9.A.3 Surrogate Modeling for CFD and Finite Element Analysis (FEA)
+Computational fluid dynamics and structural FEA models have dominant resonant
+modes (ω₀ = structural natural frequency; Q = modal quality factor). The
+invention stores prior simulation results indexed by the modal triple and
+retrieves warm-start basis vectors (POD modes, reduced basis) for a new
+simulation in the same dynamical regime. The energy-conditioned gate identifies
+when the query operating point is near a flutter or buckling bifurcation
+(separatrix analog in parameter space), preventing incorrect basis transfer.
+T_char = simulation wall-clock time to convergence; the universal correction
+applies when ω₀·T_converge is mesh-resolution-determined.
+
+9.A.4 Turbulence Closure Modeling
+Turbulent flows exhibit a cascade of eddy structures with characteristic
+frequencies ω₀(k) at wavenumber k and effective quality factors Q(k) = ω₀(k)/
+γ(k) where γ(k) is the eddy decay rate. The Koopman EDMD decomposition
+(Contribution 4) extracts dominant turbulent modes; the trust metric classifies
+whether the flow is in an organized (low-dimensional Koopman) or chaotic regime.
+The universal correction applies to large-eddy simulation subgrid closure: the
+subgrid stress tensor correction scales as 1/(1 − a·ζ_subgrid) where ζ_subgrid
+is the damping ratio of the subgrid model.
+
+9.A.5 Inverse Parameter Identification
+Inverse problems (parameter estimation from observations) reduce to minimization
+of a residual over parameter space. The gradient flow of the residual near the
+true parameter is a damped oscillator with ω₀ = √(λ_min(∇²J)) and Q inversely
+proportional to the condition number. The invention retrieves warm-start parameter
+estimates from memory entries at nearby (ω₀, Q) operating points, accelerating
+convergence. The topology discriminator rejects retrieval when the query
+parameter space has a different separatrix structure (multimodal posteriors).
+
+9.A.6 Chaotic System Prediction
+Directly covered by Contribution 4 (EDMD trust metric) and Contribution 3
+(curvature profile bifurcation approach). Extended application: for any
+observable time series from an unknown system, the invention classifies the
+generating system as periodic, quasi-periodic, or chaotic using Koopman
+reconstruction error, without access to the governing equations. Short-term
+prediction is achievable in the Abelian (low-chaos) regime; long-term prediction
+fails gracefully in the chaotic regime (trust < threshold) with explicit
+uncertainty quantification.
+
+9.A.7 Multi-Scale Physical Simulation Acceleration
+Multi-scale systems (molecular dynamics + continuum, micro + macro-structural)
+operate at multiple ω₀ scales. The invention stores Koopman representations at
+each scale indexed by the domain-invariant triple and retrieves compatible
+fine-scale solutions given a coarse-scale regime query. The energy-conditioned
+gate identifies when scales are coupled (near-separatrix in scale coupling
+energy), preventing inappropriate single-scale retrieval. T_char is the fine-
+scale integration time per coarse timestep; universal correction applies when
+ω₀_fine·T_fine is ratio-of-scales determined.
+
+9.A.8 Quantum System Approximation
+Extended from Claim 11. Beyond Josephson junctions, applies to:
+(a) Quantum harmonic oscillator arrays (ion traps, optical lattices): ω₀ from
+    trap frequency, Q from motional coherence time, T_char = thermalization time.
+(b) Quantum annealing: the transverse field Ising model near the phase transition
+    is a softening Duffing analog (β < 0, separatrix = gap closing point). The
+    annealing time T_anneal ~ 1/gap² is the CCT analog; universal correction
+    applies when the gap closing rate is loading-class-determined.
+(c) Variational quantum eigensolvers (VQE): gradient flow on the variational
+    manifold has ω₀ from the Hessian spectrum and Q from measurement noise;
+    the invention warm-starts VQE from memory of nearby Hamiltonians.
+
+9.A.9 Materials Discovery and Lattice Property Prediction
+Crystal lattice vibrations (phonons) are characterized by a phonon dispersion
+relation ω(k) and phonon lifetimes τ(k) = Q(k)/ω(k). The domain-invariant triple
+at each wavevector k indexes phonon regimes. The invention retrieves Koopman
+representations of lattice dynamics from memory of structurally similar materials
+(same space group symmetry, similar force constants → similar ω₀/Q topology),
+enabling rapid phonon band structure prediction without full DFT calculation.
+The energy-conditioned gate identifies phonon instabilities (imaginary frequency
+modes = β < 0 Duffing, separatrix = phase transition energy).
+
+9.A.10 Semiconductor Device Modeling
+Carrier transport in semiconductor devices is governed by drift-diffusion
+equations that in the small-signal regime reduce to GEN-1:
+    Cg·V̈ + (1/Rds)·V̇ + (1/Ls)·V = I_gate
+where Cg is gate capacitance, Rds drain-source resistance, Ls parasitic
+inductance. ω₀ = 1/√(Cg·Ls), Q = Rds/√(Ls/Cg). The invention retrieves
+device operating point warm-starts from memory indexed by (ω₀, Q); topology
+discriminator identifies punch-through or avalanche breakdown bifurcations
+(separatrix in carrier density space).
+
+9.A.11 Electromagnetic Field Approximation
+Maxwell's wave equation in a resonant cavity:
+    ε₀·Ë + σ·Ė + (1/μ₀)·∇²E = J_source
+reduces to GEN-1 with ω₀ = c/√(με)·(mπ/L) for mode (m) in a cavity of length L,
+and Q = ω₀·ε₀/σ. The invention retrieves cavity mode Koopman representations
+from memory indexed by (ω₀, Q) for rapid field approximation across geometries.
+
+9.A.12 Circuit Nonlinear Component Modeling
+Nonlinear circuit elements (varactor diodes, Josephson junctions, memristors)
+introduce β ≠ 0 terms into GEN-1, creating Duffing-type dynamics. The topology
+discriminator (Contribution 3) classifies hardening (β > 0, e.g., saturable
+inductor) vs. softening (β < 0, e.g., tunnel diode) nonlinearities. The energy-
+conditioned gate identifies when the operating point approaches the nonlinear
+region (E₀/E_sep > 0.85), preventing incorrect linear-regime retrieval.
+
+────────────────────────────────
+9.B ENERGY, POWER, AND INDUSTRIAL SYSTEMS
+────────────────────────────────
+
+9.B.1 Smart Grid Optimization
+Extension of Contribution 5. Multi-machine power systems with center-of-inertia
+corrections: each generator's SMIB representation is indexed by its domain-
+invariant triple; the invention identifies inter-area oscillation modes by
+clustering generators with similar (ω₀, Q) in triple-space. Universal correction
+parameter a is fitted per inter-area mode class (loading ratio class). T_char =
+inter-area oscillation damping time (time for a contingency disturbance to damp
+to ±5% of steady state).
+
+9.B.2 Renewable Energy Output Forecasting
+Wind turbine mechanical output obeys GEN-1 as a torsional oscillator:
+    J·Ω̈ + b·Ω̇ + k·Ω = τ_wind
+where J is rotor inertia, b is damping, k is drivetrain stiffness, τ_wind is
+wind torque. ω₀ = √(k/J), Q = Jω₀/b. Solar irradiance has dominant harmonic
+at ω₀ = 2π/24h (diurnal) with seasonal amplitude modulation. The invention
+indexes forecast regimes by (ω₀, Q, ζ) and retrieves stored production profiles;
+topology discriminator identifies intermittency regime shifts (β-change events).
+
+9.B.3 Battery Degradation Modeling
+The Randles circuit model of a battery cell is:
+    L·İ + (R_s + R_ct)·I + V_c = V_OCV − V_terminal
+where R_ct, C_dl (charge-transfer resistance, double-layer capacitance) form an
+RC circuit with ω₀ = 1/√(L·C_dl), Q = ω₀·C_dl·R_ct. Degradation shifts (ω₀, Q)
+over charge cycles; the invention tracks this shift in triple-space as a
+degradation trajectory. The energy-conditioned gate identifies when the cell
+approaches lithium plating or thermal runaway (separatrix in electrochemical
+energy space). T_char = time to reach end-of-life capacity threshold.
+
+9.B.4 Predictive Maintenance for Industrial Systems
+Rotating machinery (bearings, gears, motors) exhibits resonances at ω₀
+(bearing race frequency, gear mesh frequency) with Q determined by lubrication
+and structural damping. Incipient faults shift ω₀ and reduce Q. The invention
+indexes healthy-state Koopman representations in triple-space; fault detection
+is triggered when the live (ω₀, Q) deviates beyond a retrieval threshold from
+the nearest healthy memory entry. The topology discriminator identifies
+qualitative fault type changes (crack initiation = new β < 0 term in GEN-1).
+
+9.B.5 Digital Twin Industrial Modeling
+A digital twin mirrors a physical asset's dynamical state. The invention provides
+the indexing infrastructure: each physical operating regime is a memory entry
+(ω₀, Q, trust, curvature_profile); the twin retrieves the matching entry and
+uses stored Koopman eigenfunctions as a reduced-order model. Regime transitions
+(startup, shutdown, fault) are flagged by the topology discriminator and trust
+metric. Universal correction: T_char = time to synchronize twin state to physical
+state after a disturbance.
+
+9.B.6 Oil and Gas Reservoir Modeling
+Pressure transient analysis in porous media (diffusivity equation) admits a
+second-order telegraph approximation at high frequencies:
+    (ρ·c/κ)·p̈ + (1/κ)·ṗ − ∇²p = q_source
+with ω₀ = √(κ·c)/L (reservoir diffusion frequency), Q inversely proportional
+to viscous dissipation. The invention indexes pressure transient regimes by
+(ω₀, Q); retrieves stored decline curve models from nearby reservoir types;
+applies universal correction to well productivity index (CCT analog = time to
+pseudosteady state).
+
+────────────────────────────────
+9.C ENGINEERING, AEROSPACE, AND TRANSPORTATION
+────────────────────────────────
+
+9.C.1 Structural Health Monitoring
+Extension of Claim 13. Structural modes (beams, plates, shells, bridges) shift
+ω₀ downward and Q decreases as damage accumulates (stiffness reduction, damping
+increase). The invention provides a baseline Koopman memory indexed by healthy
+modal triples; continuous monitoring detects deviation from baseline in triple-
+space. The curvature profile detects onset of nonlinear behavior (crack breathing
+= β-type nonlinearity). T_char = remaining useful life; universal correction
+applies when ω₀·T_RUL is fatigue-loading-class-determined.
+
+9.C.2 Autonomous Robotics Control
+Robot joint dynamics (series elastic actuator, flexible link):
+    I·θ̈ + b·θ̇ + k·θ = τ_motor
+obey GEN-1 with ω₀ = √(k/I), Q = Iω₀/b. The invention indexes joint control
+regimes and retrieves warm-start PID/impedance controller gains from memory at
+nearby (ω₀, Q) operating points (load-dependent ω₀). Multi-joint systems are
+indexed by their dominant mode triple; the topology discriminator prevents
+coupling of modes in different stability regimes.
+
+9.C.3 Multi-Agent Robotic Coordination
+N coupled robots with elastic interconnections obey a network of GEN-1 equations:
+    Mᵢ·ẍᵢ + Dᵢ·ẋᵢ + Σⱼ Kᵢⱼ·(xᵢ − xⱼ) = Fᵢ
+The network's collective modes have frequencies ω₀,k = √(λk/Meff) where λk is
+the kth Laplacian eigenvalue. The invention indexes collective modes by
+(ω₀,k, Qk); the topology discriminator identifies synchronization vs.
+desynchronization regimes (separatrix in coupling energy space). T_char =
+synchronization time; universal correction applies per coupling-topology class.
+
+9.C.4 Aerospace Trajectory Optimization
+Orbital mechanics near circular orbit reduces to the Clohessy-Wiltshire equations:
+    ẍ − 2n·ẏ − 3n²·x = Fx/m
+    ÿ + 2n·ẋ = Fy/m
+The in-plane oscillation frequency ω₀ = n (mean motion), Q determined by
+atmospheric drag. Transfer trajectory time (CCT analog = time to reach target
+orbit) admits the universal correction when ω₀·T_transfer is orbit-ratio-
+determined. The invention retrieves warm-start maneuver sequences from memory
+indexed by (n, Q_drag).
+
+9.C.5 Smart City Traffic Modeling and Transportation Networks
+Macroscopic traffic flow (Lighthill-Whitham-Richards model) supports kinematic
+waves with ω₀ = √(∂F/∂k·∂²F/∂k²) (speed of wave propagation × curvature of
+flow-density curve), Q from traffic damping. Stop-and-go oscillations are a
+nonlinear Duffing-type phenomenon (traffic flow softening at jam density).
+The invention detects approach to traffic breakdown (separatrix = capacity drop)
+using the energy-conditioned gate; T_char = clearance time for incident.
+
+9.C.6 Materials Stress and Fatigue Failure Forecasting
+Cyclic fatigue loading at frequency ω₀ with amplitude-dependent damage:
+    Ṅ_fail = C·(ΔK/K_Ic)^m·ω₀
+where ΔK is stress intensity range and K_Ic is fracture toughness. This maps to
+GEN-1 near resonance. The energy-conditioned gate identifies when the stress
+intensity ratio ΔK/K_Ic exceeds the separatrix threshold. T_char = cycles to
+failure (CCT analog); universal correction applies per material-class loading ratio.
+
+────────────────────────────────
+9.D ENVIRONMENTAL, CLIMATE, AND EARTH SYSTEMS
+────────────────────────────────
+
+9.D.1 Climate Simulation Acceleration
+General circulation models (GCMs) solve coupled PDE systems for atmosphere,
+ocean, and land. Dominant modes (planetary waves, ENSO, AMO) have characteristic
+ω₀ (annual, decadal) and Q (inter-annual persistence). The invention indexes
+climate mode regimes in triple-space; regime-memory reuse provides warm-start
+basis vectors for model initialization; topology discriminator identifies
+abrupt regime transitions (tipping points = separatrix crossing in energy space).
+
+9.D.2 Weather Forecasting
+Numerical weather prediction solves the primitive equations (PDE system). Dominant
+synoptic-scale eddies have ω₀ ≈ 2π/5 days, Q from baroclinic growth rate.
+The invention retrieves stored Koopman mode decompositions from memory at
+matching (ω₀, Q) for rapid forecast initialization. Universal correction: T_char
+= forecast skill horizon; universal correction applies per atmospheric regime class
+(blocking, cyclone, anticyclone loading classes).
+
+9.D.3 Flood and Hydraulic Prediction
+Saint-Venant equations for open channel flow:
+    ∂A/∂t + ∂Q/∂x = 0
+    ∂Q/∂t + ∂(Q²/A)/∂x + gA·∂h/∂x + gA·(Sf − S₀) = 0
+linearized around steady flow yield a wave equation with ω₀ = c/L (celerity/
+channel length), Q from friction slope Sf. T_char = peak flow arrival time
+(flood CCT analog); universal correction applies per catchment loading class.
+
+9.D.4 Wildfire Prediction
+Reaction-diffusion PDE for fire spread:
+    ∂T/∂t = D·∇²T − λ·T + S·exp(−Ea/RT)
+near the ignition threshold reduces to GEN-1 with ω₀ from the linearized
+reaction rate (Damköhler frequency), Q from the ratio of diffusion to reaction
+timescales. T_char = time to fire perimeter escape (CCT analog = energy to exceed
+containment). The energy-conditioned gate identifies near-critical fire conditions.
+
+9.D.5 Ocean Current Modeling
+Geostrophic and quasi-geostrophic ocean dynamics support Rossby waves:
+    ∂q/∂t + J(ψ, q + βy) = F − r·q
+with ω₀ = β·k/(k² + l² + f²/N²H²), Q from dissipation rate r. The invention
+indexes ocean regime Koopman representations; retrieves warm-start basis for
+mesoscale eddy prediction; topology discriminator identifies eddy merging events
+(separatrix in potential vorticity space).
+
+9.D.6 Agricultural Yield Prediction
+Crop growth dynamics (logistic + seasonal forcing):
+    ẋ = r·x·(1 − x/K) + A·cos(ω₀t)·x
+where ω₀ = 2π/365 days (annual), Q from weather variability damping. The
+invention indexes crop growth regimes by dominant ω₀ and Q (climate zone
+class); retrieves stored yield trajectories for similar agroclimatic regimes.
+Separatrix analog = wilting point or frost threshold in water/temperature space.
+
+9.D.7 Seismic Risk Modeling
+Extension of Claim 13. Site response amplification:
+    m·ẍ + c·ẋ + k·x = −m·a_ground(t)
+Site resonance at ω₀ = √(k/m) amplifies ground motion. Q = mω₀/c (site
+quality factor). The invention retrieves Koopman response representations from
+memory indexed by site (ω₀, Q); universal correction: T_char = duration of
+strong shaking at site; a is fitted per soil-class loading ratio.
+
+9.D.8 Carbon Cycle Modeling
+The coupled atmosphere-ocean-land carbon cycle is governed by a system of ODEs
+with dominant relaxation frequencies ω₀ (decadal = ocean uptake, century =
+deep ocean saturation) and effective Q (carbon sink efficiency). The invention
+indexes carbon cycle regimes; topology discriminator identifies abrupt transitions
+(permafrost thaw, Amazon dieback = separatrix crossings).
+
+────────────────────────────────
+9.E BIOLOGICAL, MEDICAL, AND NEURAL SYSTEMS
+────────────────────────────────
+
+9.E.1 ECG and EEG Anomaly Detection
+Extension of Claim 17. Cardiac rhythm: the sinoatrial pacemaker is a nonlinear
+oscillator with ω₀ = 2π × (heart rate/60) and Q from autonomic regulation.
+Arrhythmia = bifurcation (ω₀ shift + Q collapse). EEG oscillations: alpha
+(8–12 Hz), beta (13–30 Hz), gamma (>30 Hz) bands each have domain-invariant
+triples indexed by frequency and coherence (Q analog). The invention detects
+anomalies as deviations from healthy-state triple in memory and applies the
+trust metric to classify seizure (chaotic) vs. sleep (periodic) dynamics.
+
+9.E.2 ICU Risk Prediction
+Heart rate variability (HRV) is characterized by ω₀ (LF: 0.04–0.15 Hz; HF:
+0.15–0.4 Hz) and Q (reciprocal of band relative power). Sepsis, cardiovascular
+failure, and neurological deterioration manifest as Q collapse in one or more
+bands. The invention monitors ICU patient HRV triples over time; retrieves
+nearest historical patient trajectories from memory for risk stratification.
+
+9.E.3 Epidemiological Forecasting
+SIR model:
+    Ṡ = −β·S·I
+    İ = β·S·I − γ·I
+    Ṙ = γ·I
+linearized around endemic equilibrium gives oscillations with:
+    ω₀ = √(βγ·S* − γ²), Q = ω₀/(2γ)
+Epidemic waves are periodic for ω₀ > 0 (above herd immunity threshold). The
+energy-conditioned gate identifies when effective reproduction number Reff ≈ 1
+(near-separatrix = near herd immunity). T_char = epidemic peak time; universal
+correction applies per disease-class R₀ loading ratio.
+
+9.E.4 Wearable Health Data Integration
+Physiological signals from wearables (accelerometer, PPG, skin conductance)
+contain oscillatory components at ω₀ (respiration ≈ 0.25 Hz, cardiac ≈ 1 Hz,
+circadian ≈ 11.6 μHz) with Q from inter-individual variability. The invention
+provides real-time regime monitoring: the live (ω₀, Q) triple is compared to
+memory of the individual's baseline healthy states; deviations trigger alerts.
+
+9.E.5 Gene Regulatory Network Inference
+The Goodwin oscillator (negative feedback gene regulation):
+    ẋ = α/(1 + zⁿ) − β·x
+    ẏ = k₁·x − k₂·y
+    ż = k₃·y − k₄·z
+supports limit-cycle oscillations with ω₀ from feedback delay and Q from
+degradation rates. The topology discriminator classifies GRN dynamics as
+periodic (circadian, cell cycle) or chaotic. The invention retrieves Koopman
+representations of known regulatory networks from memory to warm-start inference
+on unknown networks with similar oscillatory signatures.
+
+9.E.6 Population Dynamics and Ecological Modeling
+Lotka-Volterra predator-prey:
+    ẋ = (α − βy)·x,  ẏ = (δx − γ)·y
+linearized around coexistence equilibrium: ω₀ = √(αγ), Q from environmental
+damping (real ecosystems have weak dissipation). The curvature profile detects
+approach to extinction bifurcation (separatrix in population state space).
+Extended: competitive exclusion, mutualism, trophic cascade networks are all
+GEN-1 analogs at the dominant mode level.
+
+9.E.7 Brain-Computer Interface and Neural Decoding
+Extension of Claims 17, 9.E.1. Motor cortex local field potentials have
+dominant oscillatory modes (beta suppression at ω₀ ≈ 20 Hz during movement).
+The invention fits EDMD Koopman operators to neural trajectories in electrode
+space; the trust metric classifies decoded intention states (periodic = clear
+intent; chaotic = ambiguous). The domain-invariant triple of neural oscillations
+is retrieved from a library of movement-associated Koopman modes to decode
+intended motor commands without retraining per session.
+
+9.E.8 Molecular Docking and Drug-Receptor Interaction
+Ligand binding to a receptor is governed by a potential energy surface V(r)
+with a binding well separated from the unbound state by a saddle-point energy
+E_barrier (= E_sep analog). The softening Duffing model (β < 0) approximates
+the binding well near the saddle. The energy-conditioned gate (Contribution 2)
+identifies near-barrier configurations (E₀/E_barrier > 0.85); the topology
+discriminator classifies binding pocket type (hardening = tight binding;
+softening = loose/non-specific binding). T_char = binding dwell time; universal
+correction applies per receptor-class loading ratio.
+
+────────────────────────────────
+9.F ECONOMIC, FINANCIAL, AND SOCIAL SYSTEMS
+────────────────────────────────
+
+9.F.1 Financial Time-Series Forecasting
+The Ornstein-Uhlenbeck (OU) process for mean-reverting asset prices:
+    dX = −κ·(X − μ)·dt + σ·dW
+is the stochastic analog of GEN-1 with ω₀ = √κ (mean-reversion rate), Q = κ/σ²
+(signal-to-noise ratio). The invention indexes financial regimes (bull, bear,
+volatile) by (ω₀, Q) in triple-space; retrieves stored regime statistics for
+risk modeling; topology discriminator identifies regime change events. T_char =
+time to return to mean after shock; universal correction applies per
+asset-class mean-reversion loading ratio.
+
+9.F.2 Macroeconomic and Business Cycle Forecasting
+Extension of Claim 15 (Samuelson-Hicks). Real Business Cycle (RBC) and DSGE
+models produce oscillatory impulse responses with ω₀ (cycle frequency ≈ 2π/8yr)
+and Q from monetary policy damping. The invention indexes macroeconomic regime
+Koopman representations; retrieves recession/expansion dynamics from historical
+memory. Universal correction: T_char = recovery time from recession trough;
+a is fitted per monetary-regime loading class.
+
+9.F.3 Energy Demand Forecasting
+Electricity demand follows GEN-1 forced oscillator dynamics (diurnal ω₀ = 2π/24h,
+weekly, seasonal harmonics) with Q from thermal inertia of buildings. The
+invention retrieves demand profile templates from memory indexed by (ω₀, Q,
+season_class); topology discriminator identifies demand regime shifts (heat wave,
+holiday = loading class change). Universal correction: T_char = ramp-up time
+for generation dispatch; a fitted per demand-class.
+
+9.F.4 Commodity and Energy Market Prediction
+Commodity price cycles (Cobweb model, storage dynamics):
+    P̈_t + (1/τ_d + 1/τ_s)·Ṗ_t + (1/(τ_d·τ_s))·Pt = const
+ω₀ = 1/√(τ_d·τ_s), Q = √(τ_s/τ_d). The invention indexes commodity cycle
+regimes; retrieves historical supercycle analogs from memory for forward price
+estimation.
+
+9.F.5 Epidemiological and Social Contagion Modeling
+Social influence propagation, misinformation diffusion, and information cascades
+follow SIR-analog dynamics (same mathematical form as 9.E.3) with:
+    ω₀ = √(β·γ·S* − γ²), Q = ω₀/(2γ)
+where β is transmission rate and γ is recovery/forgetting rate. Viral phenomena
+correspond to near-critical (near-separatrix) dynamics. The energy-conditioned
+gate identifies when contagion is near the spreading threshold (Reff ≈ 1).
+
+9.F.6 Systemic Risk and Financial Network Modeling
+Interbank contagion dynamics are governed by coupled GEN-1 equations (bank
+balance sheet dynamics with interbank exposures as spring terms). Dominant
+collective modes have ω₀ from network Laplacian eigenvalues (as in 9.C.3).
+Systemic crisis = synchronization of failure modes (separatrix crossing in
+network energy space). The topology discriminator identifies systemic risk
+regime shifts before they occur.
+
+────────────────────────────────
+9.G ARTIFICIAL INTELLIGENCE AND AUTONOMOUS SYSTEMS
+────────────────────────────────
+
+9.G.1 Cross-Domain Transfer Learning Systems
+Contribution 1 is itself a cross-domain transfer learning system in the
+dynamical regime sense. Extended application: any machine learning system
+that maps input distributions to outputs, where the input distribution's
+dominant variation mode has characteristic frequency ω₀ (e.g., dominant PCA
+eigenvalue), quality factor Q (ratio of dominant to subdominant eigenvalue),
+and damping ratio ζ (distribution flatness), can be indexed by the domain-
+invariant triple. Knowledge (model weights, optimizer states, architecture
+configurations) from a previously solved task at (ω₀, Q) is retrieved and
+transferred to a new task at a nearby triple.
+
+9.G.2 Meta-Learning and Few-Shot Optimization
+Memory-augmented meta-learning (MAML, Prototypical Networks) stores prior
+task solutions indexed by task difficulty metrics. The invention replaces
+naive task-similarity metrics with the domain-invariant triple (ω₀ = dominant
+gradient curvature, Q = inverse condition number, ζ = learning-rate-to-curvature
+ratio) for more physically grounded similarity. Regime-memory retrieval provides
+a warm-start initialization that is topologically compatible with the query task.
+
+9.G.3 Autonomous Robotics and Multi-Agent Coordination
+Extension of 9.C.2, 9.C.3. Reinforcement learning agents controlling physical
+systems (robot arm, legged robot, drone) operate in environments governed by
+GEN-1 dynamics. The invention provides the agent's world model with a structured
+regime memory indexed by (ω₀, Q) of the environment's mechanical modes. Transfer
+between robot platforms (sim-to-real, robot-to-robot) uses the topology
+discriminator to verify regime compatibility before weight transfer.
+
+9.G.4 Swarm Intelligence Systems
+N-agent swarms with local interaction rules (Reynolds flocking, Vicsek model)
+exhibit collective oscillatory modes. The linearized mean-field dynamics obey
+GEN-1 with ω₀ from flock cohesion stiffness and Q from alignment damping.
+The invention indexes swarm behavioral regimes (ordered, disordered, near-
+transition) by (ω₀, Q); the energy-conditioned gate identifies near-phase-
+transition swarm states; the trust metric classifies emergent swarm dynamics
+as periodic (ordered flight) or chaotic (dispersal).
+
+9.G.5 Autonomous Scientific Experiment Design
+Scientific experiments explore parameter spaces of physical or biological
+systems. The invention provides the experimental design agent with a structured
+memory of previously explored dynamical regimes. New experiment parameters are
+chosen by navigating the triple-space to unexplored (ω₀, Q) regions (Thompson
+sampling on the invariant manifold). The energy-conditioned gate prevents
+experimental designs that would drive the system beyond the separatrix
+(destructive operating conditions).
+
+9.G.6 Federated Learning Across Institutions
+In federated learning, distributed clients share model updates without sharing
+raw data. The invention provides a regime-aware aggregation mechanism: clients
+with the same (ω₀, Q) dynamical regime (same data distribution type) are
+identified and their updates are aggregated using the domain-invariant triple
+as a compatibility gate, preventing topologically incompatible gradient mixing.
+
+9.G.7 Autonomous Defense, Surveillance, and Security Systems
+Radar and sonar signal processing: target returns have ω₀ (Doppler frequency)
+and Q (coherence time). The invention indexes target dynamic regimes and
+retrieves stored Koopman representations for rapid track initiation. Anomaly
+detection: the trust metric classifies sensor time series as structured
+(periodic attractor, known target type) or anomalous (chaotic, unknown contact).
+Trajectory prediction: the universal correction applies to intercept time
+estimation when ω₀·T_intercept is geometry-class-determined.
+
+9.G.8 Speech and Audio Signal Analysis
+Vocal tract resonances (formants) are characterized by ω₀ (formant frequency)
+and Q (formant bandwidth). The invention indexes phonetic regimes by formant
+triples; retrieves acoustic templates from memory for speech recognition,
+speaker identification, and language processing. The topology discriminator
+classifies voiced (periodic, high Q) vs. unvoiced (aperiodic, low Q) segments.
+Laryngeal pathology (dysphonia) manifests as Q reduction and ω₀ instability,
+detectable by the trust metric.
 
 ================================================================================
 CLAIMS
@@ -1070,6 +1596,111 @@ system (building envelope, heat exchanger, electronic package) with thermal
 capacitances C₁, C₂ and thermal resistances R₁, R₂, characterized by
 ω₀ = 1/√(C₁·C₂·R₁·R₂), and the characteristic time is the thermal settling
 time to a prescribed temperature tolerance following a disturbance.
+
+CLAIM 20 (Broad — Any Observable Oscillatory System):
+The method of Claim 10, wherein the domain-invariant triple (ω₀, Q, ζ) is
+extracted from observed time-series data rather than from explicit governing
+equations, by:
+(a) applying EDMD to the time-series to extract Koopman eigenvalues {λᵢ};
+(b) identifying the dominant oscillatory eigenvalue pair as ω₀ = |Im(log λ)|/Δt;
+(c) estimating Q from the eigenvalue decay rate as Q = |Im(log λ)|/(2·|Re(log λ)|);
+(d) computing ζ = 1/(2Q);
+and wherein the method is applicable to any physical, computational, biological,
+financial, social, or engineered system that produces time-series data exhibiting
+oscillatory structure, including but not limited to all systems described in
+Sections 8 and 9 of this specification.
+
+CLAIM 21 (Embodiment Group — Computational Science and Physics-Informed AI):
+The method of Claim 10, wherein the dynamical system is selected from the group
+consisting of: a physics-informed neural network optimization trajectory on a PDE
+residual loss landscape; a neural operator applied to a parametric PDE family;
+a surrogate model for computational fluid dynamics or finite element analysis;
+a turbulence closure model extracting Koopman modes from turbulent flow data;
+an inverse parameter identification gradient flow; a chaotic system prediction
+system applying the EDMD trust metric of Contribution 4; a multi-scale physical
+simulation regime-memory warm-start system; a variational quantum eigensolver
+gradient flow; a phonon dispersion calculator for crystal lattice materials; a
+semiconductor small-signal equivalent circuit; and an electromagnetic cavity
+resonator mode approximation system.
+
+CLAIM 22 (Embodiment Group — Energy, Power, and Industrial Systems):
+The method of Claim 10, wherein the dynamical system is selected from the group
+consisting of: a multi-machine power grid with inter-area oscillation mode
+indexing; a wind turbine torsional oscillator or solar irradiance harmonic model;
+a battery Randles circuit model indexed by electrochemical (ω₀, Q); a rotating
+machinery bearing or gear resonance monitoring system for predictive maintenance;
+a digital twin regime-memory system for industrial asset monitoring; and an oil
+and gas reservoir pressure transient analysis system.
+
+CLAIM 23 (Embodiment Group — Civil, Structural, Aerospace, and Transportation):
+The method of Claim 10, wherein the dynamical system is selected from the group
+consisting of: a structural health monitoring system tracking modal frequency
+and quality factor deviation; a robot joint spring-mass dynamics system with
+load-dependent (ω₀, Q) retrieval; a multi-agent robot coordination system using
+network Laplacian modal triples; an orbital mechanics transfer trajectory
+optimization system with mean-motion ω₀; a smart city traffic flow oscillation
+system with kinematic wave ω₀; and a materials fatigue life prediction system
+with cyclic loading frequency ω₀.
+
+CLAIM 24 (Embodiment Group — Environmental, Climate, and Earth Systems):
+The method of Claim 10, wherein the dynamical system is selected from the group
+consisting of: a general circulation model (GCM) regime warm-start system indexed
+by planetary wave (ω₀, Q); a numerical weather prediction system with synoptic
+eddy Koopman retrieval; a Saint-Venant hydraulic flood prediction system with
+celerity-based ω₀; a wildfire reaction-diffusion PDE with Damköhler frequency
+ω₀; an ocean quasi-geostrophic eddy system with Rossby wave ω₀; a crop growth
+phenological oscillator with annual ω₀; and a seismic site response amplification
+system with structural resonance ω₀.
+
+CLAIM 25 (Embodiment Group — Biological, Medical, and Neural Systems):
+The method of Claim 10, wherein the dynamical system is selected from the group
+consisting of: a cardiac rhythm anomaly detection system treating the sinoatrial
+pacemaker as a nonlinear oscillator; an ICU patient physiological oscillation
+monitoring system using heart rate variability (ω₀, Q); an SIR-model epidemic
+forecasting system with endemic equilibrium oscillation ω₀; a wearable health
+sensor regime monitoring system with physiological band (ω₀, Q); a gene
+regulatory Goodwin oscillator inference system; a predator-prey or trophic
+cascade ecological system with Lotka-Volterra mode ω₀; a brain-computer
+interface neural decoding system using Koopman motor cortex modes; and a
+molecular docking binding well classification system using separatrix energy.
+
+CLAIM 26 (Embodiment Group — Economic, Financial, and Social Systems):
+The method of Claim 10, wherein the dynamical system is selected from the group
+consisting of: an Ornstein-Uhlenbeck mean-reverting financial asset price model;
+a DSGE macroeconomic model with business cycle oscillation ω₀; an electricity
+demand forecasting system with diurnal and seasonal harmonic oscillations;
+a commodity price Cobweb cycle model with supply-demand delay ω₀; a social
+influence or misinformation propagation SIR-analog system with spreading ω₀;
+and a financial interbank network contagion system with Laplacian collective mode.
+
+CLAIM 27 (Embodiment Group — AI, Autonomous Systems, and Signal Processing):
+The method of Claim 10, wherein the dynamical system is selected from the group
+consisting of: a cross-domain machine learning transfer system indexed by
+gradient curvature triple; a meta-learning warm-start system using domain-
+invariant task similarity; a federated learning gradient aggregation system with
+regime-compatibility gating; a swarm intelligence collective oscillation system
+with Vicsek-model (ω₀, Q); a radar or sonar Doppler target tracking system
+with Koopman mode retrieval; an autonomous experiment design system navigating
+the invariant manifold; and a speech formant analysis system treating vocal tract
+resonances as GEN-1 oscillators.
+
+CLAIM 28 (Broad — Universal Characteristic-Time Correction for Any Oscillatory Domain):
+A computer-implemented method for accelerating estimation of any characteristic
+time T_char in any oscillatory dynamical domain, wherein T_char is defined as
+the time for the system to cross a stability, convergence, or state-transition
+threshold, comprising:
+(a) identifying the system's natural frequency ω₀ and damping ratio ζ from
+    domain-specific parameters or from EDMD of observed time-series data;
+(b) computing T_analytic using an analytic formula valid in the zero-damping
+    (ζ = 0) limit for said system;
+(c) applying the universal correction: T_corrected = T_analytic / (1 − a·ζ),
+    where a is a loading-class-specific scalar satisfying ω₀·T_analytic =
+    f(loading_class), verified by leave-k-out cross-validation over system
+    instances within the same loading class; and
+(d) returning T_corrected as the estimated characteristic time, requiring no
+    numerical integration of the governing equations,
+wherein said method is applicable to all domains enumerated in Sections 8 and 9
+and any domain satisfying the universality condition ω₀·T_analytic = f(loading_class).
 
 CLAIM 19 (Broad — Universal Correction Scalar Principle):
 A method for computing a universal first-order correction scalar a applicable
