@@ -33,6 +33,7 @@ from __future__ import annotations
 import math
 import time
 from dataclasses import dataclass
+from itertools import combinations
 from typing import List
 
 from optimization.power_grid_evaluator import PowerGridParams, estimate_cct
@@ -710,4 +711,124 @@ def print_correction_table(results: List[DampingSweepResult]) -> None:
         errs = "".join(f"  {row[z]['corr_err_pct']:>+8.2f}%" for z in zeta_vals)
         print(f"  {gen.name:<5}  {gen.H:>6.1f}{errs}")
 
+    print("=" * W)
+
+
+# ── Leave-2-out cross-validation of scalar a ─────────────────────────────────
+
+
+def cross_validate_correction(
+    results: List[DampingSweepResult],
+    n_test: int = 2,
+) -> List[dict]:
+    """
+    Leave-n-out cross-validation of the global correction parameter `a`.
+
+    All computation is algebraic on existing DampingSweepResult data.
+    No new ODE evaluations — pure sum operations over subsets.
+
+    For each of C(10, n_test) = 45 splits:
+      1. Fit a on 8 training generators (all ζ values, 40 data points).
+      2. Apply CCT_corrected = CCT_EAC / (1 − a_train·ζ) to 2 test generators.
+      3. Record a_train, test corrected errors.
+
+    Args:
+        results: output of run_damping_sweep()
+        n_test:  generators held out per split (default 2)
+
+    Returns:
+        List of dicts with keys:
+            test_gens, a_train, mean_test_err_pct, max_test_err_pct
+    """
+    gen_names  = [g.name for g in IEEE39_GENERATORS]
+    cv_results = []
+
+    for test_indices in combinations(range(len(gen_names)), n_test):
+        test_names  = {gen_names[i] for i in test_indices}
+        train_names = {n for n in gen_names if n not in test_names}
+
+        train = [r for r in results if r.gen_name in train_names]
+        test  = [r for r in results if r.gen_name in test_names]
+
+        a_train   = fit_damping_correction(train)
+        test_corr = compute_corrected_errors(test, a_train)
+        abs_errs  = [abs(c["corr_err_pct"]) for c in test_corr]
+
+        cv_results.append({
+            "test_gens":       sorted(test_names),
+            "a_train":         a_train,
+            "mean_test_err":   sum(abs_errs) / len(abs_errs),
+            "max_test_err":    max(abs_errs),
+        })
+
+    return cv_results
+
+
+def compute_cv_summary(cv_results: List[dict]) -> dict:
+    """
+    Aggregate cross-validation results.
+
+    Returns dict with:
+        a_mean, a_std, a_min, a_max, a_range_pct  (range / mean × 100)
+        mean_test_err, max_test_err               (across all splits)
+        is_stable                                  (a_range_pct < 10%)
+    """
+    a_vals      = [r["a_train"]       for r in cv_results]
+    test_means  = [r["mean_test_err"] for r in cv_results]
+    test_maxs   = [r["max_test_err"]  for r in cv_results]
+
+    a_mean      = sum(a_vals) / len(a_vals)
+    a_var       = sum((a - a_mean) ** 2 for a in a_vals) / len(a_vals)
+    a_std       = math.sqrt(a_var)
+    a_range_pct = (max(a_vals) - min(a_vals)) / a_mean * 100.0
+
+    return {
+        "a_mean":        a_mean,
+        "a_std":         a_std,
+        "a_min":         min(a_vals),
+        "a_max":         max(a_vals),
+        "a_range_pct":   a_range_pct,
+        "mean_test_err": sum(test_means) / len(test_means),
+        "max_test_err":  max(test_maxs),
+        "n_splits":      len(cv_results),
+        "is_stable":     a_range_pct < 10.0,   # ±5% criterion
+    }
+
+
+def print_cv_table(cv_results: List[dict]) -> None:
+    """
+    Print cross-validation summary: per-split a_train + aggregate statistics.
+    """
+    summary = compute_cv_summary(cv_results)
+    W = 72
+
+    print("\n" + "=" * W)
+    print("  Leave-2-out Cross-Validation: stability of correction parameter a")
+    print(f"  {summary['n_splits']} splits  (C(10,2))  —  no new ODE calls")
+    print("=" * W)
+    print(f"  {'Split':>5}  {'Test gens':<12}  {'a_train':>8}  "
+          f"{'mean|err|%':>11}  {'max|err|%':>10}")
+    print("-" * W)
+
+    for i, r in enumerate(cv_results, 1):
+        gens = ",".join(r["test_gens"])
+        print(f"  {i:>5}  {gens:<12}  {r['a_train']:>8.4f}  "
+              f"{r['mean_test_err']:>10.2f}%  {r['max_test_err']:>9.2f}%")
+
+    print("=" * W)
+    stable = "STABLE ✓" if summary["is_stable"] else "UNSTABLE ✗"
+    print(f"  a:  mean={summary['a_mean']:.4f}  "
+          f"std={summary['a_std']:.4f}  "
+          f"min={summary['a_min']:.4f}  "
+          f"max={summary['a_max']:.4f}  "
+          f"range={summary['a_range_pct']:.1f}%  [{stable}]")
+    print(f"  Test corrected errors:  "
+          f"mean={summary['mean_test_err']:.2f}%  "
+          f"max={summary['max_test_err']:.2f}%")
+    if summary["is_stable"]:
+        print(f"  VERDICT: a is robust.  "
+              f"Range {summary['a_range_pct']:.1f}% < 10% (±5%) gate.")
+    else:
+        print(f"  VERDICT: a is not robust.  "
+              f"Range {summary['a_range_pct']:.1f}% ≥ 10% gate — re-evaluate.")
     print("=" * W)
