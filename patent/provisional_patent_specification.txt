@@ -879,6 +879,33 @@ T_char(params, loading) that obeys universality condition (UNI-1):
 This procedure is claimed for all domains listed in Sections 8.2, 8.3, and 9,
 and for any future domain where universality condition (UNI-1) holds.
 
+8.5 Nonlinear Extension of the Domain-Invariant Triple
+
+For nonlinear systems where K and D are state-dependent, the domain-invariant
+triple is generalized as follows:
+
+(a) EDMD-extracted triple: ω₀_eff and Q_eff are computed from the dominant
+    Koopman eigenvalue pair extracted from trajectory data, as specified in
+    Claim 20. This is valid for any nonlinear system admitting a finite-
+    dimensional Koopman invariant subspace (periodic and quasi-periodic attractors).
+
+(b) Energy-parameterized triple: For systems with a known potential V(x),
+    ω₀_eff(E) = sqrt(V''(x_eq(E)) / M_eff(E)) varies with energy E. The
+    triple is evaluated at the operating energy level and the energy-conditioned
+    gate (Contribution 2) partitions the nonlinear state space into distinct
+    retrieval regimes separated by the separatrix.
+
+(c) Linearized triple at equilibrium: ω₀ = sqrt(K(x_eq)/M), Q = M·ω₀/D(x_eq,0)
+    evaluated at the stable equilibrium x_eq provides a first-order index valid
+    for small-to-moderate deviations. The curvature profile (Contribution 3)
+    quantifies the energy range over which this linearization remains accurate.
+
+The invention thereby covers the full spectrum from weakly nonlinear systems
+(where the linearized triple suffices) to strongly nonlinear systems near
+bifurcation or separatrix crossing (where the energy-conditioned gate and
+topology discriminator are essential). All three nonlinear extension modes are
+implemented and claimed in Claims 1–29.
+
 ────────────────────────────────────────────────────────────────────────────────
 SECTION 9: EXTENDED DOMAIN APPLICABILITY
 ────────────────────────────────────────────────────────────────────────────────
@@ -1418,7 +1445,12 @@ A computer-implemented system for cross-domain solution retrieval in
 dynamical system optimization, comprising:
 (a) a domain encoder that maps domain-specific physical or computational
     parameters to a domain-invariant triple comprising normalized natural
-    frequency, normalized quality factor, and damping ratio;
+    frequency, normalized quality factor, and damping ratio, wherein said
+    natural frequency and quality factor are computed either (i) analytically
+    from linearization of the governing equation about an equilibrium, or
+    (ii) from the dominant Koopman eigenvalue extracted by Extended Dynamic
+    Mode Decomposition (EDMD) of observed trajectory data, thereby covering
+    both linear and nonlinear dynamical systems;
 (b) a memory store indexed by said domain-invariant triple;
 (c) a retrieval module that locates memory entries nearest to a query
     triple in triple-space and infers domain-native initialization
@@ -1519,12 +1551,14 @@ The method of Claim 8, further comprising verifying universality of a by:
     threshold across all subsets, indicating a is determined by loading-ratio
     geometry rather than by the specific generators in the training set.
 
-CLAIM 10 (Broad — Universal Geometric Pattern, Domain-Agnostic):
+CLAIM 10 (Broad — Universal Geometric Pattern, Domain-Agnostic, Linear and Nonlinear):
 A computer-implemented method for cross-domain invariant indexing and
 characteristic-time correction applicable to any physical, computational, or
-biological dynamical system governed by a second-order differential equation:
-    M·ẍ + D·ẋ + K·x = F(t)
-or its discrete-time equivalent, comprising:
+biological dynamical system whose dynamics are governed by, or well-approximated
+by, an equation of the form:
+    M·ẍ + D(x,ẋ)·ẋ + K(x)·x = F(t)
+where D(x,ẋ) and K(x) may be nonlinear functions of state, or its discrete-time
+equivalent, comprising:
 (a) characterizing a system by its natural frequency ω₀ = √(K/M) and quality
     factor Q = Mω₀/D to form a domain-invariant triple (log_ω₀_norm, log_Q_norm,
     ζ) where ζ = 1/(2Q) and ω₀_norm is normalized to a domain-specific reference;
@@ -1720,6 +1754,40 @@ wherein the universality of a within a loading class is guaranteed when the
 condition ω₀·T_analytic = f(loading_class) holds, and wherein a is applicable
 to all domains enumerated in Section 8 and any future domain satisfying said
 condition.
+
+CLAIM 29 (Nonlinear Systems — Explicit Coverage):
+A computer-implemented method for invariant indexing and regime-aware retrieval
+in nonlinear dynamical systems, comprising:
+(a) receiving trajectory data from a nonlinear system governed by an equation
+    of the form M·ẍ + D(x,ẋ)·ẋ + K(x)·x = F(t), where D and K are nonlinear
+    functions of state;
+(b) extracting an effective natural frequency ω₀_eff and effective quality
+    factor Q_eff from said trajectory data using one or more of:
+    (i)  Extended Dynamic Mode Decomposition (EDMD) on observed state trajectories,
+         identifying the dominant oscillatory Koopman eigenvalue pair;
+    (ii) energy-parameterized linearization, computing ω₀_eff(E) = sqrt(K(x_eq(E))/
+         M_eff(E)) as a function of the system's total energy E; or
+    (iii) linearization at the stable equilibrium x_eq of the nonlinear system;
+(c) forming the domain-invariant triple (log(ω₀_eff/ω₀_ref), log(Q_eff), ζ_eff)
+    where ζ_eff = 1/(2Q_eff);
+(d) applying the energy-conditioned separatrix gate of Contribution 2 to
+    classify the operating regime as sub-separatrix, near-separatrix, or
+    beyond-separatrix based on the ratio E₀/E_sep, where E_sep is the
+    separatrix energy of the nonlinear potential;
+(e) applying the topology discriminator of Contribution 3 to classify the
+    nonlinear regime type (hardening, softening, or linear) and reject
+    cross-regime retrieval when curvature profile cosine similarity is below
+    threshold; and
+(f) retrieving from memory the nearest stored solution in the same topological
+    regime and using it to warm-start optimization or simulation of the
+    nonlinear system,
+wherein said method is applicable to any nonlinear oscillatory system including
+but not limited to: Duffing oscillators (hardening β>0 and softening β<0),
+van der Pol oscillators, Lorenz and other chaotic systems, Josephson junction
+circuits, SMIB power grid swing equation with sin(δ) nonlinearity, molecular
+dynamics with anharmonic potentials, traffic flow with nonlinear flux-density
+relations, biological oscillators with sigmoidal coupling, and any system
+admitting a Koopman invariant subspace of finite or approximate dimension.
 
 ================================================================================
 ABSTRACT
