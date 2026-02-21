@@ -37,6 +37,8 @@ from optimization.koopman_signature import (
     FullKoopmanSignature,
     KoopmanInvariantDescriptor,
     compute_invariants,
+    _LOG_OMEGA0_REF,
+    _LOG_OMEGA0_SCALE,
 )
 from optimization.koopman_memory import (
     KoopmanExperienceMemory,
@@ -173,15 +175,18 @@ class ConstrainedHDVOptimizer:
         self, target_hz: float, pilot_steps: int
     ) -> Optional[np.ndarray]:
         """
-        Run a short pilot to compute a Koopman fingerprint for this problem,
-        then retrieve the nearest stored experience by invariant distance.
+        Run a short pilot, extract domain-invariant dynamical quantities from
+        the pilot's best point, then retrieve the nearest stored experience.
 
-        Purely spectral retrieval — no frequency formula heuristic.
+        Retrieval is domain-invariant: the query key is (log_ω₀_norm, log_Q_norm, ζ)
+        computed from the pilot's best RLC params.  Spring-mass entries stored
+        under the same metric are directly comparable.
+
         The pilot uses an independent RNG so it does not consume the main
         optimizer's RNG state.
 
         Returns an encoded HDV z ready to use as the main-loop start,
-        or None if memory is empty or Koopman fit fails.
+        or None if memory is empty.
         """
         if not self.memory._entries or pilot_steps <= 0:
             return None
@@ -189,13 +194,10 @@ class ConstrainedHDVOptimizer:
         # Independent RNG so the pilot does not shift the main-loop RNG stream
         pilot_rng = np.random.default_rng(self._rng.integers(2 ** 32))
         pilot_buffer: deque = deque(maxlen=_WINDOW_SIZE * 20)
-        pilot_params: List[np.ndarray] = []
 
         z_p = pilot_rng.standard_normal(self.mapper.hdv_dim)
         step = self.step_init
         best = self._eval_and_log(z_p, target_hz, pilot_buffer, force_log=True)
-        if best.constraints_ok:
-            self._log_param_step(best.params, pilot_params)
 
         for _ in range(pilot_steps):
             z_cand = z_p + pilot_rng.standard_normal(self.mapper.hdv_dim) * step
@@ -204,29 +206,46 @@ class ConstrainedHDVOptimizer:
                 best = r
                 z_p = z_cand
                 step = min(step * 1.1, 3.0)
-                self._log_param_step(r.params, pilot_params)
                 pilot_buffer.append("accepted")
             else:
                 step = max(step * 0.95, 1e-3)
 
-        # Fit Koopman to pilot traces (operator trace preferred, param fallback)
-        op_trace = self._build_operator_trace(pilot_buffer)
-        fit = self._fit_koopman(op_trace)
-        if fit is None and len(pilot_params) >= _MIN_TRACE_FOR_KOOPMAN:
-            fit = self._fit_koopman(np.array(pilot_params))
-        if fit is None:
-            return None
+        # Build query invariant from pilot's best dynamical quantities.
+        # No Koopman fit needed — the (ω₀, Q, ζ) of the pilot's best point
+        # directly encodes WHERE in dynamical space we're searching.
+        log_omega0_norm, log_Q_norm, zeta = self._dynamical_invariants(best)
+        query_invariant = compute_invariants(
+            np.array([]), np.zeros((0, 0)), _TRACE_OPS,
+            log_omega0_norm=log_omega0_norm,
+            log_Q_norm=log_Q_norm,
+            damping_ratio=zeta,
+        )
 
-        _, query_invariant = fit
-
-        # Retrieve nearest stored experience by invariant L2 distance
+        # Retrieve nearest stored experience by to_query_vector() distance
         candidates = self.memory.retrieve_candidates(query_invariant, top_n=1)
         if not candidates:
             return None
 
-        bp = candidates[0].experience.best_params
+        candidate = candidates[0]
+        domain = candidate.experience.domain
+        bp = candidate.experience.best_params
+
+        if domain == "rlc":
+            # Same domain: directly encode stored best params
+            try:
+                return self.mapper.encode(RLCParams(**bp))
+            except Exception:
+                return None
+
+        # Cross-domain (e.g. spring_mass → rlc): infer RLC params from
+        # the stored invariant's (ω₀, Q) — same physical quantities, different system.
         try:
-            return self.mapper.encode(RLCParams(**bp))
+            omega0_stored = candidate.invariant.dynamical_omega0()
+            Q_stored = candidate.invariant.dynamical_Q()
+            rlc_inferred = self.evaluator.infer_params_from_dynamical(
+                omega0_stored, Q_stored
+            )
+            return self.mapper.encode(rlc_inferred)
         except Exception:
             return None
 
@@ -273,27 +292,31 @@ class ConstrainedHDVOptimizer:
         )
         return result, invariant
 
-    def _param_centroid(self, param_trace: List[np.ndarray]) -> np.ndarray:
+    def _dynamical_invariants(
+        self, best_result: EvaluationResult
+    ) -> Tuple[float, float, float]:
         """
-        Normalized mean of accepted log-parameter steps.
+        Return (log_omega0_norm, log_Q_norm, damping_ratio) from best_result.
 
-        Returns a 3-vector in the same space as the mapper's log-ratio
-        coordinates: (log_R - log_R_center) / max_exp, similarly for L, C.
-        Values lie in [-1, 1] and encode WHERE in parameter space the
-        optimization converged, anchoring the descriptor physically.
+        These encode WHERE the optimization converged in domain-invariant
+        dynamical space:
+          log_omega0_norm = (log ω₀ − _LOG_OMEGA0_REF) / _LOG_OMEGA0_SCALE
+          log_Q_norm      = log(Q) / _LOG_OMEGA0_SCALE
+          damping_ratio   = ζ = 1/(2Q)
+
+        Values are clipped to ±3 decades (log_omega0_norm, log_Q_norm) and
+        [0, 10] for damping_ratio to keep the descriptor bounded.
         """
-        if not param_trace:
-            return np.zeros(3)
-        mean_log = np.mean(np.array(param_trace), axis=0)   # [log_R, log_L, log_C]
-        log_centers = np.array([
-            np.log(max(self.mapper.R_center, 1e-30)),
-            np.log(max(self.mapper.L_center, 1e-30)),
-            np.log(max(self.mapper.C_center, 1e-30)),
-        ])
-        return np.clip(
-            (mean_log - log_centers) / max(self.mapper._max_exp, 1e-9),
-            -1.0, 1.0,
-        )
+        omega0, Q, zeta = self.evaluator.dynamical_quantities(best_result.params)
+        log_omega0_norm = float(np.clip(
+            (np.log(max(omega0, 1e-30)) - _LOG_OMEGA0_REF) / _LOG_OMEGA0_SCALE,
+            -3.0, 3.0,
+        ))
+        log_Q_norm = float(np.clip(
+            np.log(max(Q, 1e-30)) / _LOG_OMEGA0_SCALE,
+            -3.0, 3.0,
+        ))
+        return log_omega0_norm, log_Q_norm, float(np.clip(zeta, 0.0, 10.0))
 
     def _store_experience(
         self,
@@ -304,9 +327,9 @@ class ConstrainedHDVOptimizer:
         """
         Fit Koopman to operator trace and store experience in memory.
 
-        Uses operator trace (event buffer) for Koopman signature.
+        Uses operator trace (event buffer) for Koopman eigenvalues (fine verify).
         Falls back to parameter trace if operator trace is too short.
-        Attaches param_centroid to the invariant to anchor it physically.
+        Domain-invariant dynamical quantities come from best_result.params.
         """
         op_trace = self._build_operator_trace(event_buffer)
         fit = self._fit_koopman(op_trace)
@@ -318,12 +341,14 @@ class ConstrainedHDVOptimizer:
         if fit is None:
             return  # not enough data — skip storage
 
-        # Compute physical-location anchor and attach to invariant
-        centroid = self._param_centroid(param_trace)
-        signature, raw_inv = fit
+        # Compute domain-invariant dynamical quantities from optimum
+        log_omega0_norm, log_Q_norm, zeta = self._dynamical_invariants(best_result)
+        signature, _ = fit
         invariant = compute_invariants(
             signature.eigenvalues, signature.eigenvectors, _TRACE_OPS,
-            param_centroid=centroid,
+            log_omega0_norm=log_omega0_norm,
+            log_Q_norm=log_Q_norm,
+            damping_ratio=zeta,
         )
 
         # Identify dominant operator from invariant histogram
@@ -345,6 +370,7 @@ class ConstrainedHDVOptimizer:
             n_observations=1,
             hardware_target="cpu",
             best_params=best_result.params.as_dict(),
+            domain="rlc",
         )
         self.memory.add(invariant, signature, experience)
 

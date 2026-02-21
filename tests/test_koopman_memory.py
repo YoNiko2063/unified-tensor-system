@@ -21,7 +21,10 @@ import numpy as np
 import pytest
 
 from tensor.koopman_edmd import EDMDKoopman, KoopmanResult
-from optimization.koopman_signature import KoopmanInvariantDescriptor, compute_invariants
+from optimization.koopman_signature import (
+    KoopmanInvariantDescriptor,
+    compute_invariants,
+)
 from optimization.koopman_memory import (
     EIGENVALUE_MATCH_THRESHOLD,
     KoopmanExperienceMemory,
@@ -174,15 +177,29 @@ class TestRetrieveCandidates:
         assert len(candidates) <= 3
 
     def test_nearest_entry_is_first(self):
-        eig_far = np.array([0.1 + 0j, 0.05 + 0j, 0.02 + 0j])
-        eig_near = np.array([0.88 + 0j, 0.5 + 0j, 0.1 + 0j])
-        self.mem.add(_make_invariant(eig_far), _make_signature(eig_far), _experience())
-        self.mem.add(_make_invariant(eig_near), _make_signature(eig_near), _experience())
+        # Retrieval now uses to_query_vector() = [log_omega0_norm, log_Q_norm, zeta].
+        # Entry with log_omega0_norm = -1.0 is far from query at 0.15.
+        # Entry with log_omega0_norm =  0.1 is near query at 0.15.
+        inv_far = compute_invariants(
+            np.array([0.1 + 0j]), np.eye(1, dtype=complex), _OPS[:1],
+            log_omega0_norm=-1.0,
+        )
+        inv_near = compute_invariants(
+            np.array([0.88 + 0j]), np.eye(1, dtype=complex), _OPS[:1],
+            log_omega0_norm=0.1,
+        )
+        sig_far  = _make_signature(np.array([0.1 + 0j]))
+        sig_near = _make_signature(np.array([0.88 + 0j]))
+        self.mem.add(inv_far,  sig_far,  _experience())
+        self.mem.add(inv_near, sig_near, _experience())
 
-        inv_q = _make_invariant(np.array([0.9 + 0j, 0.5 + 0j, 0.1 + 0j]))
+        inv_q = compute_invariants(
+            np.array([0.9 + 0j]), np.eye(1, dtype=complex), _OPS[:1],
+            log_omega0_norm=0.15,
+        )
         candidates = self.mem.retrieve_candidates(inv_q, top_n=2)
-        # First should be the near one
-        assert candidates[0].invariant.spectral_radius > candidates[1].invariant.spectral_radius
+        # Near entry (log_omega0_norm=0.1) should rank before far (−1.0)
+        assert candidates[0].invariant.log_omega0_norm > candidates[1].invariant.log_omega0_norm
 
 
 # ── 4. confirm_match() ────────────────────────────────────────────────────────

@@ -2,7 +2,8 @@
 KoopmanExperienceMemory — associative memory indexed by Koopman invariant descriptors.
 
 Two-stage retrieval:
-  Stage 1 (fast):   L2 on KoopmanInvariantDescriptor.to_retrieval_vector()
+  Stage 1 (fast):   L2 on KoopmanInvariantDescriptor.to_query_vector()
+                    3-D domain-invariant key: [log_ω₀_norm, log_Q_norm, ζ]
   Stage 2 (verify): L2 on sorted |eigenvalue| spectra, threshold 0.25
 
 Merge policy: if a new experience matches an existing entry's signature, increment
@@ -28,6 +29,12 @@ from optimization.koopman_signature import (
 # existing system's OED threshold (0.3) with a tighter margin.
 EIGENVALUE_MATCH_THRESHOLD: float = 0.25
 
+# Max L2 distance in to_query_vector() space (3-D dynamical) above which
+# two experiences are NOT merged even if their Koopman eigenvalues are similar.
+# Prevents merging physically distinct regimes (e.g. 500 Hz vs 1500 Hz)
+# that happen to produce similar operator dynamics.
+QUERY_MERGE_THRESHOLD: float = 0.15
+
 
 @dataclass
 class OptimizationExperience:
@@ -51,6 +58,7 @@ class OptimizationExperience:
     n_observations: int
     hardware_target: str
     best_params: dict = field(default_factory=dict)
+    domain: str = "rlc"           # "rlc" | "spring_mass" | …
 
 
 @dataclass
@@ -99,10 +107,23 @@ class KoopmanExperienceMemory:
         """
         for entry in self._entries:
             if self.confirm_match(signature, entry.signature):
+                # Guard: don't merge physically distinct regimes.
+                # Even if Koopman eigenvalues are similar, if the dynamical
+                # quantities (ω₀, Q) differ significantly the experiences
+                # describe different physical operating points and should be
+                # stored separately for accurate retrieval.
+                qd = float(np.linalg.norm(
+                    invariant.to_query_vector() - entry.invariant.to_query_vector()
+                ))
+                if qd > QUERY_MERGE_THRESHOLD:
+                    continue  # physically distinct regime — store separately
+
                 entry.experience.n_observations += 1
                 if experience.runtime_improvement > entry.experience.runtime_improvement:
                     entry.experience.runtime_improvement = experience.runtime_improvement
                     entry.experience.best_params = dict(experience.best_params)
+                    # Update invariant too so it reflects the best known experience
+                    entry.invariant = invariant
                 return
 
         self._entries.append(_MemoryEntry(invariant, signature, experience))
@@ -115,7 +136,10 @@ class KoopmanExperienceMemory:
         top_n: int = 5,
     ) -> List[_MemoryEntry]:
         """
-        Stage-1 retrieval: rank entries by L2 distance on to_retrieval_vector().
+        Stage-1 retrieval: rank entries by L2 distance on to_query_vector().
+
+        Uses the 3-D domain-invariant key [log_ω₀_norm, log_Q_norm, ζ] so that
+        spring-mass and RLC experiences are comparable in the same metric space.
 
         Returns up to top_n entries sorted by ascending distance.
         Callers should follow up with confirm_match() for final verification.
@@ -123,10 +147,10 @@ class KoopmanExperienceMemory:
         if not self._entries:
             return []
 
-        query_vec = invariant.to_retrieval_vector()
+        query_vec = invariant.to_query_vector()
         scored: List[Tuple[float, _MemoryEntry]] = []
         for entry in self._entries:
-            d = float(np.linalg.norm(query_vec - entry.invariant.to_retrieval_vector()))
+            d = float(np.linalg.norm(query_vec - entry.invariant.to_query_vector()))
             scored.append((d, entry))
 
         scored.sort(key=lambda x: x[0])

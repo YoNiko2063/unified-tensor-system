@@ -3,19 +3,27 @@ Koopman signature system for runtime trace analysis.
 
 Two-level signature architecture:
   FullKoopmanSignature     — full eigendecomposition (KoopmanResult alias)
-  KoopmanInvariantDescriptor — compact 2k-vector for fast first-stage retrieval
+  KoopmanInvariantDescriptor — compact descriptor for fast first-stage retrieval
 
-Two-stage retrieval mirrors perceptual hashing:
-  coarse filter: L2 on to_retrieval_vector() (top-k real + imag, 2k dims)
+Two-stage retrieval:
+  coarse filter: L2 on to_query_vector() (3-D domain-invariant dynamical space)
   fine verify:   L2 on sorted |eigenvalue| spectra, threshold 0.25
 
-Refinement over naive magnitude-only descriptors:
-  Including both Re(λ) and Im(λ) prevents false matches between systems
-  with the same magnitude spectrum but different oscillatory structure.
+Domain-invariant dynamical quantities (log_omega0_norm, log_Q_norm, damping_ratio)
+replace the old raw param_centroid (log L, log C coordinates).  They encode
+WHERE the optimization converged in terms of physical resonance and dissipation,
+using the same scale for RLC circuits and spring-mass systems.
+
+Reference normalisation:
+  log_omega0_norm = (log(ω₀) − log(2π·1kHz)) / log(10)
+    → 1 kHz maps to 0.0; a factor-of-10 change in ω₀ maps to ±1.0
+  log_Q_norm     = log(Q) / log(10)
+    → Q=1 maps to 0.0; Q=10 maps to +1.0
 """
 
 from __future__ import annotations
 
+import math as _math
 from dataclasses import dataclass
 from typing import List
 
@@ -24,6 +32,14 @@ import numpy as np
 # Alias: the full Koopman eigendecomposition IS the full signature.
 # Reuses the existing EDMDKoopman infrastructure without duplication.
 from tensor.koopman_edmd import KoopmanResult as FullKoopmanSignature  # noqa: F401
+
+# ── Reference constants for log-normalisation ─────────────────────────────────
+
+# log(ω₀ at 1 kHz) = log(2π × 1000)
+_LOG_OMEGA0_REF: float = _math.log(2.0 * _math.pi * 1_000.0)
+
+# One decade in ω₀ space
+_LOG_OMEGA0_SCALE: float = _math.log(10.0)
 
 
 @dataclass
@@ -42,12 +58,13 @@ class KoopmanInvariantDescriptor:
     top_k_imag              Im(λ) for same ordering,  shape (k,) — zero-padded
     dominant_operator_histogram  normalized |eigvec[:,0]|, shape (n_ops,)
     operator_basis_order    ordered list of operator type names
-    param_centroid          normalized mean of accepted log-parameter steps,
-                            shape (d,); encodes WHERE in parameter space the
-                            optimization converged.  Zero-vector if unavailable.
-                            This is the physical-location anchor that prevents
-                            the purely spectral descriptor from collapsing when
-                            different targets produce similar optimization dynamics.
+
+    Domain-invariant dynamical quantities (WHERE the optimization converged):
+    log_omega0_norm         (log ω₀ − _LOG_OMEGA0_REF) / _LOG_OMEGA0_SCALE
+                            0.0 at 1 kHz; ±1.0 per decade change in ω₀
+    log_Q_norm              log(Q) / _LOG_OMEGA0_SCALE
+                            0.0 at Q=1; +1.0 at Q=10
+    damping_ratio           ζ = 1/(2Q); 0.5 at Q=1, ~0 for high-Q resonators
     """
 
     spectral_radius: float
@@ -57,38 +74,43 @@ class KoopmanInvariantDescriptor:
     top_k_imag: np.ndarray          # shape (k,)
     dominant_operator_histogram: np.ndarray   # shape (n_ops,)
     operator_basis_order: List[str]
-    param_centroid: np.ndarray = None  # shape (d,); set after __post_init__
+    log_omega0_norm: float = 0.0    # (log ω₀ − ref) / scale
+    log_Q_norm: float = 0.0         # log(Q) / scale
+    damping_ratio: float = 0.5      # ζ = 1/(2Q)
 
-    def __post_init__(self):
-        if self.param_centroid is None:
-            self.param_centroid = np.zeros(3)
+    def to_query_vector(self) -> np.ndarray:
+        """
+        3-D domain-invariant retrieval key: [log_ω₀_norm, log_Q_norm, ζ].
+
+        This is the primary retrieval signal.  It encodes WHERE the optimization
+        converged in terms of physical resonance (ω₀) and dissipation (Q, ζ),
+        using the same scale for RLC circuits and spring-mass systems.
+
+        Used in KoopmanExperienceMemory.retrieve_candidates() for distance ranking.
+        """
+        return np.array([self.log_omega0_norm, self.log_Q_norm, self.damping_ratio])
 
     def to_retrieval_vector(self) -> np.ndarray:
         """
-        Concatenate [top_k_real, top_k_imag, param_centroid] retrieval key.
+        Full (2k + 3) retrieval vector: [top_k_real × 0.1, top_k_imag × 0.1,
+        log_ω₀_norm, log_Q_norm, ζ].
 
-        Shape: (2k + d,) where d = len(param_centroid).
-
-        Two-component design:
-          - top_k_real / top_k_imag: encodes HOW the optimization ran
-            (spectral dynamics, convergence rate, oscillatory modes).
-          - param_centroid: encodes WHERE the optimization converged in
-            parameter space.  This is the physical anchor that ensures
-            descriptors from different physical targets are separated.
-
-        Without param_centroid, different targets can produce similar
-        spectral dynamics (all RLC optimizations look similar once near
-        the solution) causing the retrieval vector to collapse.
+        Eigenvalue components are dampened (×0.1) so the dynamical quantities
+        (which encode physical location) dominate the L2 distance.
         """
-        # Eigenvalue components are dampened (×0.1) so the physically-meaningful
-        # param_centroid (location in parameter space) dominates the L2 distance.
-        # Without this, near-identical eigenvalues across different targets swamp
-        # the centroid signal, collapsing the retrieval metric.
         return np.concatenate([
             self.top_k_real * 0.1,
             self.top_k_imag * 0.1,
-            self.param_centroid,
+            self.to_query_vector(),
         ])
+
+    def dynamical_omega0(self) -> float:
+        """Recover ω₀ [rad/s] from the normalised log_omega0_norm field."""
+        return float(np.exp(self.log_omega0_norm * _LOG_OMEGA0_SCALE + _LOG_OMEGA0_REF))
+
+    def dynamical_Q(self) -> float:
+        """Recover Q from the normalised log_Q_norm field."""
+        return float(np.exp(self.log_Q_norm * _LOG_OMEGA0_SCALE))
 
 
 def compute_invariants(
@@ -96,7 +118,9 @@ def compute_invariants(
     eigenvectors: np.ndarray,
     operator_types: List[str],
     k: int = 5,
-    param_centroid: np.ndarray = None,
+    log_omega0_norm: float = 0.0,
+    log_Q_norm: float = 0.0,
+    damping_ratio: float = 0.5,
 ) -> KoopmanInvariantDescriptor:
     """
     Compute KoopmanInvariantDescriptor from a Koopman eigendecomposition.
@@ -105,19 +129,17 @@ def compute_invariants(
     so the descriptor is invariant to the ordering returned by np.linalg.eig.
 
     Args:
-        eigenvalues:    complex (d,) Koopman eigenvalues
-        eigenvectors:   (d, d) right eigenvectors (columns)
-        operator_types: ordered list of operator type names (one per state dim)
-        k:              number of top eigenvalues to include in descriptor
-        param_centroid: optional (d,) float array encoding WHERE in parameter
-                        space the optimization converged (e.g. normalized mean
-                        of accepted log-parameter steps).  Zero-vector if None.
+        eigenvalues:      complex (d,) Koopman eigenvalues
+        eigenvectors:     (d, d) right eigenvectors (columns)
+        operator_types:   ordered list of operator type names (one per state dim)
+        k:                number of top eigenvalues to include in descriptor
+        log_omega0_norm:  (log ω₀ − ref) / scale  — WHERE the optimisation converged
+        log_Q_norm:       log(Q) / scale
+        damping_ratio:    ζ = 1/(2Q)
 
     Returns:
         KoopmanInvariantDescriptor
     """
-    centroid = np.asarray(param_centroid, dtype=float) if param_centroid is not None else np.zeros(3)
-
     if len(eigenvalues) == 0:
         zero_k = np.zeros(k)
         return KoopmanInvariantDescriptor(
@@ -128,7 +150,9 @@ def compute_invariants(
             top_k_imag=zero_k,
             dominant_operator_histogram=np.zeros(max(len(operator_types), 1)),
             operator_basis_order=list(operator_types),
-            param_centroid=centroid,
+            log_omega0_norm=float(log_omega0_norm),
+            log_Q_norm=float(log_Q_norm),
+            damping_ratio=float(damping_ratio),
         )
 
     magnitudes = np.abs(eigenvalues)
@@ -166,5 +190,7 @@ def compute_invariants(
         top_k_imag=top_k_imag,
         dominant_operator_histogram=hist,
         operator_basis_order=list(operator_types),
-        param_centroid=centroid,
+        log_omega0_norm=float(log_omega0_norm),
+        log_Q_norm=float(log_Q_norm),
+        damping_ratio=float(damping_ratio),
     )

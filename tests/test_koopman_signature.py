@@ -116,35 +116,63 @@ class TestComputeInvariants:
 
 class TestToRetrievalVector:
 
-    def test_length_is_2k_plus_centroid(self):
-        # shape = 2*k + len(param_centroid); default centroid is zeros(3)
+    def test_length_is_2k_plus_dynamical_quantities(self):
+        # shape = 2*k + 3 (3 domain-invariant dynamical quantities)
         eigvals = np.array([0.9 + 0.1j, 0.5 - 0.2j, 0.3 + 0j])
         inv = compute_invariants(eigvals, _make_eigvecs(3), _OPS[:3], k=5)
         rv = inv.to_retrieval_vector()
         assert rv.shape == (13,)    # 2*5 + 3
 
-    def test_length_with_custom_centroid(self):
-        centroid = np.array([0.1, -0.2, 0.3])
+    def test_length_with_custom_dynamical_quantities(self):
         eigvals = np.array([0.9 + 0.1j, 0.5 - 0.2j, 0.3 + 0j])
         inv = compute_invariants(eigvals, _make_eigvecs(3), _OPS[:3], k=5,
-                                 param_centroid=centroid)
+                                 log_omega0_norm=0.3, log_Q_norm=-0.5,
+                                 damping_ratio=0.1)
         rv = inv.to_retrieval_vector()
         assert rv.shape == (13,)
-        np.testing.assert_array_almost_equal(rv[10:], centroid)
+        assert rv[10] == pytest.approx(0.3)
+        assert rv[11] == pytest.approx(-0.5)
+        assert rv[12] == pytest.approx(0.1)
 
     def test_retrieval_vector_structure(self):
         """
-        Retrieval vector layout: [top_k_real * 0.1, top_k_imag * 0.1, param_centroid].
-        Eigenvalue components are dampened so centroid dominates L2 distance.
+        Retrieval vector layout: [top_k_real × 0.1, top_k_imag × 0.1,
+        log_omega0_norm, log_Q_norm, damping_ratio].
+        Eigenvalue components are dampened so dynamical quantities dominate.
         """
         eigvals = np.array([0.9 + 0.4j])
-        centroid = np.array([0.1, -0.2, 0.3])
         inv = compute_invariants(eigvals, _make_eigvecs(1), _OPS[:1], k=3,
-                                 param_centroid=centroid)
+                                 log_omega0_norm=0.2, log_Q_norm=-0.1,
+                                 damping_ratio=0.25)
         rv = inv.to_retrieval_vector()
         np.testing.assert_array_almost_equal(rv[:3], inv.top_k_real * 0.1)
         np.testing.assert_array_almost_equal(rv[3:6], inv.top_k_imag * 0.1)
-        np.testing.assert_array_almost_equal(rv[6:], inv.param_centroid)
+        np.testing.assert_array_almost_equal(rv[6:], inv.to_query_vector())
+
+    def test_to_query_vector_length_and_content(self):
+        """to_query_vector() is the 3-D domain-invariant key."""
+        inv = compute_invariants(
+            np.array([0.9 + 0.1j]), _make_eigvecs(1), _OPS[:1], k=3,
+            log_omega0_norm=0.3, log_Q_norm=-0.2, damping_ratio=0.15,
+        )
+        qv = inv.to_query_vector()
+        assert qv.shape == (3,)
+        assert qv[0] == pytest.approx(0.3)
+        assert qv[1] == pytest.approx(-0.2)
+        assert qv[2] == pytest.approx(0.15)
+
+    def test_dynamical_omega0_roundtrip(self):
+        """dynamical_omega0() should recover ω₀ from log_omega0_norm."""
+        import math
+        omega0_target = 2.0 * math.pi * 800.0
+        log_omega0_ref = math.log(2.0 * math.pi * 1000.0)
+        log_omega0_scale = math.log(10.0)
+        lnorm = (math.log(omega0_target) - log_omega0_ref) / log_omega0_scale
+        inv = compute_invariants(
+            np.array([0.9 + 0j]), _make_eigvecs(1), _OPS[:1], k=3,
+            log_omega0_norm=lnorm,
+        )
+        assert abs(inv.dynamical_omega0() - omega0_target) / omega0_target < 1e-10
 
     def test_different_imag_produces_different_retrieval_vector(self):
         """Systems with same |λ| but different Im(λ) should have different vectors."""

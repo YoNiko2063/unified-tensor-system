@@ -125,6 +125,49 @@ class RLCEvaluator:
             constraint_detail=c_detail,
         )
 
+    # ── Domain-invariant dynamical quantities ─────────────────────────────────
+
+    def dynamical_quantities(self, params: RLCParams) -> Tuple[float, float, float]:
+        """
+        Return (omega0, Q, zeta) — domain-invariant dynamical quantities.
+
+        omega0 = 1/√(LC)        [rad/s]  resonant angular frequency
+        Q      = (1/R)√(L/C)             quality factor
+        zeta   = 1/(2Q)                  damping ratio
+        """
+        omega0 = self.cutoff_frequency_rad(params)
+        Q = max(self.Q_factor(params), 1e-12)
+        zeta = 1.0 / (2.0 * Q)
+        return float(omega0), float(Q), float(zeta)
+
+    def infer_params_from_dynamical(
+        self,
+        omega0: float,
+        Q: float,
+        R: Optional[float] = None,
+    ) -> RLCParams:
+        """
+        Infer RLC params from domain-invariant (omega0, Q).
+
+        Formula (with R given):
+            L = Q·R / ω₀
+            C = 1 / (ω₀·Q·R)
+        Satisfies: 1/√(LC) = ω₀  and  (1/R)√(L/C) = Q.
+
+        Args:
+            omega0:  target resonant angular frequency [rad/s]
+            Q:       target quality factor
+            R:       resistance [Ω]; defaults to 100 Ω (nominal)
+        """
+        if R is None:
+            R = 100.0
+        omega0 = max(float(omega0), 1e-30)
+        Q = max(float(Q), 1e-12)
+        R = max(float(R), 1e-30)
+        L = Q * R / omega0
+        C = 1.0 / (omega0 * Q * R)
+        return RLCParams(R=R, L=L, C=C)
+
     # ── Frequency response ─────────────────────────────────────────────────────
 
     def frequency_response(
