@@ -1,0 +1,101 @@
+{
+  "config": {
+    "n_trials": 100,
+    "max_iter": 500,
+    "n_samples": 5000,
+    "n_epochs": 300,
+    "seed": 42,
+    "walker": "EigenWalker(n_modes=2)",
+    "e_harm_active": true,
+    "target": {
+      "zeta": [
+        0.05,
+        0.25
+      ],
+      "f1_hz": [
+        5.0,
+        20.0
+      ],
+      "ratio": [
+        1.8,
+        2.2
+      ]
+    }
+  },
+  "target_fraction": 0.0004,
+  "training_stats": {
+    "n_samples": 5000,
+    "n_epochs": 300,
+    "time_s": 6.46,
+    "init_loss": 0.309884,
+    "final_loss": 0.146496
+  },
+  "summary": {
+    "random_search": {
+      "n_success": 25,
+      "n_total": 100,
+      "failure_rate": 0.75,
+      "mean_iters": 264.2,
+      "median_iters": 232.0,
+      "p75_iters": 417.0,
+      "p95_iters": 464.8,
+      "min_iters": 31,
+      "max_iters": 481
+    },
+    "local_walk": {
+      "n_success": 10,
+      "n_total": 100,
+      "failure_rate": 0.9,
+      "mean_iters": 123.7,
+      "median_iters": 114.0,
+      "p75_iters": 187.0,
+      "p95_iters": 283.45,
+      "min_iters": 12,
+      "max_iters": 310
+    },
+    "cold_eigen_r2": {
+      "n_success": 0,
+      "n_total": 100,
+      "failure_rate": 1.0
+    },
+    "energy_eigen_r2": {
+      "n_success": 11,
+      "n_total": 100,
+      "failure_rate": 0.89,
+      "mean_iters": 112.64,
+      "median_iters": 134.0,
+      "p75_iters": 187.5,
+      "p95_iters": 235.5,
+      "min_iters": 3,
+      "max_iters": 269,
+      "speedup_vs_random": 2.35
+    },
+    "plateau_hybrid_r2": {
+      "n_success": 100,
+      "n_total": 100,
+      "failure_rate": 0.0,
+      "mean_iters": 13.01,
+      "median_iters": 13.0,
+      "p75_iters": 17.0,
+      "p95_iters": 21.0,
+      "min_iters": 3,
+      "max_iters": 22,
+      "speedup_vs_random": 20.31
+    }
+  },
+  "diagnostics": {
+    "q1_gradient_steers_toward_2to1": 19,
+    "q1_total_traces": 20,
+    "q1_mean_initial_err": 118.1621,
+    "q1_mean_final_err": 0.6321,
+    "q2_total_plateau_fires": 20,
+    "q2_mean_ratio_at_plateau": 2.8996,
+    "q2_mean_proximity_to_rational": 0.0852
+  },
+  "verdict": "r=2 SCALES: plateau_hybrid 100% success  mean=13.0",
+  "r1_comparison": {
+    "r1_plateau_hybrid_fail": 0.0,
+    "r1_plateau_hybrid_mean": 7.8,
+    "r1_e_harm_active": false
+  }
+}

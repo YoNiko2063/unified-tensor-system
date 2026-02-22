@@ -1,0 +1,159 @@
+{
+  "config": {
+    "n_trials": 100,
+    "max_iter": 500,
+    "n_samples": 5000,
+    "n_epochs": 200,
+    "seed": 42,
+    "step_scale": 0.3,
+    "walker_architecture": "EigenWalker: Phi(lambda) -> [Delta_zeta, Delta_log10_omega0]",
+    "training_method": "energy_gradient (v2)"
+  },
+  "target_fractions": {
+    "msd": 0.032,
+    "rlc": 0.0846
+  },
+  "training_stats": {
+    "energy_msd": {
+      "training_method": "energy_gradient",
+      "n_samples": 5000,
+      "n_epochs": 200,
+      "final_loss": 0.125304,
+      "init_loss": 0.22175,
+      "config": {
+        "target_zeta": 0.2,
+        "target_omega0_hz": 10.0,
+        "K_ratios": 8
+      }
+    },
+    "energy_rlc": {
+      "training_method": "energy_gradient",
+      "n_samples": 5000,
+      "n_epochs": 200,
+      "final_loss": 0.123632,
+      "init_loss": 0.182754,
+      "config": {
+        "target_zeta": 0.2,
+        "target_omega0_hz": 10000.0,
+        "K_ratios": 8
+      }
+    },
+    "imitation": {
+      "training_method": "imitation_rlc_scan",
+      "n_warmup_requested": 200,
+      "n_warmup_obtained": 216,
+      "final_loss": 0.087607,
+      "buffer_size": 215
+    }
+  },
+  "msd_summary": {
+    "random_search": {
+      "n_success": 100,
+      "n_total": 100,
+      "failure_rate": 0.0,
+      "mean_iters": 35.39,
+      "median_iters": 26.0,
+      "p75_iters": 49.25,
+      "p95_iters": 101.35,
+      "min_iters": 1,
+      "max_iters": 146
+    },
+    "local_walk": {
+      "n_success": 47,
+      "n_total": 100,
+      "failure_rate": 0.53,
+      "mean_iters": 167.36,
+      "median_iters": 155.0,
+      "p75_iters": 258.5,
+      "p95_iters": 429.0,
+      "min_iters": 3,
+      "max_iters": 449
+    },
+    "cold_eigen": {
+      "n_success": 10,
+      "n_total": 100,
+      "failure_rate": 0.9,
+      "mean_iters": 6.8,
+      "median_iters": 7.0,
+      "p75_iters": 9.5,
+      "p95_iters": 11.55,
+      "min_iters": 1,
+      "max_iters": 12
+    },
+    "imitation_eigen": {
+      "n_success": 40,
+      "n_total": 100,
+      "failure_rate": 0.6,
+      "mean_iters": 2.25,
+      "median_iters": 2.0,
+      "p75_iters": 2.0,
+      "p95_iters": 7.15,
+      "min_iters": 1,
+      "max_iters": 11,
+      "speedup_vs_random_search": 15.73,
+      "speedup_vs_cold_eigen": 3.02
+    },
+    "energy_eigen": {
+      "n_success": 58,
+      "n_total": 100,
+      "failure_rate": 0.42,
+      "mean_iters": 55.67,
+      "median_iters": 1.0,
+      "p75_iters": 13.0,
+      "p95_iters": 433.0,
+      "min_iters": 1,
+      "max_iters": 487,
+      "speedup_vs_random_search": 0.64,
+      "speedup_vs_cold_eigen": 0.12,
+      "speedup_vs_imitation": 0.04,
+      "success_gain_vs_imitation": 0.18
+    },
+    "energy_hybrid": {
+      "n_success": 76,
+      "n_total": 100,
+      "failure_rate": 0.24,
+      "mean_iters": 99.57,
+      "median_iters": 1.0,
+      "p75_iters": 206.0,
+      "p95_iters": 433.0,
+      "min_iters": 1,
+      "max_iters": 499,
+      "speedup_vs_random_search": 0.36,
+      "speedup_vs_cold_eigen": 0.07
+    },
+    "plateau_hybrid": {
+      "n_success": 100,
+      "n_total": 100,
+      "failure_rate": 0.0,
+      "mean_iters": 7.79,
+      "median_iters": 9.0,
+      "p75_iters": 11.25,
+      "p95_iters": 21.0,
+      "min_iters": 1,
+      "max_iters": 21,
+      "speedup_vs_random_search": 4.54,
+      "speedup_vs_cold_eigen": 0.87,
+      "speedup_vs_imitation": 0.29,
+      "success_gain_vs_imitation": 0.6
+    }
+  },
+  "rlc_sanity": {
+    "n_success": 48,
+    "n_total": 100,
+    "failure_rate": 0.52,
+    "mean_iters": 3.85,
+    "median_iters": 1.0,
+    "p75_iters": 4.0,
+    "p95_iters": 13.0,
+    "min_iters": 1,
+    "max_iters": 13
+  },
+  "verdict": "PLATEAU TRIGGER RESTORES 100% SUCCESS  (mean=7.8 iters)",
+  "im_verdict": "ENERGY > IMITATION: 18.0% lower fail rate",
+  "v1_comparison": {
+    "v1_cold_fail": 0.9,
+    "v1_imitation_fail": 0.6,
+    "v1_hybrid_fail": 0.0,
+    "v1_rlc_sanity_fail": 0.74
+  }
+}
