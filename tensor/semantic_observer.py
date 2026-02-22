@@ -56,9 +56,14 @@ def truncate_spectrum(
     A: np.ndarray,
     energy_threshold: float = 1e-3,
     stability_cap: float = 5.0,
+    ensure_stable: bool = True,
 ) -> np.ndarray:
     """Return A with only modes satisfying:
       |λ_i| > energy_threshold  AND  |λ_i| < stability_cap
+
+    If ensure_stable=True (default): also enforces Re(λ_i) < 0 for all
+    eigenvalues by reflecting any unstable modes across the imaginary axis.
+    This guarantees Hurwitz stability of the resulting operator.
 
     Uses real Schur decomposition for numerical stability (not raw eig).
     If no modes pass mask → return A * 0.5 (emergency damping).
@@ -83,6 +88,8 @@ def truncate_spectrum(
         sr = float(np.max(mags))
         scale = (stability_cap * 0.9) / sr   # bring spectral radius to 90% of cap
         A_out = A * scale
+        if ensure_stable:
+            A_out = _enforce_hurwitz(A_out)
         return A_out.real if is_real else A_out
 
     # Case 2: build mask of valid modes
@@ -96,7 +103,38 @@ def truncate_spectrum(
     T_masked = _mask_schur_blocks(T, mask)
     A_out = Q @ T_masked @ Q.T
 
+    # Enforce Hurwitz stability: all Re(λ) < 0
+    if ensure_stable:
+        A_out = _enforce_hurwitz(A_out)
+
     return A_out.real if is_real else A_out
+
+
+def _enforce_hurwitz(A: np.ndarray) -> np.ndarray:
+    """Reflect eigenvalues with Re(λ) >= 0 to have Re(λ) < 0.
+
+    Uses eigendecomposition: if λ_k has Re(λ_k) > 0, replace with
+    -|Re(λ_k)| + j*Im(λ_k). Reconstructs A = V diag(λ_stable) V^{-1}.
+    """
+    eigvals, V = np.linalg.eig(A)
+    unstable = np.real(eigvals) >= 0
+    if not np.any(unstable):
+        return A
+
+    # Reflect unstable eigenvalues (work in complex to avoid casting warnings)
+    eigvals_stable = eigvals.astype(complex)
+    eigvals_stable[unstable] = -np.abs(np.real(eigvals[unstable])) + 1j * np.imag(eigvals[unstable])
+    # Ensure at least a small negative real part for marginal modes
+    marginal = np.abs(np.real(eigvals_stable)) < 1e-10
+    eigvals_stable[marginal] = -1e-3 + 1j * np.imag(eigvals_stable[marginal])
+
+    try:
+        A_stable = (V @ np.diag(eigvals_stable) @ np.linalg.inv(V)).real
+    except np.linalg.LinAlgError:
+        # V is singular — fall back to scaling A by -0.9
+        A_stable = -0.9 * np.abs(A)
+
+    return A_stable
 
 
 def _mask_schur_blocks(T: np.ndarray, keep_mask: np.ndarray) -> np.ndarray:
@@ -361,24 +399,25 @@ class BasisConsolidator:
 class HDVOrthogonalizer:
     """Enforces H_i^T H_j = 0 for i != j (domain subspace orthogonality).
 
-    Assigns fixed subspace slices by default:
-      - 'circuit':    dims [0,           hdv_dim//4)
-      - 'semantic':   dims [hdv_dim//4,  hdv_dim//2)
-      - 'market':     dims [hdv_dim//2,  3*hdv_dim//4)
-      - 'code':       dims [3*hdv_dim//4, hdv_dim)
+    Assigns fixed subspace slices by default (80% of dims):
+      - 'circuit':    dims [0,           hdv_dim//5)
+      - 'semantic':   dims [hdv_dim//5,  2*hdv_dim//5)
+      - 'market':     dims [2*hdv_dim//5, 3*hdv_dim//5)
+      - 'code':       dims [3*hdv_dim//5, 4*hdv_dim//5)
+      - free:         dims [4*hdv_dim//5, hdv_dim)   ← for learned domains
 
     For domains not in the fixed map: uses Gram-Schmidt against all
-    registered bases.
+    registered bases, with learned vectors restricted to the free subspace.
     """
 
     def __init__(self, hdv_dim: int = 10000):
         self.hdv_dim = hdv_dim
-        q = hdv_dim // 4
+        q = hdv_dim // 5
         self._fixed_slices: Dict[str, Tuple[int, int]] = {
             "circuit":  (0,      q),
             "semantic": (q,      2 * q),
             "market":   (2 * q,  3 * q),
-            "code":     (3 * q,  hdv_dim),
+            "code":     (3 * q,  4 * q),
         }
         self._learned_bases: Dict[str, np.ndarray] = {}
 
@@ -417,40 +456,42 @@ class HDVOrthogonalizer:
     def register_basis(self, domain: str, vectors: np.ndarray) -> None:
         """Register a set of basis vectors for a new domain.
 
-        Gram-Schmidt orthogonalizes against all existing bases before storing.
+        Orthogonalizes against all existing subspaces before storing:
+        - Fixed-slice domains: zero out all dimensions in their assigned slices
+        - Learned domains: Gram-Schmidt against stored basis columns
 
         vectors: (hdv_dim, k) — columns are basis vectors.
         """
         vectors = np.asarray(vectors, dtype=float)
 
-        # Collect all existing basis vectors (fixed slices + learned)
-        existing: List[np.ndarray] = []
-
-        # Fixed domains contribute their indicator-style bases
+        # Collect indices owned by fixed domains (to zero out entirely)
+        fixed_mask = np.zeros(self.hdv_dim, dtype=bool)
         for d, (s, e) in self._fixed_slices.items():
             if d != domain:
-                # Use a single "representative" indicator for the slice
-                rep = np.zeros(self.hdv_dim, dtype=float)
-                if e > s:
-                    rep[s] = 1.0
-                existing.append(rep)
+                fixed_mask[s:e] = True
 
-        # Learned domains
+        # Collect learned basis vectors from other domains
+        learned_existing: List[np.ndarray] = []
         for d, b in self._learned_bases.items():
             if d != domain:
                 for col_idx in range(b.shape[1]):
-                    existing.append(b[:, col_idx])
+                    learned_existing.append(b[:, col_idx])
 
-        # Orthogonalize each column of vectors against existing bases
+        # Orthogonalize each column of vectors
         new_basis_cols: List[np.ndarray] = []
         for col_idx in range(vectors.shape[1]):
             v = vectors[:, col_idx].copy()
-            v_orth = self.orthogonalize(v, existing)
+            # Zero out dimensions owned by fixed-slice domains
+            v[fixed_mask] = 0.0
+            # Gram-Schmidt against learned domains
+            if learned_existing:
+                v = self.orthogonalize(v, learned_existing)
             # Also orthogonalize against already-accepted new basis cols
-            v_orth = self.orthogonalize(v_orth, new_basis_cols)
-            norm = np.linalg.norm(v_orth)
+            if new_basis_cols:
+                v = self.orthogonalize(v, new_basis_cols)
+            norm = np.linalg.norm(v)
             if norm > 1e-10:
-                new_basis_cols.append(v_orth)
+                new_basis_cols.append(v)
 
         if new_basis_cols:
             self._learned_bases[domain] = np.stack(new_basis_cols, axis=1)

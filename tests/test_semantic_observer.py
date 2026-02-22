@@ -487,7 +487,7 @@ class TestHDVOrthogonalizer:
         orth = HDVOrthogonalizer(hdv_dim=hdv_dim)
         vec = np.arange(hdv_dim, dtype=float)
         p = orth.project(vec, "circuit")
-        q = hdv_dim // 4
+        q = hdv_dim // 5  # fixed slices use hdv_dim//5 per domain (80% total)
         np.testing.assert_array_equal(p[:q], vec[:q])
         np.testing.assert_array_equal(p[q:], np.zeros(hdv_dim - q))
 
