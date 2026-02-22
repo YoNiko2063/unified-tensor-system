@@ -45,6 +45,7 @@ class MixedPrediction:
     predictions: Dict[str, TimeframePrediction] = field(default_factory=dict)
     dominant_timeframe: str = ""
     resonance_flag: bool = False
+    confidence: float = 1.0  # reduced when Arnold tongue resonance is active
 
 
 class PerTimeframePredictor:
@@ -140,10 +141,34 @@ class ShockPredictor(PerTimeframePredictor):
         )
 
 
+# Default (5, 3) calendar modulation matrix.
+# Rows: [earnings, fed, options_expiry, rebalance, holiday]
+# Cols: [logit_L (fundamental), logit_M (regime), logit_S (shock)]
+DEFAULT_CALENDAR_MODULATION = np.array([
+    [-0.5,  0.3,  0.8],   # earnings: suppress L, boost M, strongly boost S
+    [-0.3,  0.5,  0.4],   # fed: suppress L, boost M+S equally
+    [ 0.0,  0.3,  0.2],   # options expiry: mild M+S boost
+    [ 0.2,  0.0, -0.2],   # rebalance: mild L boost, suppress S
+    [ 0.3, -0.2, -0.3],   # holiday: boost L (stable), suppress M+S
+])
+
+
 class MultiHorizonMixer:
     """Geometric gating mixer for three-timeframe predictions.
 
-    w_k(t) = softmax(α·confidence_k - β·ρ_k + γ·spectral_gap_k)
+    w_k(t) = softmax(α·confidence_k - β·ρ_k + γ·spectral_gap_k
+                     + (calendar_alpha_modulation.T @ phase_vec)_k)
+
+    The calendar_alpha_modulation is a (5, 3) matrix mapping the 5-channel
+    CalendarPhase amplitude vector to per-timeframe logit adjustments:
+
+        delta_logits = calendar_alpha_modulation.T @ phase_vec   # (3,)
+        adjusted_logits = logits + delta_logits
+        weights = softmax(adjusted_logits)
+
+    Unlike the old scalar approach where softmax(x + c) == softmax(x) for
+    scalar c, the matrix form shifts each timeframe logit independently,
+    allowing weights to change with calendar state.
 
     Parameters:
       alpha: confidence weight (higher = trust high-confidence predictors)
@@ -167,25 +192,64 @@ class MultiHorizonMixer:
         self._pred_l = fundamental_predictor or FundamentalPredictor()
         self._pred_m = regime_predictor or RegimePredictor()
         self._pred_s = shock_predictor or ShockPredictor()
-        self._calendar_mod = calendar_alpha_modulation
+
+        # Resolve calendar modulation matrix.
+        # Accepts:
+        #   None        → use DEFAULT_CALENDAR_MODULATION (5, 3)
+        #   (5, 3) ndarray → used directly as matrix modulation
+        #   (5,) vector → treated as OLD scalar API (broadcast: each col is
+        #                 the same vector, i.e., col = vec).  Kept for backward
+        #                 compat; callers should migrate to (5, 3).
+        if calendar_alpha_modulation is None:
+            self._calendar_mod: Optional[np.ndarray] = None  # no-modulation (disabled)
+        else:
+            mod = np.asarray(calendar_alpha_modulation, dtype=float)
+            if mod.ndim == 1 and mod.shape == (5,):
+                # Legacy scalar-per-channel API: treat as (5, 1) broadcast → (5, 3)
+                # Each timeframe gets the same per-channel scalar shift.
+                self._calendar_mod = np.column_stack([mod, mod, mod])  # (5, 3)
+            elif mod.ndim == 2 and mod.shape == (5, 3):
+                self._calendar_mod = mod
+            else:
+                raise ValueError(
+                    f"calendar_alpha_modulation must be None, shape (5,) or (5, 3), "
+                    f"got shape {mod.shape}"
+                )
 
     def mix(
         self,
         fundamental: FundamentalState,
         regime: RegimeState,
         shock: ShockState,
-        calendar_phase=None,
+        calendar_phase: Optional["CalendarPhase"] = None,
+        regime_vector: Optional[np.ndarray] = None,
     ) -> MixedPrediction:
         """Compute blended prediction with geometric gating.
+
+        The calendar_alpha_modulation (5, 3) matrix shifts per-timeframe logits
+        independently based on the 5-channel calendar phase amplitude vector:
+
+            phase_vec = [earnings_amp, fed_amp, options_amp, rebalance_amp, holiday_amp]
+            delta_logits = calendar_alpha_modulation.T @ phase_vec   # (3,)
+            adjusted_logits = base_logits + delta_logits
+            weights = softmax(adjusted_logits)
+
+        This differs from the old scalar approach (softmax(x + c) = softmax(x))
+        because delta_logits has different components per timeframe.
 
         Args:
             fundamental: Long-timescale state.
             regime: Medium-timescale state.
             shock: Short-timescale state.
             calendar_phase: Optional CalendarPhase for calendar-modulated gating.
+                When provided, the (5,3) modulation matrix shifts per-timeframe
+                logits; Arnold tongue resonance detection also runs.
 
-        Returns MixedPrediction with per-timeframe predictions and weights.
+        Returns MixedPrediction with per-timeframe predictions, weights,
+            resonance_flag, and confidence (reduced under resonance).
         """
+        from tensor.frequency_dependent_lifter import detect_resonance
+
         # Per-timeframe predictions
         pred_l = self._pred_l.predict(fundamental.features)
         pred_m = self._pred_m.predict(regime.features)
@@ -193,25 +257,53 @@ class MultiHorizonMixer:
 
         predictions = {"fundamental": pred_l, "regime": pred_m, "shock": pred_s}
 
-        # Effective alpha: modulate by calendar if available
-        alpha_eff = self.alpha
+        # Resonance detection (always run when calendar_phase is provided)
         resonance_flag = False
-        if calendar_phase is not None and self._calendar_mod is not None:
-            from tensor.frequency_dependent_lifter import von_mises_vector, detect_resonance
-            basis_weights = von_mises_vector(calendar_phase)
-            alpha_adjustment = float(self._calendar_mod @ basis_weights)
-            alpha_eff = self.alpha + alpha_adjustment
-
-            # Check resonance
+        resonance_info: dict = {}
+        if calendar_phase is not None:
             report = detect_resonance(calendar_phase)
             resonance_flag = report.is_resonant
+            resonance_info = {
+                "active_tongues": report.resonant_pairs,
+                "n_tongues": len(report.resonant_pairs),
+            }
 
-        # Geometric gating logits
+        # Base logits
         logits = np.array([
-            alpha_eff * pred_l.confidence - self.beta * pred_l.linearity_score + self.gamma * pred_l.spectral_gap,
-            alpha_eff * pred_m.confidence - self.beta * pred_m.linearity_score + self.gamma * pred_m.spectral_gap,
-            alpha_eff * pred_s.confidence - self.beta * pred_s.linearity_score + self.gamma * pred_s.spectral_gap,
+            self.alpha * pred_l.confidence - self.beta * pred_l.linearity_score + self.gamma * pred_l.spectral_gap,
+            self.alpha * pred_m.confidence - self.beta * pred_m.linearity_score + self.gamma * pred_m.spectral_gap,
+            self.alpha * pred_s.confidence - self.beta * pred_s.linearity_score + self.gamma * pred_s.spectral_gap,
         ])
+
+        # Calendar matrix modulation (Gap 3 fix).
+        # The (5, 3) matrix maps 5-channel amplitude vector → 3 per-timeframe
+        # logit deltas, so softmax can actually shift the weight distribution.
+        if calendar_phase is not None and self._calendar_mod is not None:
+            # phase_vec: (5,) calendar amplitude vector
+            phase_vec = np.array([
+                calendar_phase.amplitudes[0],  # earnings
+                calendar_phase.amplitudes[1],  # fed
+                calendar_phase.amplitudes[2],  # options_expiry
+                calendar_phase.amplitudes[3],  # rebalance
+                calendar_phase.amplitudes[4],  # holiday
+            ])
+            # delta_logits: (3,) — different shift for each timeframe
+            delta_logits = self._calendar_mod.T @ phase_vec  # (5,3).T @ (5,) → (3,)
+            logits = logits + delta_logits
+
+        # Regime vector modulation (from ReharmonizationTracker Layer 4)
+        # Maps (4,) soft Duffing regime probabilities to per-timeframe logit shifts
+        if regime_vector is not None:
+            rv = np.asarray(regime_vector, dtype=float)
+            if rv.shape == (4,):
+                REGIME_TO_LOGIT = np.array([
+                    [ 0.0,  0.5, -0.3],  # mean_rev: boost M
+                    [-0.3,  0.5,  0.3],  # breakout: boost M+S
+                    [-0.2,  0.0,  0.5],  # momentum: boost S
+                    [ 0.3,  0.3, -0.2],  # anticipatory: boost L+M
+                ])
+                regime_delta = rv @ REGIME_TO_LOGIT  # (4,) @ (4,3) -> (3,)
+                logits = logits + regime_delta
 
         # Softmax
         logits -= logits.max()  # numerical stability
@@ -226,12 +318,21 @@ class MultiHorizonMixer:
         labels = ["fundamental", "regime", "shock"]
         dominant = labels[int(np.argmax(weights))]
 
+        # Gap 7: resonance penalty — Arnold tongue resonance widens uncertainty
+        result_confidence = 1.0
+        if resonance_flag:
+            n_tongues = len(resonance_info.get("active_tongues", []))
+            resonance_penalty = 0.15 * n_tongues  # 15% vol multiplier per active tongue
+            blended *= (1.0 + resonance_penalty)
+            result_confidence = max(0.3, 1.0 - 0.1 * n_tongues)
+
         return MixedPrediction(
             blended_return=blended,
             weights=weights,
             predictions=predictions,
             dominant_timeframe=dominant,
             resonance_flag=resonance_flag,
+            confidence=result_confidence,
         )
 
     def mix_from_states(

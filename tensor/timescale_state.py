@@ -380,8 +380,10 @@ class CrossTimescaleSystem:
         fundamental_dim: int = 12,
         max_rank: int = 10,
         calendar_encoder=None,
+        reharmonization_tracker=None,
     ) -> None:
         self._calendar_encoder = calendar_encoder
+        self._reharmonization_tracker = reharmonization_tracker
 
         if calendar_encoder is not None:
             from tensor.frequency_dependent_lifter import FrequencyDependentLifter
@@ -424,6 +426,80 @@ class CrossTimescaleSystem:
     ) -> None:
         """Fit Φ_M→L from (regime_state, fundamental_change) pairs."""
         self.phi_m_to_l.fit(regime_states, fundamental_deltas, **kwargs)
+
+    def fit_s_to_m_calendar(
+        self,
+        shock_states: List[np.ndarray],
+        regime_deltas: List[np.ndarray],
+        dates: List[date],
+    ) -> None:
+        """Fit calendar-aware Φ_S→M operator from historical data.
+
+        Encodes each date into a CalendarPhase via the calendar_encoder, then
+        calls FrequencyDependentLifter.fit_calendar() to train the per-cycle
+        A_k coefficient matrices.  After this call, phi_s_to_m.lift_at() and
+        lift_shock_to_regime() with a date/encoder will use the fitted A_k
+        matrices instead of zeros.
+
+        Args:
+            shock_states: List of x(S) state vectors (each shape (dS,)).
+            regime_deltas: List of observed Δx(M) regime changes (each shape (dM,)).
+            dates: Calendar dates for each observation (one per sample).
+
+        Raises:
+            ValueError: If no calendar_encoder was provided at init.
+        """
+        if self._calendar_encoder is None:
+            raise ValueError(
+                "CrossTimescaleSystem: no calendar_encoder provided at init. "
+                "Pass calendar_encoder=<CalendarRegimeEncoder> to enable calendar fitting."
+            )
+        if not hasattr(self.phi_s_to_m, "fit_calendar"):
+            raise TypeError(
+                "phi_s_to_m is not a FrequencyDependentLifter. "
+                "Provide calendar_encoder at CrossTimescaleSystem init."
+            )
+        phases = [self._calendar_encoder.encode(d) for d in dates]
+        src = np.array(shock_states)
+        tgt = np.array(regime_deltas)
+        self.phi_s_to_m.fit_calendar(src, tgt, phases)
+
+    def fit_m_to_l_calendar(
+        self,
+        regime_states: List[np.ndarray],
+        fundamental_deltas: List[np.ndarray],
+        dates: List[date],
+    ) -> None:
+        """Fit calendar-aware Φ_M→L operator from historical data.
+
+        Encodes each date via the calendar_encoder and calls
+        FrequencyDependentLifter.fit_calendar_m_to_l() which stores results in
+        separate _baseline_ml / _cycle_*_ml attributes.  After this call,
+        phi_m_to_l.is_m_to_l_fitted is True and lift_regime_to_fundamental()
+        will use the M→L-specific matrices.
+
+        Args:
+            regime_states: List of x(M) state vectors (each shape (dM,)).
+            fundamental_deltas: List of observed Δx(L) changes (each shape (dL,)).
+            dates: Calendar dates for each observation (one per sample).
+
+        Raises:
+            ValueError: If no calendar_encoder was provided at init.
+        """
+        if self._calendar_encoder is None:
+            raise ValueError(
+                "CrossTimescaleSystem: no calendar_encoder provided at init. "
+                "Pass calendar_encoder=<CalendarRegimeEncoder> to enable calendar fitting."
+            )
+        if not hasattr(self.phi_m_to_l, "fit_calendar_m_to_l"):
+            raise TypeError(
+                "phi_m_to_l is not a FrequencyDependentLifter. "
+                "Provide calendar_encoder at CrossTimescaleSystem init."
+            )
+        phases = [self._calendar_encoder.encode(d) for d in dates]
+        src = np.array(regime_states)
+        tgt = np.array(fundamental_deltas)
+        self.phi_m_to_l.fit_calendar_m_to_l(src, tgt, phases)
 
     def propagate_shock(
         self,
@@ -474,7 +550,25 @@ class CrossTimescaleSystem:
             timestamp=shock.timestamp,
         )
 
+        # Feed reharmonization tracker if present
+        if self._reharmonization_tracker is not None:
+            calendar_phase = None
+            if self._calendar_encoder is not None and event_date is not None:
+                calendar_phase = self._calendar_encoder.encode(event_date, ticker)
+            self._reharmonization_tracker.update(
+                shock_state=shock.features,
+                regime_state=new_regime.features,
+                fundamental_state=new_fundamental.features,
+                timestamp=shock.timestamp,
+                calendar_phase=calendar_phase,
+            )
+
         return new_regime, new_fundamental
+
+    @property
+    def reharmonization_tracker(self):
+        """Optional ReharmonizationTracker attached to this system."""
+        return self._reharmonization_tracker
 
 
 # ── CrossTimescaleLifter (calendar_lifter-aware wrapper) ──────────────────────
