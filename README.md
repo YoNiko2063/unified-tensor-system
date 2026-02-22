@@ -1,143 +1,111 @@
-# Unified Tensor Systems
+# Unified Tensor System
 
-**Regime-Aware Spectral Acceleration for Stability-Critical Simulation**
-
-*Patent Pending*
+**Regime-Aware Spectral Stability Platform — Patent Pending**
 
 ---
 
-## Breakthrough
+## What This Is
 
-We have developed a regime-aware Koopman spectral method that accelerates nonlinear stability simulations by up to:
+A domain-agnostic stability assurance platform built on spectral operator geometry. Any system expressible as **C·ẋ + G·x + h(x) = u(t)** — power grids, circuits, oscillators, synthesized programs — is analyzed by the same pipeline: classify the dynamical regime, synthesize a certified candidate, validate at runtime.
 
-> **57,946×**
-> on the IEEE 39-bus benchmark system
-> with **<2.73% error** versus RK4 time-domain simulation.
-
-This enables near-instant evaluation of critical clearing times (CCT) in power networks — turning a four-hour N-1 contingency screen into a sub-second computation.
+The platform is backed by five provisional USPTO filings covering the core methods.
 
 ---
 
-## The Problem
+## Core Result
 
-Large-scale nonlinear systems — including power grids, inverter networks, and multiphysics PDE systems — require time-domain integration for stability evaluation.
-
-These simulations are:
-
-- Computationally expensive (156,000 ODE evaluations per CCT estimate)
-- Difficult to scale (25,000 computations for a 500-bus N-1 screen)
-- Poorly suited for real-time decision-making
-
-At 0.1 ms per ODE evaluation in optimized Python, a full N-1 screen takes **over four hours**. Real-time contingency analysis requires orders-of-magnitude improvement.
-
----
-
-## The Method
-
-Our approach replaces brute-force time integration with a spectral regime classification pipeline:
-
-1. Linearize local system dynamics via Modified Nodal Analysis
-2. Construct a Koopman operator approximation (EDMD)
-3. Identify locally commutative (LCA) stability regions
-4. Detect transition boundaries between stability regimes
-5. Compute critical stability thresholds analytically from spectral geometry
-
-Instead of simulating trajectories step-by-step, the method identifies the structural stability manifold directly.
-
-The architecture is domain-agnostic: any system expressible in the universal form **C·ẋ + G·x + h(x) = u(t)** can be analyzed.
-
----
-
-## Validation
-
-| Benchmark | Result |
-|-----------|--------|
-| System | IEEE 39-bus New England System (10 generators) |
-| Speedup | **57,946×** over RK4 binary-search |
-| CCT Error | **<2.73%** maximum deviation |
-| Damping coverage | ζ = 0.00–0.20 (full realistic range) |
-| Cross-validation | C(10,2) = 45 generator subsets, a = 1.51 ± 0.01 (range 2.3%) |
-| Test suite | 2,239 automated validation tests passing |
-
-The correction parameter a = 1.51 is stable across all cross-validation splits, indicating a structural property of the system rather than a fitting artifact.
-
----
-
-## Quick Demonstration
-
-```bash
-git clone <repo-url>
-cd unified-tensor-system
-pip install -e .
-python examples/ieee39_demo.py
-```
-
-**Output:**
-
-```
-IEEE 39-Bus CCT Benchmark
-══════════════════════════════════════════════════════════════════════
-  Gen    Bus    H[s]   CCT_EAC[s]  CCT_Ref[s]   Err%     Speedup
-──────────────────────────────────────────────────────────────────────
-  G1     39    500.0    0.548 s     0.534 s      2.6%    52,341×
-  ...
-  G10    30     42.0    0.231 s     0.228 s      1.3%    61,203×
-──────────────────────────────────────────────────────────────────────
-  Mean error: 1.84%   Max error: 2.73%   Mean speedup: 57,946×
-```
-
----
-
-## Applications
-
-- **Power system stability** — real-time contingency screening, N-1 analysis
-- **Renewable integration** — stability envelopes for inverter-dominated grids
-- **Inverter and grid-forming control** — switching regime detection
-- **Multiphysics simulation** — accelerated PDE stability screening
-- **Stability-critical optimization** — fast objective evaluation
+| Metric | Value |
+|--------|-------|
+| Benchmark | IEEE 39-bus New England System (10 generators) |
+| Speedup over RK4 binary search | **57,946×** |
+| Max CCT error | **< 2.73%** |
+| Damping coverage | ζ = 0.00–0.20 |
+| Correction parameter stability | a = 1.51 ± 0.01 across all C(10,2) = 45 subsets |
+| Tests passing | **2,294** |
 
 ---
 
 ## Architecture
 
 ```
-MNA linearization
-      ↓
-Koopman spectral estimator (EDMD)
-      ↓
-Regime classification (LCA / transition / nonabelian)
-      ↓
-Stability manifold mapper
-      ↓
-Analytic CCT / multi-objective optimizer
-```
+Layer 1 — Regime Classification
+  Linearize → Koopman EDMD → spectral invariant coords (log ω₀, log Q, ζ)
+  Dual trust gate: ε_rec < η_max AND γ_gap > γ_min
+  Output: regime label (LCA / transitional / chaotic), trust score T
 
-The same framework applies across circuits, power grids, and nonlinear oscillators — all expressible in the same universal dynamical form.
+Layer 2 — Structural Synthesis
+  BorrowVector B = (B₁..B₆) → energy E = w·B → compilation manifold
+  Pre-gate: E < D_sep_effective before compile attempt
+  Output: certified Rust program, hardware affinity label
+
+Layer 3 — Runtime Validation
+  Spectral operator K from trajectory data
+  Composite robustness R = min(R₁, R₂, R₃, R₄)
+  Monte Carlo basin fraction β
+  Output: unified stability certificate CERT = C₁ ∧ C₂ ∧ C₃ ∧ C₄
+
+Cross-layer signals: S_{1→2}, S_{1→2b}, S_{2→3}, S_{3→2}, S_{3→1}, S_{2→1}
+```
 
 ---
 
-## Documentation
+## Key Modules
 
-| Document | Description |
-|----------|-------------|
-| [TECHNICAL_BRIEF.md](TECHNICAL_BRIEF.md) | IEEE 39-bus method — full derivation, validation, cross-validation |
-| [whitepaper/](whitepaper/) | Circuit optimizer — spectral geometry, Pareto results, Hurwitz enforcement |
-| [patent/](patent/) | Provisional USPTO filing |
+| Path | Role |
+|------|------|
+| `tensor/integrated_hdv.py` | 10k-dim HDV space, structural encoding |
+| `tensor/calendar_regime.py` | 5-channel financial event encoder |
+| `tensor/semantic_geometry.py` | Text EDMD observer state |
+| `tensor/epistemic_geometry.py` | Token trajectory validity scoring |
+| `tensor/semantic_flow_encoder.py` | Articles / market / code → unified HDV |
+| `tensor/intent_projector.py` | HDV → IntentSpec → template selection |
+| `codegen/pipeline.py` | Pre-gate → render → post-gate |
+| `codegen/template_registry.py` | 24 Rust templates across 7 domains |
+| `codegen/intent_spec.py` | BorrowVector, WEIGHTS, e_borrow() |
+| `optimization/circuit_optimizer.py` | Analytic + Nelder-Mead, Pareto front |
+| `platform/backend/main.py` | FastAPI, 6 routers at /api/v1/ |
+| `ecemath/` | MNA circuit engine (submodule) |
+| `tensor/domain_canonicalizer.py` | Dissonance metric τ, library matching |
+| `tensor/eigenspace_mapper.py` | Parameter space → eigenvalue map |
+| `tensor/parameter_space_walker.py` | Pure-numpy Adam MLP, harmonic transitions |
+
+---
+
+## Running
+
+```bash
+# Tests
+python -m pytest tests/ platform/backend/tests/ -q
+
+# Platform backend
+cd platform/backend && bash start.sh
+
+# Platform frontend
+cd platform/frontend && npm run dev
+
+# Generate patent DOCX files
+python3 tools/provisional_to_docx.py
+```
+
+Active conda env: `tensor` (numpy, scipy, pandas, pytest, torch, sympy)
 
 ---
 
 ## Intellectual Property
 
-A provisional patent has been filed covering:
+Five provisional patent applications in `ip/`:
 
-- Regime classification via Koopman spectral geometry
-- Detection of locally commutative (LCA) stability regions
-- Computation of stability-critical transitions from spectral signatures
+| File | Title |
+|------|-------|
+| `provisional_2_regime_classification.txt` | Spectral Invariant Coordinate Regime Classification |
+| `provisional_3_code_synthesis.txt` | Structural Geometry-Constrained Code Synthesis |
+| `provisional_4_runtime_validation.txt` | Spectral Operator Feedback Runtime Validation |
+| `provisional_5_platform_integration.txt` | Integrated Multi-Layer Stability Assurance Platform |
+
+Formatted DOCX versions generated to `~/Downloads/` via `tools/provisional_to_docx.py`.
 
 ---
 
 ## Contact
 
-For collaboration, licensing, or pilot deployments, contact us at:
-
-**yoonikolas@gmail.com**
+yoonikolas@gmail.com
