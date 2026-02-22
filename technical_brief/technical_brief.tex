@@ -6,7 +6,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{hyperref}
+\usepackage[pdftex, pdfencoding=auto]{hyperref}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{microtype}
@@ -26,7 +26,8 @@
 
 \title{\textbf{Fast CCT Screening for Grid Transient Stability}\\
        \large A Universal Equal-Area Criterion with Validated Damping Correction}
-\author{Unified Tensor Systems\\
+\author{Nikolas Yoo\\
+        \small Unified Tensor Systems \quad|\quad
         \small\texttt{yoonikolas@gmail.com} \quad|\quad \textit{Patent Pending}}
 \date{Version 1.0 \quad \today}
 
@@ -136,7 +137,7 @@ by ordinary least squares across all generators and damping levels.
 
 \textbf{Why a single scalar suffices --- analytic argument.}
 For all generators operating at the same loading ratio $P_e/P_m = 2$
-($\delta_s = 30°$), the product:
+($\delta_s = 30^\circ$), the product:
 \begin{equation}
   \omega_0 \cdot \text{CCT}_{\text{EAC}}
   = \sqrt{2\sqrt{3}\,(\delta_c - \delta_s)} \approx 1.73
@@ -167,7 +168,7 @@ Minimising $\sum(e_i + a\,x_i)^2$ gives:
 \textbf{Generator data:} Anderson \& Fouad (2003), Table 2.7 --- 10-generator
 New England equivalent of the IEEE 39-bus system.  Inertia constants range
 from $H = 24.3$\,s (G8) to $H = 500$\,s (G1).
-All generators operate at $P_e = 2P_m$ ($\delta_s = 30°$).
+All generators operate at $P_e = 2P_m$ ($\delta_s = 30^\circ$).
 
 \textbf{Reference method:} Binary search on fault duration with 4th-order
 Runge--Kutta integration ($dt = 0.01$\,s, tolerance = 1\,ms), 3{,}000
@@ -327,7 +328,7 @@ the same $a = 1.51$, pre-computed once.
   \item IEEE 39-bus classical model (10 generators, SMIB representation)
   \item Three-phase fault ($P_e \to 0$ during fault)
   \item Damping range: $\zeta \in [0.01,\, 0.20]$ ($Q \in [2,\, 50]$)
-  \item Uniform loading: $P_e = 2P_m \Rightarrow \delta_s = 30°$ for all generators
+  \item Uniform loading: $P_e = 2P_m \Rightarrow \delta_s = 30^\circ$ for all generators
 \end{itemize}
 
 \textbf{Known boundary conditions:}
@@ -362,7 +363,7 @@ The corrected EAC formula:
 \]
 requires zero ODE evaluations per machine per contingency.  The correction
 parameter $a = 1.51$ is universal for uniform-loading grids
-($\delta_s = 30°$) and stable across all generator subsets (CV = 0.66\%).
+($\delta_s = 30^\circ$) and stable across all generator subsets (CV = 0.66\%).
 
 \textbf{Corrected performance on IEEE 39-bus (10 generators, $\zeta \leq 0.20$):}
 \begin{itemize}[nosep]
@@ -376,7 +377,7 @@ parameter $a = 1.51$ is universal for uniform-loading grids
 The universality of the correction is a consequence of the equal-area
 constraint geometry: the product $\omega_0 \cdot \text{CCT}_\text{EAC}
 \approx 1.73$ is a structural invariant of the class of SMIB systems at
-$\delta_s = 30°$.
+$\delta_s = 30^\circ$.
 
 \vspace{10pt}
 \noindent\textit{Patent Pending} \quad|\quad
