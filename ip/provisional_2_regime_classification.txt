@@ -1,0 +1,558 @@
+PROVISIONAL PATENT APPLICATION
+
+
+TITLE:    REGIME CLASSIFICATION AND STABILITY MANIFOLD DETECTION
+          FOR NONLINEAR DYNAMICAL SYSTEMS USING SPECTRAL INVARIANT
+          COORDINATES
+
+
+INVENTOR: Nikolas Yoo
+          [26 Rider Terrace]
+          [Princeton, NJ, 08540]
+          [yoonikolas@gmail.com]
+
+FILING DATE: [assigned by USPTO]
+
+
+======================================================================
+ABSTRACT
+======================================================================
+
+Nonlinear dynamical systems evolve through qualitatively distinct
+behavioral regimes -- locally convergent (LCA), transitional
+(nonabelian), and chaotic -- whose identification is essential for
+stability assessment, optimization, and safe operation.  This
+invention discloses a method for classifying the dynamical regime of
+any system expressible in the generalized form C*xdot + G*x + h(x) =
+u(t) by constructing a linear operator approximation of the system's
+evolution, extracting a set of spectral invariant coordinates from the
+operator's eigenstructure, and classifying the resulting spectral
+embedding into a regime using threshold criteria on reconstruction
+fidelity and spectral gap.  A dual-criterion trust gate is disclosed
+that conditions downstream computation on operator validity.
+Cross-domain equivalence of spectral embeddings is established: a
+generator, an RLC circuit, a spring-mass system, and a Duffing
+oscillator sharing the same normalized spectral coordinates are
+classified identically, enabling universal regime detection across
+physical domains.  Transition boundaries are detected as threshold
+crossings in the spectral invariant space.  The method requires no
+domain-specific simulation and generalizes to any network of coupled
+nonlinear oscillators.
+
+
+======================================================================
+FIELD OF THE INVENTION
+======================================================================
+
+This invention relates to the analysis of nonlinear dynamical systems,
+specifically to computer-implemented methods for classifying behavioral
+regimes using spectral operator decomposition, and to systems for
+cross-domain stability assessment and transition boundary detection
+using invariant spectral coordinates.
+
+
+======================================================================
+BACKGROUND
+======================================================================
+
+A. The Regime Classification Problem
+
+Nonlinear dynamical systems exhibit qualitatively distinct behaviors
+depending on parameter values and operating conditions.  The three
+fundamental regime classes are:
+
+  (i)   Locally convergent attractor (LCA): trajectories near a
+        stable equilibrium contract, characterized by strictly
+        negative real parts of dominant eigenvalues.
+
+  (ii)  Transitional (nonabelian): the system undergoes bifurcation
+        or exhibits sustained oscillatory behavior not captured by
+        linear approximation; operator commutativity fails.
+
+  (iii) Chaotic: trajectories diverge exponentially, spectral
+        decomposition loses reconstruction fidelity.
+
+Identifying the regime at a given operating point determines which
+analytical tools apply, which approximations are valid, and what
+stability margin exists before transition.
+
+B. The Linear Operator Approximation Approach
+
+For a dynamical system with state x(t) in R^n, data-driven methods
+can construct a linear operator K (a Koopman operator approximation
+or equivalent) such that K approximately maps observable functions
+of the state forward in time.  The eigenstructure of K -- eigenvalues
+lambda_i, eigenvectors phi_i, reconstruction error epsilon -- encodes
+the system's dynamical geometry.
+
+Prior methods construct such operators for specific physical domains
+(power systems, fluid dynamics, structural mechanics) without
+establishing cross-domain equivalence or providing universal
+classification criteria applicable across domains.
+
+C. The Spectral Invariant Coordinate Gap
+
+For a damped oscillatory system linearized around a stable
+equilibrium, three quantities form a natural invariant coordinate:
+
+  s_1 = log(omega_0)    where omega_0 is the dominant oscillation
+                         frequency [rad/s]
+  s_2 = log(Q)          where Q = omega_0 / (2 * damping_ratio) is
+                         the quality factor
+  s_3 = zeta            the damping ratio
+
+The product omega_0 * CCT_EAC established in co-pending application
+[reference to Provisional #1] is a special case of a broader
+invariance: systems sharing the same (s_1, s_2, s_3) coordinates are
+dynamically equivalent under the equal-area map.  This equivalence
+has not been claimed as a general cross-domain classification
+mechanism.
+
+Prior art provides no:
+  (a) Universal spectral invariant coordinate system applicable
+      across physical domains.
+  (b) Dual-criterion trust gate conditioning computation on both
+      reconstruction fidelity and spectral gap simultaneously.
+  (c) Cross-domain regime equivalence enabling transfer of calibrated
+      parameters between physical systems sharing spectral coordinates.
+
+
+======================================================================
+SUMMARY OF THE INVENTION
+======================================================================
+
+The invention discloses four connected results:
+
+(1) UNIVERSAL SYSTEM FORM.  Any network of coupled nonlinear
+elements expressible as:
+
+    C * xdot + G * x + h(x) = u(t)
+
+where C is a capacitance/inertia matrix, G is a conductance/stiffness
+matrix, h(x) is a nonlinear vector function, and u(t) is an external
+input, admits a unified spectral analysis.  This form encompasses
+synchronous generators (swing equation), RLC circuits (MNA form),
+spring-mass-damper systems, and Duffing oscillators as special cases.
+
+(2) SPECTRAL INVARIANT COORDINATE SYSTEM.  For systems in the above
+form linearized around a stable equilibrium x_s:
+
+    A_lin = -C^{-1} * (G + J_h(x_s))
+
+where J_h is the Jacobian of h at x_s, the eigenvalues of A_lin
+define spectral invariant coordinates:
+
+    s_1 = log(|Im(lambda_dominant)|)   -- log oscillation frequency
+    s_2 = log(|Re(lambda_dominant)| / |Im(lambda_dominant)|)
+                                        -- log damping-to-frequency ratio
+    s_3 = |Re(lambda_dominant)| / omega_0
+                                        -- normalized damping ratio
+
+Systems sharing (s_1, s_2, s_3) coordinates to within a tolerance
+epsilon_equiv are dynamically equivalent under the EAC map: any
+correction parameter fitted on one system applies to all equivalent
+systems.
+
+(3) DUAL-CRITERION TRUST GATE.  A linear operator approximation K
+constructed from trajectory data is trusted if and only if:
+
+    reconstruction_error(K) < eta_max
+    AND
+    spectral_gap(K) > gamma_min
+
+where reconstruction_error measures how well K predicts held-out
+trajectory segments, and spectral_gap is the ratio of the second
+to first eigenvalue magnitudes.  Both criteria must be satisfied
+simultaneously.  Failure of either criterion triggers escalation to
+direct simulation.
+
+(4) REGIME CLASSIFICATION THRESHOLDS.  Given a trusted operator K
+with eigenvalues {lambda_i}:
+
+    LCA (locally convergent):    max(Re(lambda_i)) < 0
+    Transitional (nonabelian):   max(Re(lambda_i)) >= 0
+                                 AND reconstruction_error < eta_max
+    Chaotic:                     reconstruction_error >= eta_max
+
+Transition boundaries are detected as parameter-space loci where
+regime classification changes.
+
+
+======================================================================
+BRIEF DESCRIPTION OF DRAWINGS
+======================================================================
+
+FIG. 1 -- Spectral invariant coordinate space (s_1, s_2, s_3).
+Points from different physical systems (generators, RLC circuits,
+spring-mass systems) occupying the same region are dynamically
+equivalent.  Regime classification boundaries shown as surfaces.
+
+FIG. 2 -- Dual-criterion trust gate.  Two-dimensional threshold
+space: reconstruction_error (horizontal) vs spectral_gap (vertical).
+Trust region is lower-left quadrant.  Operating points classified
+as trusted (blue) or escalate (red).
+
+FIG. 3 -- Regime classification flow.  Input: system parameters.
+Output: regime label + trust score + transition boundary proximity.
+
+
+======================================================================
+DETAILED DESCRIPTION
+======================================================================
+
+1. UNIVERSAL SYSTEM FORM
+
+The classical dynamical systems addressed by this invention share the
+generalized network form:
+
+    C * xdot(t) + G * x(t) + h(x(t)) = u(t)     (Eq. 1)
+
+Special cases:
+
+  Power system generator (swing equation):
+    C = M (inertia), G = D (damping), h(x) = -Pe*sin(x), u = Pm
+
+  RLC circuit (modified nodal analysis):
+    C = capacitance matrix, G = conductance matrix,
+    h(x) = nonlinear element currents, u = source vector
+
+  Spring-mass-damper:
+    C = mass matrix, G = damping matrix, h(x) = stiffness force,
+    u = external force
+
+  Duffing oscillator:
+    C = 1, G = 0, h(x) = alpha*x + beta*x^3, u = F*cos(omega*t)
+
+The unified form enables a single spectral analysis pipeline to
+operate across all domains.
+
+
+2. LINEAR OPERATOR CONSTRUCTION
+
+2.1 Linearization Method
+
+For a system in the form of Eq. 1 at a stable equilibrium x_s:
+
+    delta_xdot = A_lin * delta_x
+
+where:
+
+    A_lin = -C^{-1} * (G + J_h(x_s))             (Eq. 2)
+
+and J_h(x_s) is the Jacobian of the nonlinear term evaluated at x_s.
+
+Eigenvalues of A_lin:  lambda_i = sigma_i + j*omega_i
+
+For a conjugate pair:
+    omega_0 = |omega_i|        (natural frequency [rad/s])
+    zeta    = -sigma_i / omega_0  (damping ratio)
+    Q       = 1 / (2*zeta)       (quality factor)
+
+2.2 Data-Driven Operator Construction
+
+When A_lin is not analytically available, a linear operator K is
+constructed from trajectory data {x(t_0), x(t_1), ..., x(t_N)} via
+Extended Dynamic Mode Decomposition (EDMD) or equivalent method:
+
+    min_K  sum_t || phi(x(t+1)) - K * phi(x(t)) ||^2
+
+where phi is a vector of observable functions of the state.
+
+2.3 Reconstruction Error
+
+Given K from data, the reconstruction error is:
+
+    epsilon_rec = || X_test - K * Phi(X_train) || / || X_test ||
+
+where X_test is a held-out trajectory segment.
+
+2.4 Spectral Gap
+
+    gamma_gap = |lambda_1| / |lambda_2|
+
+where lambda_1 and lambda_2 are the eigenvalues of K sorted by
+descending magnitude.  For a strongly attracting system, gamma_gap >> 1.
+
+
+3. SPECTRAL INVARIANT COORDINATE SYSTEM
+
+3.1 Coordinate Definition
+
+For the dominant conjugate eigenvalue pair lambda = sigma +/- j*omega:
+
+    s_1 = log(omega_0)                (log oscillation frequency)
+    s_2 = log(Q) = log(omega_0 / (2*|sigma|))   (log quality factor)
+    s_3 = zeta  = |sigma| / omega_0   (damping ratio)         (Eq. 3)
+
+3.2 Cross-Domain Equivalence
+
+Two systems A and B from different physical domains are spectrally
+equivalent if:
+
+    || (s_1^A, s_2^A, s_3^A) - (s_1^B, s_2^B, s_3^B) || < epsilon_equiv
+
+for a tolerance epsilon_equiv determined by the application accuracy
+requirement.
+
+Consequence: any scalar correction parameter (e.g., the loading-class
+scalar a of co-pending application [Provisional #1]) fitted on system
+A applies directly to spectrally equivalent system B without
+refitting.
+
+3.3 Invariance Verification
+
+For systems sharing a loading class (fixed Pe/Pm ratio in power
+systems, fixed k in spring-mass), the Euclidean distance among all
+machines in (s_1, s_2, s_3) space is less than 1e-6 at fixed s_3.
+This is a structural property of the equal-area constraint geometry,
+not a numerical coincidence.
+
+
+4. DUAL-CRITERION TRUST GATE
+
+4.1 Gate Definition
+
+A linear operator K is declared trusted if and only if:
+
+    epsilon_rec(K) < eta_max    (reconstruction fidelity)
+    AND
+    gamma_gap(K) > gamma_min    (spectral gap)                (Eq. 4)
+
+Default thresholds: eta_max = 0.05 (5% reconstruction error),
+gamma_min = 1.2.
+
+4.2 Trust Score
+
+A scalar trust score T in [0, 1] is computed as:
+
+    T = min(1 - epsilon_rec/eta_max,  1 - gamma_min/gamma_gap) (Eq. 5)
+
+T = 1: fully trusted; T = 0: at threshold; T < 0: escalate.
+
+4.3 Escalation Policy
+
+When T < 0:
+  -- Downstream analytic computation is suppressed.
+  -- System escalates to direct numerical simulation.
+  -- Escalation event is logged with (epsilon_rec, gamma_gap, s_1, s_2, s_3).
+
+
+5. REGIME CLASSIFICATION
+
+5.1 Classification Rule
+
+Given trusted K with eigenvalues {lambda_i}:
+
+    LCA (locally convergent attractor):
+        max_i( Re(lambda_i) ) < 0                             (Eq. 6a)
+
+    Transitional (nonabelian):
+        max_i( Re(lambda_i) ) >= 0  AND  epsilon_rec < eta_max (Eq. 6b)
+
+    Chaotic:
+        epsilon_rec >= eta_max                                 (Eq. 6c)
+
+5.2 Transition Boundary Detection
+
+A transition boundary B_{AB} between regime A and regime B is a
+surface in the system parameter space theta such that:
+
+    f(theta) = 0
+
+where f is the signed distance to the classification threshold (e.g.,
+max Re(lambda_i) for LCA/transitional boundary).  The boundary is
+detected by scanning parameter space and recording sign changes of f.
+
+5.3 Domain Canonicalization
+
+Given a spectral embedding (s_1, s_2, s_3), the domain canonicalizer
+identifies the closest known system in a library of calibrated
+systems:
+
+    match = argmin_k  d_tau(embedding, library[k])
+
+where d_tau is the dissonance metric:
+
+    d_tau = || (s_1 - s_1^k, s_2 - s_2^k, s_3 - s_3^k) ||_2 / tau_threshold
+
+A match with d_tau < 1 indicates that the new system is dynamically
+equivalent to library entry k, and correction parameters, validated
+error bounds, and regime maps from library[k] transfer directly.
+
+
+6. IMPLEMENTATION
+
+6.1 Computational Procedure
+
+For each system presented to the regime classification engine:
+
+  (a) Receive system parameters or trajectory data.
+  (b) Construct A_lin (Eq. 2) or data-driven K.
+  (c) Compute eigenvalues {lambda_i}.
+  (d) Compute epsilon_rec and gamma_gap.
+  (e) Apply trust gate (Eq. 4); if untrusted, escalate.
+  (f) Compute spectral coordinates (s_1, s_2, s_3) (Eq. 3).
+  (g) Apply classification rule (Eq. 6).
+  (h) Query domain canonicalizer for cross-domain match.
+  (i) Output: regime label, trust score T, spectral coordinates,
+      canonicalization result.
+
+6.2 System Integration
+
+The regime classification engine integrates with:
+  -- Stability assessment platforms (feeds regime label to choose
+     appropriate analytic method or escalate to simulation)
+  -- Code synthesis systems (feeds regime to hardware affinity mapping)
+  -- Optimization loops (feeds trust score to convergence criteria)
+  -- Operator decision support systems
+
+6.3 Computing System Description
+
+A system implementing this invention comprises:
+
+  (a) a memory storing trajectory data, system parameters, spectral
+      operator K, spectral coordinates, and regime classification
+      thresholds;
+  (b) one or more processors executing the procedure of Section 6.1;
+  (c) an output interface transmitting regime labels, trust scores,
+      and spectral coordinates to downstream systems.
+
+
+======================================================================
+CLAIMS
+======================================================================
+
+CLAIM 1.  A computer-implemented method for classifying the dynamical
+regime of a nonlinear system, comprising:
+
+  (a) receiving, by one or more processors, a representation of a
+      nonlinear dynamical system;
+  (b) constructing a linear operator approximation of the system's
+      evolution from the representation;
+  (c) computing a spectral decomposition of the linear operator,
+      yielding eigenvalues and associated eigenvectors;
+  (d) computing a reconstruction error measuring fidelity of the
+      operator to held-out system trajectories;
+  (e) computing a spectral gap as a ratio of dominant to
+      subdominant eigenvalue magnitudes;
+  (f) applying a dual-criterion trust gate that declares the operator
+      trusted if and only if the reconstruction error is below a first
+      threshold and the spectral gap is above a second threshold;
+  (g) if the operator is trusted, extracting spectral invariant
+      coordinates from the eigenstructure;
+  (h) classifying the system into one of: locally convergent
+      attractor, transitional regime, or chaotic regime, based on
+      the sign of the dominant real eigenvalue part and the
+      reconstruction error; and
+  (i) outputting the regime classification and a trust score.
+
+CLAIM 2.  The method of claim 1, wherein the linear operator
+approximation is constructed from time-series trajectory data via
+Extended Dynamic Mode Decomposition or an equivalent data-driven
+spectral method.
+
+CLAIM 3.  The method of claim 1, wherein the spectral invariant
+coordinates comprise the log of the dominant oscillation frequency,
+the log of the quality factor, and the damping ratio.
+
+CLAIM 4.  The method of claim 1, wherein two systems from different
+physical domains are declared spectrally equivalent when their
+spectral invariant coordinates differ by less than a tolerance
+epsilon_equiv, and wherein scalar correction parameters validated on
+one system are applied to a spectrally equivalent system without
+refitting.
+
+CLAIM 5.  The method of claim 1, wherein the nonlinear dynamical
+system is expressible in the generalized form:
+
+    C * xdot + G * x + h(x) = u(t)
+
+where C is an inertia or capacitance matrix, G is a damping or
+conductance matrix, h(x) is a nonlinear function of state, and u(t)
+is an external input, and wherein the method applies without
+modification to power system generators, RLC circuits, spring-mass
+systems, and nonlinear oscillators expressible in said form.
+
+CLAIM 6.  The method of claim 1, further comprising detecting a
+transition boundary as the surface in system parameter space where
+the dominant real eigenvalue part changes sign, and outputting the
+proximity of the current operating point to said boundary.
+
+CLAIM 7.  The method of claim 1, further comprising querying a
+library of calibrated systems using a dissonance metric on spectral
+invariant coordinates, identifying a matching system when the
+dissonance metric is below a threshold, and transferring validated
+accuracy bounds and correction parameters from the matched system to
+the new system.
+
+CLAIM 8.  The method of claim 1, wherein, if the operator is not
+trusted, the method escalates computation to direct numerical
+simulation and logs the escalation event with the associated spectral
+coordinates and trust score.
+
+CLAIM 9.  A system for dynamical regime classification, comprising:
+
+  (a) a memory storing system representations, trajectory data,
+      spectral operators, classification thresholds, and a library
+      of calibrated spectral embeddings;
+  (b) one or more processors configured to execute the method of
+      claim 1; and
+  (c) an output interface transmitting regime labels, trust scores,
+      and cross-domain equivalence results to downstream computation,
+      optimization, or control systems.
+
+CLAIM 10.  A non-transitory computer-readable medium storing
+instructions that, when executed by one or more processors, cause
+the processors to:
+
+  (a) receive a representation of a nonlinear dynamical system
+      expressible as C * xdot + G * x + h(x) = u(t);
+  (b) construct a linear operator approximation and compute its
+      spectral decomposition;
+  (c) apply a dual-criterion trust gate based on reconstruction error
+      and spectral gap;
+  (d) if trusted, extract spectral invariant coordinates and classify
+      the system into a dynamical regime;
+  (e) query a cross-domain library for spectrally equivalent systems;
+  (f) output regime classification, trust score, and cross-domain
+      equivalence results;
+  without requiring domain-specific simulation models.
+
+CLAIM 11.  The method of claim 1, applied iteratively over a
+parameter space to produce a regime map, comprising:
+
+  (a) scanning system parameters over a grid or random sample;
+  (b) applying the classification method of claim 1 at each point;
+  (c) recording regime labels and trust scores;
+  (d) outputting a regime map identifying LCA, transitional, and
+      chaotic regions and their boundaries in parameter space.
+
+CLAIM 12.  The method of claim 4, wherein cross-domain equivalence
+is used to accelerate stability assessment of a new physical system
+by substituting validated analytic results from a spectrally
+equivalent system in a different domain, without performing
+domain-specific derivation or simulation for the new system.
+
+
+======================================================================
+ABSTRACT OF THE DRAWINGS
+======================================================================
+
+FIG. 1 depicts the spectral invariant coordinate space (log_omega_0,
+log_Q, zeta).  Points from power system generators (circles), RLC
+circuits (squares), and spring-mass systems (triangles) occupying
+the same region are dynamically equivalent.  Shaded surfaces show
+regime classification boundaries: LCA region (blue), transitional
+region (yellow), chaotic region (red).
+
+FIG. 2 depicts the dual-criterion trust gate.  Horizontal axis:
+reconstruction error epsilon_rec.  Vertical axis: spectral gap
+gamma_gap.  The trust region (epsilon_rec < eta_max AND
+gamma_gap > gamma_min) is shaded blue.  Operating points in the
+trust region (circles) and escalation region (crosses) are shown.
+
+FIG. 3 depicts the regime classification pipeline.  System
+parameters enter at left.  Linear operator construction, spectral
+decomposition, trust gate, coordinate extraction, classification,
+and cross-domain library query are shown as sequential blocks.
+Output (regime label, trust score, cross-domain match) exits at right.

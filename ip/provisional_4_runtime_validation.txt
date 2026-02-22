@@ -1,0 +1,564 @@
+PROVISIONAL PATENT APPLICATION
+
+
+TITLE:    SPECTRAL RUNTIME VALIDATION AND STABILITY-CONSTRAINED
+          AUTONOMOUS OPTIMIZATION USING CLOSED-LOOP KOOPMAN
+          FEEDBACK
+
+
+INVENTOR: Nikolas Yoo
+          [26 Rider Terrace]
+          [Princeton, NJ, 08540]
+          [yoonikolas@gmail.com]
+
+FILING DATE: [assigned by USPTO]
+
+
+======================================================================
+ABSTRACT
+======================================================================
+
+Synthesized programs and optimization candidates exhibit runtime
+behaviors -- oscillations, divergence, bifurcations -- that are not
+detectable from static structural analysis alone.  This invention
+discloses a method for extracting runtime state trajectories from
+executing programs or dynamical systems, constructing a linear
+operator approximation of the runtime dynamics, computing spectral
+robustness metrics from the operator's eigenstructure, and feeding
+a composite robustness score back into synthesis or optimization
+parameters to iteratively improve runtime stability.  A Lyapunov
+energy bound constrains trajectory growth.  A Monte Carlo basin-of-
+attraction analysis quantifies stability margins under parameter
+perturbation.  The closed feedback loop between runtime spectral
+analysis and synthesis constraints produces programs and optimization
+solutions that are stability-certified before deployment, without
+requiring domain-specific stability proofs or exhaustive simulation.
+The method generalizes across physical simulation, code execution,
+and optimization landscapes expressible in the universal dynamical
+form C*xdot + G*x + h(x) = u(t).
+
+
+======================================================================
+FIELD OF THE INVENTION
+======================================================================
+
+This invention relates to runtime validation and stability-constrained
+optimization, specifically to computer-implemented methods for
+extracting spectral robustness metrics from runtime trajectories and
+using those metrics to constrain and guide synthesis and optimization
+systems toward provably stable solutions.
+
+
+======================================================================
+BACKGROUND
+======================================================================
+
+A. The Runtime Stability Gap
+
+Static analysis of programs and optimization candidates -- including
+structural geometry analysis (see co-pending application [Provisional
+#3]) and regime classification (see co-pending application
+[Provisional #2]) -- provides compile-time stability indicators but
+cannot fully predict runtime behavior.  Execution may reveal:
+
+  (i)   Oscillatory dynamics that grow over time (unstable limit
+        cycles or diverging trajectories).
+  (ii)  Bifurcation events triggered by parameter combinations not
+        anticipated at design time.
+  (iii) Numerical instability in simulation kernels.
+  (iv)  Optimizer trajectories that converge to unstable or
+        non-robust fixed points.
+
+A complete stability assurance system requires both static structural
+constraints (pre-execution) and dynamic spectral validation (post-
+execution or during execution).
+
+B. Prior Art Limitations
+
+Existing runtime validation approaches:
+
+  (i)   Unit testing: checks specific inputs, not dynamical behavior.
+  (ii)  Formal verification: computationally expensive, requires
+        explicit stability proofs, domain-specific.
+  (iii) Runtime monitoring: detects failures after they occur, does
+        not predict or prevent them.
+  (iv)  Simulation-based validation: exhaustive, high cost, does not
+        generalize to unseen parameter combinations.
+
+No prior method extracts spectral robustness metrics from runtime
+trajectories and feeds them back into a synthesis or optimization
+loop as a stability constraint, creating a closed feedback system
+that improves robustness iteratively.
+
+C. The Spectral Feedback Insight
+
+The runtime state trajectory x(t_0), x(t_1), ..., x(t_N) of a
+stable system contracts toward an attractor.  The rate of contraction
+is encoded in the eigenspectrum of a linear operator K approximating
+the trajectory dynamics.  If the dominant eigenvalue of K has
+negative real part and reconstruction error is low, the runtime
+behavior is stable in the sense of the linear operator approximation.
+This spectral condition is computationally cheap to evaluate and
+provides a graded stability indicator applicable across domains.
+
+
+======================================================================
+SUMMARY OF THE INVENTION
+======================================================================
+
+The invention discloses four connected results:
+
+(1) RUNTIME SPECTRAL OPERATOR.  From runtime state trajectories,
+a linear operator K is constructed by least-squares fit:
+
+    K = argmin_K  || X' - K * Phi(X) ||^2
+
+where X is a matrix of observed states, X' is the one-step-forward
+matrix, and Phi is a vector of observable functions.
+
+(2) COMPOSITE ROBUSTNESS SCORE.  Four spectral metrics are combined:
+
+    R_1 = -max_i(Re(lambda_i(K)))      (stability margin)
+    R_2 = gamma_gap = |lambda_1|/|lambda_2|  (spectral separation)
+    R_3 = 1 - epsilon_rec              (reconstruction fidelity)
+    R_4 = 1 - E_Lyapunov / E_bound    (Lyapunov energy headroom)
+
+    R = min(R_1, R_2, R_3, R_4)       (composite robustness score)
+
+R > 0: runtime-stable.  R <= 0: one or more stability conditions
+violated; candidate is rejected or modified.
+
+(3) LYAPUNOV ENERGY BOUND.  A quadratic Lyapunov function
+V(x) = x^T P x, where P is the positive-definite solution to the
+Lyapunov equation A^T P + P A = -Q, constrains trajectory growth.
+The Lyapunov energy along the runtime trajectory is monitored;
+if V(x(t)) exceeds a threshold E_bound, the trajectory is declared
+unstable and the candidate is rejected.
+
+(4) CLOSED-LOOP FEEDBACK.  The composite robustness score R is
+returned to the synthesis or optimization system as a constraint:
+
+    Synthesis: if R < R_min, structural parameters are adjusted
+    (via the gradient of R with respect to synthesis parameters)
+    and the candidate is regenerated.
+
+    Optimization: R is added as a penalty term to the objective
+    function, weighting solutions away from unstable parameter
+    regions.
+
+    Monte Carlo basin analysis: N parameter perturbations are sampled
+    and the robustness score computed for each; the fraction of
+    perturbations yielding R > 0 is the basin-of-attraction estimate
+    beta, which is reported alongside R as a stability margin
+    confidence metric.
+
+
+======================================================================
+BRIEF DESCRIPTION OF DRAWINGS
+======================================================================
+
+FIG. 1 -- Closed-loop feedback architecture.  Synthesis/optimization
+at left outputs candidate.  Runtime execution generates trajectories.
+Spectral operator K is constructed.  Composite robustness score R is
+computed.  R feeds back to synthesis/optimization as constraint.
+Stable candidates exit at right.
+
+FIG. 2 -- Composite robustness score components.  Radar plot showing
+R_1 (stability margin), R_2 (spectral separation), R_3
+(reconstruction fidelity), R_4 (Lyapunov headroom) for three
+example candidates: stable (blue), marginally stable (yellow),
+unstable (red).
+
+FIG. 3 -- Monte Carlo basin analysis.  Parameter space (two
+dimensions shown).  Nominal operating point (star).  N = 100
+perturbation samples (circles): green = R > 0, red = R <= 0.
+Basin fraction beta = fraction green.  Stability boundary (dashed
+contour).
+
+FIG. 4 -- Runtime Lyapunov energy trace.  Time axis horizontal.
+V(x(t)) on vertical axis.  Stable trajectory (blue, V decreasing).
+Marginally stable (yellow, V oscillating).  Unstable (red, V
+exceeding E_bound threshold).
+
+
+======================================================================
+DETAILED DESCRIPTION
+======================================================================
+
+1. RUNTIME TRAJECTORY COLLECTION
+
+1.1 State Sampling
+
+During execution of a program or simulation of a dynamical system,
+state snapshots are collected at intervals dt:
+
+    X = [x(t_0),  x(t_1),  ..., x(t_{N-1})]   (state matrix)
+    X' = [x(t_1), x(t_2),  ..., x(t_N)]       (shifted matrix)
+
+State x(t) may be:
+  -- Program memory state (heap variables, stack frame contents)
+  -- Dynamical system state (position, velocity, field values)
+  -- Optimization iterate (parameter vector at step k)
+  -- Any vector-valued time series produced by the candidate
+
+1.2 Observable Functions
+
+A vector of observable functions phi: R^n --> R^p is applied:
+
+    Phi(X) = [phi(x(t_0)), phi(x(t_1)), ..., phi(x(t_{N-1}))]
+
+Standard choices: phi(x) = x (identity observables),
+phi(x) = [x; x^2; sin(x)] (nonlinear augmentation),
+phi(x) = kernel features for high-dimensional state spaces.
+
+
+2. SPECTRAL OPERATOR CONSTRUCTION
+
+2.1 Least-Squares Operator
+
+    K = X' * Phi(X)^+ = X' * Phi(X)^T * (Phi(X) * Phi(X)^T)^{-1} (Eq. 1)
+
+where ^+ denotes pseudoinverse.  K is the linear operator that best
+maps Phi(X) to X' in the least-squares sense.
+
+2.2 Eigendecomposition
+
+    K * v_i = lambda_i * v_i
+
+Eigenvalues {lambda_i}, ordered by descending |lambda_i|.
+
+2.3 Reconstruction Error
+
+    epsilon_rec = || X'_test - K * Phi(X_test) ||_F / || X'_test ||_F  (Eq. 2)
+
+where X_test is a held-out segment of the runtime trajectory and ||.||_F
+is the Frobenius norm.
+
+
+3. COMPOSITE ROBUSTNESS SCORE
+
+3.1 Component Metrics
+
+    R_1 = -max_i( Re(lambda_i) )
+            Positive iff all eigenvalues have negative real part.
+            Measures stability margin.                          (Eq. 3a)
+
+    R_2 = |lambda_1| / |lambda_2| - 1
+            Positive iff dominant mode is spectrally isolated.
+            Measures spectral gap (normalized).                 (Eq. 3b)
+
+    R_3 = 1 - epsilon_rec
+            Positive iff reconstruction error below 100%.
+            Measures linear operator validity.                  (Eq. 3c)
+
+    R_4 = 1 - max_t(V(x(t))) / E_bound
+            Positive iff Lyapunov energy remains below bound.
+            Measures trajectory containment.                    (Eq. 3d)
+
+3.2 Composite Score
+
+    R = min(R_1, R_2, R_3, R_4)                                (Eq. 4)
+
+R is a scalar in (-inf, 1].
+
+    R > 0:   all conditions satisfied; candidate is runtime-stable.
+    R <= 0:  at least one condition violated; candidate is rejected
+             or returned to synthesis for modification.
+
+3.3 Bifurcation Indicator
+
+A bifurcation indicator B_ind detects regime transitions in parameter
+space:
+
+    B_ind = | d/d_theta [ max_i(Re(lambda_i)) ] |
+
+Large B_ind indicates the candidate is near a bifurcation boundary;
+even if currently stable (R > 0), it may be fragile.  B_ind is
+reported alongside R as a fragility metric.
+
+
+4. LYAPUNOV ENERGY BOUND
+
+4.1 Lyapunov Function Construction
+
+For the linearized operator A_lin = real(K) restricted to stable
+eigenvalues, the Lyapunov equation:
+
+    A_lin^T P + P A_lin = -Q                                   (Eq. 5)
+
+is solved for P (positive-definite) given Q = I (identity).
+
+4.2 Energy Monitoring
+
+The Lyapunov energy along the runtime trajectory:
+
+    V(x(t)) = (x(t) - x_eq)^T P (x(t) - x_eq)               (Eq. 6)
+
+where x_eq is the target equilibrium or attractor.
+
+Bound:  E_bound is set as a multiple of V(x(t_0)) (initial energy):
+
+    E_bound = gamma_Lyapunov * V(x(t_0))
+
+where gamma_Lyapunov > 1 is a tolerance parameter.
+
+If V(x(t)) > E_bound for any t during execution, the trajectory
+is declared unstable and R_4 < 0.
+
+4.3 Damping Injection
+
+When R_4 approaches zero (Lyapunov energy approaching bound), a
+damping injection procedure adds a dissipative term to the synthesis
+parameters, increasing effective damping in the candidate's dynamics.
+The amount of damping injected is proportional to (V - E_bound * f)
+for a fraction f in (0, 1), preventing energy bound violation while
+preserving functionality.
+
+
+5. MONTE CARLO BASIN-OF-ATTRACTION ANALYSIS
+
+5.1 Perturbation Sampling
+
+N parameter perturbations are sampled from a distribution
+centered at the nominal parameter vector theta_0:
+
+    theta_k ~ Uniform(theta_0 - delta, theta_0 + delta)        k = 1, ..., N
+
+where delta is the tolerance vector (hardware tolerance, input
+variation, model uncertainty).
+
+5.2 Basin Fraction
+
+For each perturbation theta_k, the composite robustness score R(theta_k)
+is computed by executing the candidate under perturbed parameters and
+applying Sections 2-4.
+
+    beta = (1/N) * sum_k 1[R(theta_k) > 0]                    (Eq. 7)
+
+beta in [0, 1] is the basin-of-attraction fraction: the fraction of
+perturbations yielding a runtime-stable candidate.
+
+5.3 Stability Certificate
+
+A candidate receives a stability certificate if:
+
+    R(theta_0) > R_min    (nominal robustness threshold)
+    AND
+    beta > beta_min       (basin fraction threshold)
+
+Default: R_min = 0.1, beta_min = 0.90 (90% of perturbations stable).
+
+Certificates are timestamped and associated with the candidate's
+structural feature vector and spectral coordinates for traceability.
+
+
+6. CLOSED-LOOP FEEDBACK
+
+6.1 Feedback to Synthesis
+
+The robustness score R is returned to the synthesis system (see
+co-pending application [Provisional #3]) as an additional constraint:
+
+    If R < R_min:
+        Compute gradient of R with respect to synthesis parameters.
+        Adjust structural feature targets in the direction of
+        increasing R.
+        Regenerate candidate.
+
+The synthesis-validation loop iterates until R >= R_min or a maximum
+iteration count is reached.
+
+6.2 Feedback to Optimization
+
+For optimization problems where the candidate is a parameter vector
+theta of a dynamical system, the composite robustness score R(theta)
+is added to the objective function as a penalty:
+
+    J_total(theta) = J_domain(theta) - w_R * R(theta)          (Eq. 8)
+
+where J_domain is the domain-specific objective and w_R is a weight.
+Optimization over J_total yields solutions that balance domain
+performance against stability robustness.
+
+6.3 Multi-Objective Pareto Surface
+
+When multiple objectives are present (domain performance,
+robustness R, component cost, etc.), the optimizer constructs a
+Pareto front of non-dominated solutions.  Each point on the Pareto
+front is associated with:
+  -- Objective vector (J_domain, R, cost, ...)
+  -- Structural feature vector B
+  -- Spectral coordinates (s_1, s_2, s_3)
+  -- Basin fraction beta
+
+This enables operators to select solutions with explicit robustness
+guarantees and traceability to spectral properties.
+
+6.4 Computing System Description
+
+A system implementing this invention comprises:
+
+  (a) a memory storing runtime trajectory data, spectral operator K,
+      Lyapunov matrix P, energy bound E_bound, robustness thresholds,
+      Monte Carlo perturbation samples, and stability certificates;
+  (b) one or more processors configured to execute the runtime
+      validation and feedback procedures of Sections 2-6; and
+  (c) an output interface transmitting robustness scores, stability
+      certificates, Pareto front solutions, and feedback signals to
+      synthesis, optimization, and deployment systems.
+
+
+======================================================================
+CLAIMS
+======================================================================
+
+CLAIM 1.  A computer-implemented method for runtime validation and
+stability-constrained optimization, comprising:
+
+  (a) executing a candidate program or simulating a dynamical system
+      to collect runtime state trajectories;
+  (b) constructing a linear operator approximation of the runtime
+      dynamics from the state trajectories;
+  (c) computing a spectral decomposition of the linear operator;
+  (d) computing a composite robustness score from spectral metrics
+      including at least a stability margin derived from eigenvalue
+      real parts and a reconstruction fidelity metric;
+  (e) if the composite robustness score is below a threshold,
+      returning a feedback signal to the synthesis or optimization
+      system that generated the candidate; and
+  (f) outputting the candidate with a stability certificate when the
+      composite robustness score exceeds the threshold.
+
+CLAIM 2.  The method of claim 1, wherein the composite robustness
+score is the minimum of: a stability margin computed from the
+dominant eigenvalue real part, a spectral gap metric, a
+reconstruction fidelity metric, and a Lyapunov energy headroom
+metric.
+
+CLAIM 3.  The method of claim 1, further comprising constructing a
+Lyapunov function from the linearized operator and monitoring the
+Lyapunov energy along the runtime trajectory, wherein the candidate
+is declared unstable if the Lyapunov energy exceeds a bound
+proportional to the initial energy.
+
+CLAIM 4.  The method of claim 3, further comprising injecting a
+dissipative correction into the synthesis parameters when the
+Lyapunov energy approaches the bound, wherein the amount of
+dissipation is proportional to the energy excess.
+
+CLAIM 5.  The method of claim 1, further comprising:
+
+  (a) sampling N perturbations of the system parameters from a
+      distribution centered at a nominal parameter vector;
+  (b) computing the composite robustness score for each perturbation;
+  (c) computing a basin-of-attraction fraction as the fraction of
+      perturbations yielding robustness score above the threshold; and
+  (d) issuing a stability certificate when both the nominal robustness
+      score and the basin-of-attraction fraction exceed respective
+      minimum thresholds.
+
+CLAIM 6.  The method of claim 1, wherein the feedback signal
+comprises a gradient of the composite robustness score with respect
+to synthesis parameters, and wherein the synthesis system adjusts
+structural feature targets in the direction of increasing robustness
+score before regenerating the candidate.
+
+CLAIM 7.  The method of claim 1, wherein the composite robustness
+score is added as a penalty term to an optimization objective
+function, yielding solutions that balance domain performance against
+runtime stability.
+
+CLAIM 8.  The method of claim 7, further comprising constructing a
+Pareto front of non-dominated solutions in the space of domain
+performance and composite robustness score, and outputting the Pareto
+front with associated spectral coordinates and basin-of-attraction
+fractions for each solution.
+
+CLAIM 9.  The method of claim 1, further comprising computing a
+bifurcation indicator as the magnitude of the gradient of the
+dominant eigenvalue real part with respect to system parameters, and
+reporting said indicator as a fragility metric alongside the composite
+robustness score.
+
+CLAIM 10.  The method of claim 1, wherein the method operates
+without domain-specific stability proofs, and wherein the same
+procedure applies to program execution state trajectories, dynamical
+system simulation trajectories, and optimization iterate trajectories.
+
+CLAIM 11.  A system for spectral runtime validation and stability-
+constrained optimization, comprising:
+
+  (a) a memory storing runtime trajectory data, a linear operator
+      K, Lyapunov matrix P, energy bounds, perturbation samples,
+      and stability certificates;
+  (b) one or more processors configured to execute the method of
+      claim 1; and
+  (c) an output interface transmitting robustness scores, stability
+      certificates, Pareto front solutions, and feedback signals to
+      synthesis, optimization, and deployment systems.
+
+CLAIM 12.  A non-transitory computer-readable medium storing
+instructions that, when executed by one or more processors, cause
+the processors to:
+
+  (a) collect runtime state trajectories from an executing program
+      or dynamical system simulation;
+  (b) construct a linear operator approximation and compute its
+      spectral decomposition;
+  (c) compute a composite robustness score from eigenvalue real
+      parts, spectral gap, reconstruction fidelity, and Lyapunov
+      energy headroom;
+  (d) if the robustness score is below a threshold, return a
+      feedback signal to the generating system;
+  (e) perform Monte Carlo basin-of-attraction analysis;
+  (f) issue a stability certificate when nominal and basin
+      robustness criteria are satisfied;
+  without requiring domain-specific stability analysis or exhaustive
+  simulation.
+
+CLAIM 13.  The method of claim 1, applied in a closed loop with
+co-pending application [Provisional #3], comprising:
+
+  (a) generating a candidate program using structural geometry
+      constraints (compilation manifold);
+  (b) executing the candidate and collecting runtime trajectories;
+  (c) computing the composite robustness score;
+  (d) if the robustness score is below threshold, feeding back to
+      the structural synthesis system to adjust generation
+      parameters;
+  (e) iterating until both compilation success (E < D_sep) and
+      runtime stability (R > R_min) are achieved;
+  wherein the loop produces programs that are both structurally
+  compilation-safe and dynamically runtime-stable.
+
+
+======================================================================
+ABSTRACT OF THE DRAWINGS
+======================================================================
+
+FIG. 1 depicts the closed-loop feedback architecture.  A synthesis
+or optimization system outputs a candidate at left.  Runtime
+execution generates state trajectories.  Spectral operator K is
+constructed from trajectories.  Composite robustness score R is
+computed from eigenvalues, reconstruction error, and Lyapunov
+energy.  R feeds back to the synthesis system as a constraint
+signal.  Stable-certified candidates exit at right.
+
+FIG. 2 depicts a radar plot of composite robustness score
+components for three candidates.  Axes: R_1 (stability margin),
+R_2 (spectral gap), R_3 (reconstruction fidelity), R_4 (Lyapunov
+headroom).  Stable candidate (blue polygon, all axes positive).
+Marginally stable (yellow, one axis near zero).  Unstable (red,
+one or more axes negative).
+
+FIG. 3 depicts Monte Carlo basin-of-attraction analysis.  Two-
+dimensional parameter space shown.  Nominal point (star).  N=100
+perturbation samples: green circles (R > 0, stable) and red circles
+(R <= 0, unstable).  Basin boundary (dashed contour).  Basin
+fraction beta labeled.
+
+FIG. 4 depicts the Lyapunov energy trace.  Horizontal axis: time.
+Vertical axis: V(x(t)).  Three trajectories: stable (V decreasing
+monotonically, blue), marginally stable (V oscillating below bound,
+yellow), unstable (V crossing E_bound threshold, red).  E_bound
+threshold shown as horizontal dashed line.

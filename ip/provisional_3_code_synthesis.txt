@@ -1,0 +1,516 @@
+PROVISIONAL PATENT APPLICATION
+
+
+TITLE:    STRUCTURAL GEOMETRY-CONSTRAINED AUTONOMOUS CODE SYNTHESIS
+          USING COMPILATION MANIFOLD CLASSIFICATION
+
+
+INVENTOR: Nikolas Yoo
+          [26 Rider Terrace]
+          [Princeton, NJ, 08540]
+          [yoonikolas@gmail.com]
+
+FILING DATE: [assigned by USPTO]
+
+
+======================================================================
+ABSTRACT
+======================================================================
+
+Generating executable code that reliably compiles and performs
+correctly on target hardware is a persistent challenge in automated
+synthesis systems.  This invention discloses a method for encoding
+the structural features of a candidate program into a multi-dimensional
+geometric vector, mapping that vector into a learned compilation
+manifold, and using the program's position relative to a learned
+boundary in the manifold to estimate compilation success probability
+and guide iterative synthesis toward compilation-safe program
+structures.  A scalar energy metric computed as a weighted inner
+product of structural features serves as a single-dimensional
+projection of manifold position.  A learned separation boundary in
+energy space partitions programs into compilation-safe and
+compilation-unsafe regions.  Hardware affinity -- the degree to which
+a program's structural geometry is suited for execution on a specific
+hardware class (SIMD/GPU, cache-local CPU, general-purpose) -- is
+derived from manifold position without domain-specific heuristics.
+A closed-loop synthesis pipeline uses geometric gradients in the
+manifold to iteratively modify candidate programs toward the safe
+region, improving compilation rate relative to unconstrained
+generation.
+
+
+======================================================================
+FIELD OF THE INVENTION
+======================================================================
+
+This invention relates to automated code generation, specifically to
+computer-implemented methods for constraining synthesis using
+geometric representations of program structure, and to systems for
+hardware-affinity-aware code generation using compilation manifold
+classification.
+
+
+======================================================================
+BACKGROUND
+======================================================================
+
+A. The Code Synthesis Reliability Problem
+
+Automated code generation systems -- including template-based,
+large-language-model-based, and constraint-based synthesizers --
+produce candidate programs that frequently fail to compile, link, or
+execute correctly.  Failure rates are high when the synthesizer lacks
+a structured model of what program structures lead to valid
+compilation.
+
+For systems-level languages with complex ownership, lifetime, and
+type constraints (such as Rust), compilation failure rates can exceed
+50% for unconstrained synthesis.  Each compilation failure requires
+retry, increasing latency and degrading throughput.
+
+B. Prior Art Limitations
+
+Existing approaches address this problem by:
+  (i)   Post-hoc filtering: compile candidates and discard failures.
+        Wasteful; does not improve future synthesis.
+  (ii)  Grammar-constrained generation: ensure syntactic validity.
+        Does not address semantic compilation constraints (borrow
+        checking, lifetime validity, type inference failures).
+  (iii) Reinforcement learning on compilation outcome: requires
+        large training sets and does not generalize across template
+        families.
+  (iv)  Heuristic rules: brittle, domain-specific, require manual
+        maintenance.
+
+No prior method extracts a geometric representation of program
+structure that is:
+  (a) Low-dimensional enough for efficient manifold learning.
+  (b) Predictive of compilation outcome across template families.
+  (c) Directly actionable as a synthesis constraint via geometric
+      gradient.
+  (d) Informative of hardware execution affinity.
+
+C. The Structural Geometry Insight
+
+A program's structural properties -- the pattern of variable
+references, control flow branching, memory access scope, and
+computational nesting -- form a geometry in a low-dimensional space.
+Programs that compile share a structural region (the compilation-safe
+manifold) separable from programs that fail.  This separation can be
+learned from a modest set of compile/fail outcomes and applied
+broadly.
+
+
+======================================================================
+SUMMARY OF THE INVENTION
+======================================================================
+
+The invention discloses four connected results:
+
+(1) STRUCTURAL FEATURE VECTOR.  A program is encoded as a vector
+B = (B_1, ..., B_n) of structural features extracted from the
+program's abstract syntax tree or intermediate representation.
+Features include but are not limited to:
+
+    B_1: borrow/reference density (references per statement)
+    B_2: control flow branching factor (branches per scope)
+    B_3: mutable vs immutable reference ratio
+    B_4: nesting depth normalized by program length
+    B_5: lifetime scope overlap coefficient
+    B_6: pure functional expression ratio (expressions with no
+         side effects)
+
+(2) SCALAR ENERGY METRIC.  A weighted inner product:
+
+    E = sum_i w_i * B_i
+
+where w = (w_1, ..., w_n) are weights learned from compilation
+outcome data.  E is a scalar summarizing the program's structural
+geometry in a single dimension.
+
+(3) COMPILATION MANIFOLD AND SEPARATION BOUNDARY.  A learned
+boundary in (B_1, ..., B_n) space, equivalently expressible as a
+threshold D_sep in E-space:
+
+    E < D_sep  -->  compilation-safe region
+    E > D_sep  -->  compilation-unsafe region
+
+D_sep is learned by binary classification on a reference dataset of
+compiled and failed programs.  The classifier achieves area-under-
+ROC-curve (AUC) exceeding 0.90 with fewer than 500 training examples.
+
+(4) HARDWARE AFFINITY MAPPING.  Program structural geometry predicts
+hardware execution suitability:
+
+    Low E (pure functional, minimal shared state):
+        high affinity for SIMD vectorization and GPU execution.
+    Moderate E (shared immutable reference pattern):
+        high affinity for cache-local CPU execution.
+    High E (dense mutable reference, complex control flow):
+        hardware-agnostic; affinity mapping deferred to profiling.
+
+Hardware affinity is assigned from E without domain-specific profiling.
+
+
+======================================================================
+BRIEF DESCRIPTION OF DRAWINGS
+======================================================================
+
+FIG. 1 -- Structural feature space (B_1, B_2, B_n projected to 2D).
+Compiled programs (blue) and failed programs (red).  Learned
+separation boundary (dashed line).  Energy gradient arrows pointing
+toward safe region.
+
+FIG. 2 -- E-space projection.  Histogram of E for compiled programs
+(blue) and failed programs (red).  Separation boundary D_sep (dashed
+vertical line).
+
+FIG. 3 -- Closed-loop synthesis pipeline.  Intent specification
+enters at left.  Structural encoder, energy computation, manifold
+classifier, geometric gradient, variant generator, compiler, and
+feedback loop shown as sequential blocks.  Output: compiled program
+with hardware affinity label.
+
+FIG. 4 -- Hardware affinity map.  E-axis horizontal.  Affinity
+regions for GPU/SIMD (low E), cache-local CPU (moderate E), and
+general-purpose (high E) marked.
+
+
+======================================================================
+DETAILED DESCRIPTION
+======================================================================
+
+1. STRUCTURAL FEATURE EXTRACTION
+
+1.1 Input Representation
+
+A candidate program P is represented as one or more of:
+  -- Abstract syntax tree (AST)
+  -- Control flow graph (CFG)
+  -- Token sequence with scope annotations
+  -- Intermediate representation (IR)
+
+1.2 Feature Computation
+
+From the representation of P, structural features are extracted:
+
+    B_1 = (number of reference/borrow operations) /
+           (number of statements)
+
+    B_2 = (number of conditional branches + loop heads) /
+           (number of scopes)
+
+    B_3 = (number of mutable references) /
+           (number of mutable + immutable references + epsilon)
+
+    B_4 = (sum of nesting depths over all statements) /
+           (number of statements * max_depth_normalization)
+
+    B_5 = (number of overlapping lifetime scopes) /
+           (number of distinct lifetime variables + epsilon)
+
+    B_6 = (number of pure functional sub-expressions) /
+           (total sub-expressions)
+
+where epsilon is a small constant preventing division by zero.
+
+Additional features B_7, ..., B_n may be appended for specific
+language families or compilation targets without departing from the
+invention.
+
+1.3 Feature Vector
+
+The structural feature vector:
+
+    B = (B_1, B_2, B_3, B_4, B_5, B_6, ..., B_n)  in R^n    (Eq. 1)
+
+
+2. SCALAR ENERGY METRIC
+
+2.1 Weight Vector
+
+A weight vector w = (w_1, ..., w_n) is learned from a reference
+dataset of labeled programs (compiled / failed) by minimizing
+binary cross-entropy loss:
+
+    L(w) = -sum_i [ y_i * log(sigma(w^T B_i)) +
+                    (1 - y_i) * log(1 - sigma(w^T B_i)) ]
+
+where sigma is the logistic function and y_i in {0, 1} is the
+compilation outcome label.
+
+2.2 Energy Computation
+
+    E(P) = w^T * B(P) = sum_i w_i * B_i(P)                   (Eq. 2)
+
+E is a scalar in R.  Higher E corresponds to more structurally
+complex programs with greater compilation risk.
+
+2.3 Separation Boundary
+
+The separation boundary D_sep is the value of E at which the
+classifier assigns equal probability to compiled and failed:
+
+    sigma(w^T * B - D_sep) = 0.5  -->  D_sep = 0              (Eq. 3)
+
+equivalently, D_sep is the decision threshold in E-space.
+
+Classification:
+
+    E(P) < D_sep  -->  P is in the compilation-safe region
+    E(P) > D_sep  -->  P is in the compilation-unsafe region   (Eq. 4)
+
+The compilation success probability for a candidate program P is:
+
+    p_compile(P) = sigma(-(E(P) - D_sep) / temperature)       (Eq. 5)
+
+where temperature controls the sharpness of the transition.
+
+
+3. GEOMETRIC GRADIENT AND SYNTHESIS CONSTRAINT
+
+3.1 Gradient Direction
+
+The gradient of the compilation success probability with respect to
+the structural feature vector is:
+
+    grad_B p_compile = -w * p_compile(P) * (1 - p_compile(P))
+                        / temperature                          (Eq. 6)
+
+This gradient points in the direction of greatest increase in
+p_compile in structural feature space.
+
+3.2 Constrained Synthesis
+
+A synthesis engine generates variants of a candidate program P by
+perturbing structural features in the direction of grad_B p_compile:
+
+    B' = B + alpha * grad_B p_compile                         (Eq. 7)
+
+where alpha is a step size.  The synthesis engine selects program
+variants whose structural features are closest to B' from a template
+library, or generates modifications (restructuring, scope reduction,
+mutability adjustment) to move B toward B'.
+
+3.3 Template Selection
+
+For template-based synthesis, the template whose structural feature
+vector is closest to the target B' is selected:
+
+    template* = argmin_t || B(template_t) - B' ||             (Eq. 8)
+
+This applies template library knowledge without domain-specific rules.
+
+
+4. HARDWARE AFFINITY MAPPING
+
+4.1 Affinity Regions
+
+Hardware execution affinity is determined by E(P):
+
+    SIMD / GPU affinity:    E(P) < E_low_threshold
+        -- High pure-functional ratio (B_6 near 1)
+        -- Low mutable reference density (B_3 near 0)
+        -- Computation maps to data-parallel instruction sets
+
+    Cache-local CPU affinity: E_low_threshold <= E(P) < E_mid_threshold
+        -- Moderate shared reference density
+        -- Sequential control flow with low branching
+        -- Computation maps to cache-resident loop nests
+
+    General-purpose:        E(P) >= E_mid_threshold
+        -- Complex ownership patterns
+        -- Hardware affinity deferred to runtime profiling
+
+4.2 Affinity Label
+
+    affinity(P) = hardware_class(E(P))                        (Eq. 9)
+
+assigned without profiling or execution, purely from structural
+geometry.
+
+
+5. CLOSED-LOOP SYNTHESIS PIPELINE
+
+5.1 Pipeline Stages
+
+The synthesis pipeline comprises:
+
+  Stage 1 (Pre-gate):
+    -- Receive intent specification (target function, performance
+       requirement, hardware target).
+    -- Compute initial structural feature vector B_init from intent.
+    -- Compute E_init and p_compile_init.
+    -- If E_init >> D_sep, restructure intent before generation.
+
+  Stage 2 (Generation):
+    -- Select template or generate candidate P from intent.
+    -- Compute B(P) and E(P).
+    -- If E(P) > D_sep: apply gradient step (Eq. 7), regenerate.
+    -- Iterate until E(P) < D_sep or max_iterations reached.
+
+  Stage 3 (Post-gate):
+    -- Compile P.
+    -- If compilation succeeds: output P with affinity label.
+    -- If compilation fails: record (B(P), failure) as training
+       data; update classifier; regenerate.
+
+5.2 Feedback and Learning
+
+Each compilation outcome (B(P), y) is added to the classifier
+training set.  The classifier is retrained periodically to update
+w and D_sep, improving compilation rate over time.
+
+5.3 System Integration
+
+The synthesis pipeline integrates with:
+  -- Code generation systems accepting intent specifications
+  -- Compiler toolchains (Rust, C, C++, LLVM IR)
+  -- Hardware deployment systems using affinity labels
+  -- Runtime validation systems (see co-pending application
+     [Provisional #4])
+
+5.4 Computing System Description
+
+A system implementing this invention comprises:
+
+  (a) a memory storing structural feature extractors, weight vector w,
+      separation boundary D_sep, template library, and compilation
+      history dataset;
+  (b) one or more processors configured to execute the pipeline of
+      Section 5.1; and
+  (c) an output interface transmitting compiled programs with
+      structural feature vectors, energy values, compilation success
+      probability, and hardware affinity labels.
+
+
+======================================================================
+CLAIMS
+======================================================================
+
+CLAIM 1.  A computer-implemented method for generating executable
+code using structural geometric constraints, comprising:
+
+  (a) receiving, by one or more processors, an intent specification
+      for a program to be synthesized;
+  (b) encoding structural features of a candidate program into a
+      multi-dimensional structural feature vector;
+  (c) computing a scalar energy metric as a weighted inner product
+      of the structural feature vector and a learned weight vector;
+  (d) comparing the energy metric to a learned separation boundary
+      that partitions programs into compilation-safe and
+      compilation-unsafe regions;
+  (e) if the energy metric indicates a compilation-unsafe region,
+      computing a geometric gradient in structural feature space
+      pointing toward the compilation-safe region;
+  (f) modifying or regenerating the candidate program to move its
+      structural feature vector in the direction of said gradient; and
+  (g) outputting the candidate program when its energy metric falls
+      within the compilation-safe region.
+
+CLAIM 2.  The method of claim 1, wherein the structural features
+include one or more of: reference or borrow operation density,
+control flow branching factor, mutable-to-immutable reference ratio,
+scope nesting depth, lifetime overlap coefficient, and pure
+functional expression ratio.
+
+CLAIM 3.  The method of claim 1, wherein the weight vector is
+learned by binary classification on a dataset of programs labeled
+by compilation outcome, and wherein the separation boundary is the
+decision threshold of the learned classifier in energy space.
+
+CLAIM 4.  The method of claim 3, wherein the learned classifier
+achieves an area-under-ROC-curve exceeding 0.85 on held-out
+compilation outcome data.
+
+CLAIM 5.  The method of claim 1, further comprising assigning a
+hardware execution affinity label to the output program based on
+its energy metric, wherein programs with energy metric below a first
+threshold are assigned high affinity for SIMD or GPU execution, and
+programs with energy metric between said first threshold and a second
+threshold are assigned high affinity for cache-local CPU execution.
+
+CLAIM 6.  The method of claim 1, wherein, upon compilation failure,
+the structural feature vector and failure label are added to the
+classifier training dataset, and the classifier is updated to improve
+future synthesis.
+
+CLAIM 7.  The method of claim 1, wherein candidate program
+modification comprises selecting, from a template library, the
+template whose structural feature vector is closest to a target
+feature vector derived from the geometric gradient.
+
+CLAIM 8.  The method of claim 1, applied iteratively in a closed
+loop comprising:
+
+  (a) generating a candidate program;
+  (b) computing its structural feature vector and energy metric;
+  (c) if energy metric exceeds the separation boundary, applying the
+      gradient step and regenerating;
+  (d) if energy metric is within the safe region, compiling;
+  (e) if compilation fails, updating the classifier and repeating;
+  wherein the loop terminates when compilation succeeds or a maximum
+  iteration count is reached.
+
+CLAIM 9.  A system for geometry-constrained code synthesis,
+comprising:
+
+  (a) a memory storing a structural feature extractor, a learned
+      weight vector, a separation boundary, a template library, and
+      a compilation history dataset;
+  (b) one or more processors configured to execute the method of
+      claim 1; and
+  (c) an output interface transmitting compiled programs with
+      energy metric, hardware affinity label, and compilation success
+      probability.
+
+CLAIM 10.  A non-transitory computer-readable medium storing
+instructions that, when executed by one or more processors, cause
+the processors to:
+
+  (a) encode a candidate program as a structural feature vector;
+  (b) compute a scalar energy metric from the feature vector and a
+      learned weight vector;
+  (c) classify the program as compilation-safe or compilation-unsafe
+      by comparison to a learned separation boundary;
+  (d) if compilation-unsafe, compute a geometric gradient and
+      generate a modified candidate program closer to the safe region;
+  (e) output the program and assign a hardware affinity label based
+      on the energy metric;
+  without requiring domain-specific compilation rules or heuristics.
+
+CLAIM 11.  The method of claim 1, wherein structural features are
+extracted from one or more of: an abstract syntax tree, a control
+flow graph, a token sequence with scope annotations, or an
+intermediate representation of the candidate program.
+
+CLAIM 12.  The method of claim 5, wherein hardware affinity labels
+are used to route synthesized programs to target execution
+environments without profiling or benchmarking the program.
+
+
+======================================================================
+ABSTRACT OF THE DRAWINGS
+======================================================================
+
+FIG. 1 depicts the structural feature space projected to two
+dimensions.  Blue points are programs that compiled successfully;
+red points are programs that failed.  The dashed curve is the
+learned separation boundary.  Arrows show geometric gradient
+direction toward the compilation-safe region.
+
+FIG. 2 depicts the energy E distribution.  Blue histogram:
+compiled programs.  Red histogram: failed programs.  Dashed vertical
+line: separation boundary D_sep.  The two distributions are well-
+separated with overlap concentrated near D_sep.
+
+FIG. 3 depicts the closed-loop synthesis pipeline.  Left to right:
+intent specification, structural encoder, energy computation,
+manifold classifier, decision branch (safe/unsafe), gradient step
+and regeneration (unsafe path), compilation (safe path), feedback
+update, output with affinity label.
+
+FIG. 4 depicts the hardware affinity map.  Horizontal axis: energy E.
+Left region (E < E_low): SIMD/GPU affinity.  Middle region: cache-
+local CPU affinity.  Right region (E > E_mid): general-purpose.
+Example programs positioned on the axis.
