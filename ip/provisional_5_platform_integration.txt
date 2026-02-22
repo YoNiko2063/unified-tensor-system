@@ -32,8 +32,9 @@ conditions are simultaneously satisfied: the structural energy
 metric falls within the compilation-safe manifold, the composite
 runtime robustness score exceeds a nominal threshold, the
 basin-of-attraction fraction exceeds a confidence level, and
-the dominant eigenvalue real parts of the runtime operator are
-strictly negative.  Cross-layer information flows transmit
+the dynamical regime derived from the runtime spectral operator
+agrees with the regime label issued by the regime classification
+layer.  Cross-layer information flows transmit
 spectral invariant coordinates, structural feature vectors,
 hardware affinity labels, and robustness scores between layers
 to eliminate redundant computation and enable coordinated
@@ -187,7 +188,7 @@ simultaneously satisfied:
     C_1: E(P) < D_sep_effective    (structural manifold)
     C_2: R(theta_0) > R_min        (nominal runtime robustness)
     C_3: beta > beta_min           (basin-of-attraction fraction)
-    C_4: max_i(Re(lambda_i)) < 0   (runtime LCA confirmed)
+    C_4: regime_class(K_runtime) = regime_label(K_L1)  (cross-layer consistency)
 
     CERT(P) = C_1 AND C_2 AND C_3 AND C_4              (Eq. 1)
 
@@ -315,7 +316,7 @@ hardware affinity label, Signals S_{2->3}, S_{2->1}.
 1.4 Layer 3 -- Runtime Validation Engine
 
 Receives: compiled candidate P, S_{2->3} (BorrowVector B,
-energy E from Layer 2).
+energy E from Layer 2), S_{1->2b} (regime label from Layer 1).
 
 Computes:
   (a) Runtime state trajectories from executing P.
@@ -327,8 +328,13 @@ Computes:
       where R_1, R_2, R_3, R_4 are as defined in co-pending
       application [Provisional #4].
   (e) Lyapunov energy monitoring; R_4 computation.
-  (f) Monte Carlo basin fraction beta.
-  (g) Certificate condition check: C_2, C_3, C_4.
+  (f) Monte Carlo basin fraction beta using R_min_effective
+      set from S_{1->2b} (Section 2.1).
+  (g) Cross-layer regime consistency (C_4): classify K_runtime
+      using the classification rule of co-pending application
+      [Provisional #2]; compare result to regime label received
+      via S_{1->2b}; C_4 = TRUE iff classifications agree.
+  (h) Certificate condition check: C_2, C_3, C_4.
 
 Outputs: R, beta, C_2/C_3/C_4, Signal S_{3->2} (if R < R_min),
 Signal S_{3->1} (if persistent failure exceeds N_L3_retry).
@@ -352,11 +358,20 @@ Signal S_{1->2}:
 Signal S_{1->2b}:
   Content: regime label (LCA / transitional / chaotic)
   Trigger: Layer 1 completes (trusted or untrusted)
+  Destination: Layer 2 AND Layer 3
   Action in Layer 2:
     LCA: use D_sep_effective = D_sep (standard threshold).
     Transitional: D_sep_effective = D_sep - delta_cautious.
     Chaotic: flag to operator; Layer 2 does not synthesize
       without explicit operator override.
+  Action in Layer 3:
+    LCA: use R_min_effective = R_min_default (standard).
+    Transitional: R_min_effective = R_min_default +
+      delta_R_cautious (default 0.05), increasing robustness
+      requirement in response to proximity to bifurcation
+      boundary.
+    Chaotic: R_min_effective = 1.0; certificate cannot be
+      issued without operator override.
 
 Signal S_{2->3}:
   Content: BorrowVector B(P), energy metric E(P), hardware
@@ -412,9 +427,14 @@ Signal S_{2->1}:
          Basin-of-attraction fraction above confidence level.
          Verified by Layer 3.
 
-    C_4: max_i( Re(lambda_i(K_runtime)) ) < 0
-         Runtime operator Hurwitz; LCA regime confirmed.
-         Verified by Layer 3 from K_runtime eigendecomposition.
+    C_4: regime_class(K_runtime) = regime_label(S_{1->2b})
+         Cross-layer regime consistency: the dynamical regime
+         derived from the runtime spectral operator K_runtime
+         by applying the classification rule of co-pending
+         application [Provisional #2] agrees with the regime
+         label issued by Layer 1 and received by Layer 3 via
+         Signal S_{1->2b}.  Verified by Layer 3 by classifying
+         K_runtime and comparing to the Layer 1 regime label.
 
     CERT(P) = C_1 AND C_2 AND C_3 AND C_4              (Eq. 1)
 
@@ -438,7 +458,7 @@ For a new system B spectrally equivalent to a previously certified
 system A (||coords_A - coords_B|| < epsilon_equiv):
 
     CERT_B is issued by inheriting CERT_A without re-executing
-    Layers 2 and 3, provided:
+    Layer 2, provided:
       -- coords_A and coords_B agree within epsilon_equiv.
       -- The domain mapping (co-pending [Provisional #2],
          Section 3.2) confirms cross-domain equivalence.
@@ -677,9 +697,10 @@ certificate comprises all of:
   (c) a basin-of-attraction condition: the fraction of parameter
       perturbations yielding positive robustness score exceeds
       a minimum confidence level; and
-  (d) a runtime regime condition: the dominant real eigenvalue
-      parts of the runtime spectral operator are strictly
-      negative;
+  (d) a cross-layer regime consistency condition: the dynamical
+      regime derived from the runtime spectral operator by the
+      runtime validation layer agrees with the regime label
+      issued by the regime classification layer;
   wherein all four conditions must be simultaneously satisfied,
   and the certificate record includes the structural feature
   vector, energy metric, robustness score, basin fraction,
