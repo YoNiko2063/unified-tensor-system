@@ -162,8 +162,8 @@ constructed from trajectory data is trusted if and only if:
     spectral_gap(K) > gamma_min
 
 where reconstruction_error measures how well K predicts held-out
-trajectory segments, and spectral_gap is the ratio of the second
-to first eigenvalue magnitudes.  Both criteria must be satisfied
+trajectory segments, and spectral_gap is the ratio of the first
+to second eigenvalue magnitudes.  Both criteria must be satisfied
 simultaneously.  Failure of either criterion triggers escalation to
 direct simulation.
 

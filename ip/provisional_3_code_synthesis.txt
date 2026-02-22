@@ -248,12 +248,18 @@ complex programs with greater compilation risk.
 
 2.3 Separation Boundary
 
-The separation boundary D_sep is the value of E at which the
-classifier assigns equal probability to compiled and failed:
+The separation boundary D_sep is the learned scalar threshold in
+E-space at which the classifier assigns equal probability to
+compiled and failed.  For a logistic classifier with learned weight
+vector w and bias term b:
 
-    sigma(w^T * B - D_sep) = 0.5  -->  D_sep = 0              (Eq. 3)
+    p_compile(P) = sigma( (D_sep - E(P)) / temperature )      (Eq. 3)
 
-equivalently, D_sep is the decision threshold in E-space.
+where D_sep is the value of E at the decision boundary:
+
+    D_sep = -b                                                 (Eq. 3a)
+
+D_sep is learned from training data and is not generally zero.
 
 Classification:
 

@@ -120,7 +120,7 @@ matrix, and Phi is a vector of observable functions.
 
     R_1 = -max_i(Re(lambda_i(K)))      (stability margin)
     R_2 = |lambda_1|/|lambda_2| - 1         (spectral separation)
-    R_3 = 1 - epsilon_rec              (reconstruction fidelity)
+    R_3 = 1 - epsilon_rec / eta_max    (reconstruction fidelity)
     R_4 = 1 - E_Lyapunov / E_bound    (Lyapunov energy headroom)
 
     R = min(R_1, R_2, R_3, R_4)       (composite robustness score)
@@ -247,8 +247,8 @@ is the Frobenius norm.
             Positive iff dominant mode is spectrally isolated.
             Measures spectral gap (normalized).                 (Eq. 3b)
 
-    R_3 = 1 - epsilon_rec
-            Positive iff reconstruction error below 100%.
+    R_3 = 1 - epsilon_rec / eta_max
+            Positive iff reconstruction error below eta_max.
             Measures linear operator validity.                  (Eq. 3c)
 
     R_4 = 1 - max_t(V(x(t))) / E_bound
@@ -281,12 +281,19 @@ reported alongside R as a fragility metric.
 
 4.1 Lyapunov Function Construction
 
-For the linearized operator A_lin = real(K) restricted to stable
-eigenvalues, the Lyapunov equation:
+For the linearized stable operator A_lin derived from K by
+computing its eigendecomposition K = V * Lambda * V^{-1},
+retaining only modes with Re(lambda_i) < 0, and reconstructing
+the corresponding stable-subspace operator, the Lyapunov equation:
 
     A_lin^T P + P A_lin = -Q                                   (Eq. 5)
 
 is solved for P (positive-definite) given Q = I (identity).
+A positive-definite solution P exists if and only if A_lin is
+Hurwitz (all retained eigenvalues have strictly negative real
+part).  If no stable modes exist (A_lin has no retained
+eigenvalues), R_4 is set to -1 directly, triggering rejection
+of the candidate without solving the Lyapunov equation.
 
 4.2 Energy Monitoring
 
