@@ -1,1839 +1,526 @@
-================================================================================
 PROVISIONAL PATENT APPLICATION
-================================================================================
 
-TITLE OF INVENTION:
-SYSTEM AND METHOD FOR TOPOLOGY-AWARE INVARIANT INDEXING,
-CROSS-DOMAIN DYNAMICAL MEMORY, AND ENERGY-CONDITIONED
-REGIME RETRIEVAL IN NONLINEAR DYNAMICAL SYSTEMS
+TITLE:     ANALYTIC CRITICAL CLEARING TIME DETERMINATION IN POWER SYSTEMS
+           USING LOADING-CLASS GEOMETRIC INVARIANTS WITH UNIVERSAL
+           DAMPING CORRECTION
 
-INVENTOR:
-  Nikolas Yoo
+INVENTOR:  Nikolas Yoo
+           [Address]
+           [City, State, ZIP]
+           [Email]
 
-FILING TYPE: Provisional Patent Application
-ENTITY STATUS: Micro Entity
-CORRESPONDENCE ADDRESS: [INVENTOR ADDRESS — complete before filing]
-
-================================================================================
-FIELD OF THE INVENTION
-================================================================================
-
-The present invention relates to computational methods for dynamical systems
-analysis, and more specifically to systems and methods that (1) construct a
-domain-invariant index over dynamical invariants extracted from physical and
-computational systems, (2) retrieve prior solutions from memory conditioned on
-the topological regime of the query system, (3) detect topological bifurcations
-via energy-conditioned separatrix analysis, and (4) classify driven nonlinear
-systems as periodic or chaotic using a reconstruction-error-based trust metric
-derived from Extended Dynamic Mode Decomposition (EDMD).
-
-================================================================================
-BACKGROUND OF THE INVENTION
-================================================================================
-
-Engineers and scientists routinely solve parametric optimization and simulation
-problems across diverse physical domains: RLC electrical circuits, spring-mass-
-damper mechanical systems, gradient-descent optimization algorithms, and
-nonlinear oscillators (Duffing, van der Pol, Lorenz). These problems are
-physically disparate but dynamically equivalent — they obey the same governing
-differential equations up to a coordinate rescaling.
-
-Existing approaches suffer from three fundamental limitations:
-
-(1) Domain specificity. Optimization and simulation tools are implemented
-    separately per domain. A solution discovered in one domain (e.g., optimal
-    damping ratio for a mechanical resonator) cannot be transferred to an
-    equivalent circuit problem without manual re-derivation. This represents
-    massive duplicated computational cost.
-
-(2) Regime blindness. Memory and retrieval systems index solutions by parameter
-    values (e.g., capacitance, spring constant) rather than dynamical regime.
-    Two systems with different parameters but the same qualitative dynamics
-    (same natural frequency ω₀ and quality factor Q) are treated as unrelated.
-    Conversely, two systems at the same parameter values but different energy
-    levels may be in topologically distinct regimes (sub-separatrix vs.
-    beyond-separatrix for a softening potential) and are treated as equivalent.
-
-(3) Topology blindness. Extended Dynamic Mode Decomposition (EDMD) and Koopman
-    operator methods extract spectral invariants from trajectory data but cannot
-    distinguish topologically distinct regimes (e.g., a hardening Duffing
-    oscillator from a softening one). This leads to incorrect invariant transfer
-    between systems that appear similar by spectral metrics but occupy different
-    topological basins.
-
-What is needed is a memory and retrieval system that: (a) indexes solutions by
-dynamical invariants rather than raw parameters; (b) detects and respects
-topological regime boundaries before retrieval; and (c) enables cross-domain
-transfer when dynamical equivalence is established, while rejecting transfer
-when topological inequivalence is detected.
-
-================================================================================
-SUMMARY OF THE INVENTION
-================================================================================
-
-The present invention provides a system and method comprising four novel
-technical contributions:
-
-CONTRIBUTION 1: DOMAIN-INVARIANT DYNAMICAL TRIPLE
-A three-dimensional representation (log_ω₀_norm, log_Q_norm, ζ) that is
-invariant across physical domains. ω₀ is normalized to a domain-specific
-reference frequency (enabling comparison between circuits operating at kHz and
-optimizers operating in step-frequency units), Q is the dimensionless quality
-factor (a true cross-domain invariant), and ζ = 1/(2Q) is the damping ratio.
-This triple enables retrieval of solutions from physically disparate domains
-that share the same dynamical invariant.
-
-CONTRIBUTION 2: ENERGY-CONDITIONED SEPARATRIX RETRIEVAL
-A retrieval gate that conditions memory lookup on energy relative to the
-separatrix energy E_sep = α²/(4|β|) of a softening nonlinear oscillator
-(α > 0, β < 0). When the query system's total energy E₀ satisfies
-E₀/E_sep > threshold (empirically 0.85), the system is flagged as
-near-separatrix and retrieval is suppressed or a floor frequency ω_floor is
-substituted, because EDMD cannot reliably estimate ω₀_eff in this regime.
-The separatrix is defined in energy space, not position space, making the
-detection topologically correct under coordinate transformations.
-
-CONTRIBUTION 3: TOPOLOGY-AWARE MANIFOLD DISCRIMINATION
-A curvature-profile method that discriminates between topologically distinct
-nonlinear oscillator regimes using the Koopman eigenvalue spectrum. For a
-Duffing oscillator with effective natural frequency ω₀_eff(E):
-  - Hardening potential (β > 0): ω₀_eff increases monotonically with energy
-    (curvature profile is flat or positively sloped; no separatrix exists)
-  - Softening potential (β < 0): ω₀_eff decreases toward zero as energy
-    approaches E_sep (curvature profile exhibits a spike toward zero)
-The geometric signature — normalized curvature profile via d(log(ω₀_eff/ω₀))/
-d(log E) binned into a fixed-dimension vector — achieves cosine similarity of
-0.0 between hardening and softening profiles, establishing a hard topological
-boundary in the invariant manifold. The invention detects this boundary and
-rejects cross-regime invariant transfer.
-
-CONTRIBUTION 4: BIFURCATION-AWARE EDMD TRUST METRIC
-For driven nonlinear systems (e.g., forced Duffing oscillator with external
-drive F·cos(Ωt)), the EDMD spectral gap between consecutive eigenvalues
-collapses to approximately zero for all limit-cycle attractors, making spectral
-gap an unreliable periodicity indicator. The present invention uses EDMD
-reconstruction error as the primary trust metric:
-    trust = max(0, 1 - recon_error / η_max)
-where η_max is a calibrated maximum reconstruction error for purely random
-trajectories. Periodic attractors have low reconstruction error (trust ≥ 0.3)
-and are classified as Abelian (commutative Koopman algebra). Chaotic attractors
-have high reconstruction error (trust < 0.3) and are classified as non-Abelian.
-A Poincaré section with orbit-range normalization further classifies the
-period multiplicity (period-1, period-2, period-doubling cascade).
-
-CONTRIBUTION 5: ANALYTIC CRITICAL CLEARING TIME WITH UNIVERSAL DAMPING CORRECTION
-A closed-form method for estimating Critical Clearing Time (CCT) in power grid
-transient stability that replaces iterative RK4 binary search with an analytic
-Equal-Area Criterion (EAC) formula extended by a single universal damping
-correction scalar. For a Single-Machine Infinite Bus (SMIB) swing equation
-M·δ̈ + D·δ̇ = Pₘ − Pₑ·sin(δ), the undamped CCT is computed analytically:
-    CCT_EAC = √(2M·(δc − δs)/Pₘ)
-where δs = arcsin(Pₘ/Pₑ) and cos(δc) = Pₘ(π−2δs)/Pₑ − cos(δs).
-For damped systems (D > 0), a first-order correction is applied:
-    CCT_corrected = CCT_EAC / (1 − a·ζ)
-where ζ = D/(2Mω₀) is the damping ratio and a is a scalar fitted by ordinary
-least squares across all generators and damping levels. The scalar a is
-universal for uniform-loading grids because the product ω₀·CCT_EAC is invariant
-across all generators at fixed loading ratio — a geometric consequence of the
-equal-area constraint, not a fitting artifact. Empirical results on the IEEE
-39-bus New England system (10 generators) demonstrate 57,946× speedup over RK4
-binary search with maximum CCT error of 2.73% across ζ ∈ [0, 0.20]. Leave-2-out
-cross-validation across all C(10,2) = 45 generator subsets confirms a = 1.51 ±
-0.01 (range 2.3%, coefficient of variation 0.66%), establishing universality.
-
-COMBINED SYSTEM: These five contributions are combined in a memory-augmented
-optimization and simulation system that: retrieves candidate solutions from
-cross-domain memory using the domain-invariant triple; gates retrieval by
-energy-conditioned separatrix analysis; rejects topologically incompatible
-transfers using the curvature discriminator; classifies driven-system dynamics
-using the trust metric; and estimates power grid critical clearing times
-analytically with universal damping correction. Empirical results demonstrate
-2708× warm-start speedup vs. cold-start optimization, 3.7× cross-domain
-improvement when transferring solutions from spring-mass mechanical systems to
-RLC electrical circuits, and 57,946× CCT estimation speedup with 2.73% maximum
-error on the IEEE 39-bus benchmark.
-
-================================================================================
-BRIEF DESCRIPTION OF THE DRAWINGS
-================================================================================
-
-Drawings will be submitted with the non-provisional application. The following
-figures are contemplated:
-
-FIG. 1 — Architecture diagram showing the five-component system: domain-
-         invariant encoder, energy-conditioned retrieval gate, topology
-         discriminator, EDMD trust classifier, and analytic CCT estimator.
-
-FIG. 2 — Domain-invariant triple (log_ω₀_norm, log_Q_norm, ζ) for RLC
-         circuits, spring-mass systems, and gradient descent optimizers,
-         showing convergence to a shared manifold.
-
-FIG. 3 — Curvature profiles for hardening Duffing (β > 0) and softening
-         Duffing (β < 0) oscillators, showing cosine similarity = 0.0 as
-         topological discriminator.
-
-FIG. 4 — Energy-conditioned separatrix detection: ω₀_eff as a function of
-         E₀/E_sep, showing the floor-frequency substitution region
-         (E₀/E_sep > 0.85).
-
-FIG. 5 — EDMD trust metric vs. drive amplitude F for the forced Duffing
-         oscillator, showing the periodic-to-chaotic transition.
-
-FIG. 6 — Warm-start speedup plot: cold-start vs. retrieved-start optimization
-         convergence at 750 Hz target, demonstrating the 2708× speedup.
-
-FIG. 7 — Cross-domain transfer: spring-mass system solutions retrieved and
-         transferred to RLC circuits at matched (ω₀, Q) pairs.
-
-FIG. 8 — Poincaré section with orbit-range normalization for period-1, period-2,
-         and chaotic attractors.
-
-FIG. 9 — CCT error vs. damping ratio ζ for IEEE 39-bus (10 generators).
-         Red: raw EAC (D=0 formula). Blue: corrected EAC (a = 1.51).
-         Shaded bands show min/max spread across generators. Dashed
-         horizontal: 5% accuracy gate. Validated envelope: ζ ≤ 0.20.
-
-FIG. 10 — Leave-2-out cross-validation of scalar a across C(10,2) = 45
-          generator subsets. a range = 2.3% confirms universality.
-
-================================================================================
-DETAILED DESCRIPTION OF THE INVENTION
-================================================================================
-
-The following description sets forth specific embodiments of the invention.
-Alternative embodiments and variations will be apparent to those skilled in
-the art of dynamical systems, signal processing, and computational optimization.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 1: DOMAIN-INVARIANT DYNAMICAL TRIPLE
-────────────────────────────────────────────────────────────────────────────────
-
-1.1 Overview
-
-Physical systems governed by second-order linear ordinary differential equations
-of the form:
-
-    m·ẍ + b·ẋ + k·x = 0   (mechanical)
-    L·q̈ + R·q̇ + (1/C)·q = 0   (electrical)
-
-share the same normalized form when parameterized by natural frequency
-ω₀ = √(k/m) = 1/√(LC) and quality factor Q = ω₀·m/b = ω₀·L/R.
-
-Gradient descent with momentum on a quadratic objective f(x) = κx²/2 obeys:
-
-    x_{t+1} = x_t - lr·∇f(x_t) + β·(x_t - x_{t-1})
-
-which is equivalent to a damped oscillator with ω₀ = √(lr·κ) [rad/step] and
-Q = ω₀ / (1 - β) (where β is the momentum coefficient, β ∈ [0, 1)).
-
-1.2 The Domain-Invariant Triple
-
-The invention defines a three-dimensional domain-invariant representation:
-
-    v = (log_ω₀_norm, log_Q_norm, ζ)
-
-where:
-    log_ω₀_norm = log(ω₀ / ω₀_ref(domain))
-    log_Q_norm  = log(Q / 1)   [Q dimensionless, reference Q=1]
-    ζ           = 1 / (2Q)    [damping ratio]
-
-and ω₀_ref(domain) is a domain-specific reference frequency:
-    - Physical systems (RLC, spring-mass): ω₀_ref = 2π × 1000 rad/s (1 kHz)
-    - Gradient descent: ω₀_ref = 1 rad/step
-
-1.3 Retrieval Using the Domain-Invariant Triple
-
-A memory system stores evaluated (parameter, objective_value) pairs indexed by
-their domain-invariant triple. Given a query system in any domain:
-
-    (a) Compute (ω₀_query, Q_query) from domain-specific parameters.
-    (b) Compute v_query = (log(ω₀_query/ω₀_ref), log(Q_query), 1/(2Q_query)).
-    (c) Retrieve k nearest neighbors in triple-space by Euclidean distance.
-    (d) Infer domain-native parameters from retrieved (ω₀_retrieved, Q_retrieved)
-        using the inverse mapping for the target domain.
-    (e) Initialize optimization from retrieved parameter values.
-
-This enables warm-starting an RLC circuit optimization from a previously solved
-spring-mass problem at the same (ω₀, Q) operating point.
-
-1.4 Empirical Results
-
-The method achieves:
-    - 2708× reduction in objective function evaluations for a 750 Hz target
-      frequency retrieval when a nearby prior solution exists in memory.
-    - 3.7× improvement in cross-domain transfer: solutions from spring-mass
-      memory warm-start RLC optimization with convergence improvement factor
-      of 3.7× relative to cold-start RLC optimization.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 2: ENERGY-CONDITIONED SEPARATRIX RETRIEVAL
-────────────────────────────────────────────────────────────────────────────────
-
-2.1 Nonlinear Oscillator Background
-
-A Duffing oscillator with softening potential obeys:
-
-    ẍ + δẋ + αx + βx³ = 0   (unforced, α > 0, β < 0)
-
-The potential energy V(x) = αx²/2 + βx⁴/4 has a local minimum at x=0 and
-saddle points at x = ±√(α/|β|) when β < 0. The separatrix energy is:
-
-    E_sep = α² / (4|β|)
-
-For total mechanical energy E₀ = ẋ²/2 + V(x):
-    - E₀ < E_sep: bounded oscillation in the potential well
-    - E₀ > E_sep: unbounded trajectory (escape from well)
-
-2.2 Energy-Based Regime Detection
-
-The invention computes E₀ from initial conditions and compares to E_sep:
-
-    near_separatrix = (E₀ / E_sep > η_near)   [η_near = 0.85 empirically]
-
-The detection is performed in energy space, not position space, because:
-    (a) Topology is an energy-level concept (connected sublevel sets).
-    (b) Position-based detection fails under coordinate transformations.
-    (c) Energy is invariant under Hamiltonian coordinate changes.
-
-2.3 Retrieval Conditioning
-
-When near_separatrix = True:
-    (a) EDMD cannot reliably fit a Koopman operator because the trajectory
-        spends time near the saddle point where period → ∞.
-    (b) The effective natural frequency ω₀_eff computed from EDMD eigenvalues
-        approaches zero, but this limit is not observable with finite trajectory
-        length.
-    (c) The invention substitutes a floor frequency ω_floor and sets
-        near_separatrix=True in the memory entry.
-    (d) Retrieval queries whose E₀/E_sep > η_near are only matched against
-        entries also flagged near_separatrix=True, preventing incorrect
-        transfer of sub-separatrix solutions to near-separatrix queries.
-
-2.4 Implementation
-
-The retrieval gate is implemented as:
-
-    def retrieve(query, memory):
-        v_query = compute_triple(query)
-        E_ratio = query.E0 / separatrix_energy(query)
-        if E_ratio > ETA_NEAR:
-            candidates = [m for m in memory if m.near_separatrix]
-        else:
-            candidates = [m for m in memory if not m.near_separatrix]
-        return nearest_neighbor(v_query, candidates)
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 3: TOPOLOGY-AWARE MANIFOLD DISCRIMINATION
-────────────────────────────────────────────────────────────────────────────────
-
-3.1 The Curvature Profile
-
-For a nonlinear oscillator, the effective natural frequency ω₀_eff varies with
-amplitude A (or equivalently, with energy E₀). The invention characterizes this
-variation via the curvature profile:
-
-    κ(log_E) = d(log(ω₀_eff / ω₀_linear)) / d(log_E)
-
-where ω₀_linear = √α is the small-oscillation linear frequency.
-
-For a hardening Duffing oscillator (β > 0):
-    - ω₀_eff increases with A: positive curvature, bounded
-    - No separatrix exists; trajectory is always bounded
-    - Curvature profile is approximately flat on log-log scale
-
-For a softening Duffing oscillator (β < 0) below separatrix:
-    - ω₀_eff decreases toward zero as E₀ → E_sep
-    - Curvature profile exhibits a downward spike near E_sep
-    - The spike is a topological signature of separatrix existence
-
-3.2 Geometric Signature
-
-The curvature profile κ(log_E) is binned into n_bins equal intervals over the
-energy range of the trajectory and normalized to unit norm. This produces a
-fixed-length geometric signature vector s ∈ R^n_bins.
-
-Two systems are compared using cosine similarity:
-    sim(s₁, s₂) = s₁ · s₂ / (‖s₁‖ · ‖s₂‖)
-
-Key result: For hardening (flat profile) vs. softening (spiked profile),
-cosine similarity ≈ 0.0. This constitutes topological discrimination — the
-manifold separates qualitatively distinct dynamical regimes.
-
-Degenerate case: If both profiles are flat (both β = 0 or both far from
-separatrix), similarity = 1.0 (profiles are identical up to normalization).
-
-3.3 Bifurcation Approach Detection
-
-The invention further implements a three-criterion bifurcation approach detector:
-
-    (a) Curvature spike: max(|κ|) in recent energy window exceeds threshold
-    (b) Frequency floor: ω₀_eff(E) < ω_floor for multiple consecutive points
-    (c) Unit-circle proximity: the dominant oscillatory EDMD eigenvalue
-        satisfies |λ_dominant| → 1.0 (period doubling precursor)
-
-Criterion (c) uses only the oscillatory eigenvalue with smallest |Im(log λ)|,
-not the full EDMD polynomial eigenvalue set, to avoid false positives from
-non-physical eigenvalue branches introduced by polynomial basis expansion.
-
-3.4 Cross-Domain Restriction
-
-A cross-domain transfer is permitted only when:
-    - The source and target systems share the same topological regime
-      (both sub-separatrix, or both hardening, determined by sign(β) and E₀/E_sep)
-    - The curvature profile similarity exceeds a threshold (empirically 0.7)
-    - The energy log-ratio |log_E_query - log_E_stored| is within a window
-
-When these conditions are not met, the retrieval system returns no result and
-the optimization proceeds cold-start.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 4: BIFURCATION-AWARE EDMD TRUST METRIC
-────────────────────────────────────────────────────────────────────────────────
-
-4.1 Failure Mode of Spectral Gap for Driven Systems
-
-For driven nonlinear systems (forced oscillator: ẍ + δẋ + αx + βx³ = F·cos(Ωt)),
-the system settles to a limit cycle attractor in steady state. The EDMD
-spectral gap — defined as the magnitude difference between the two dominant
-eigenvalues — collapses to approximately zero because all limit-cycle eigenvalues
-lie on or near the unit circle. This makes spectral gap an unreliable classifier
-for distinguishing periodic from chaotic attractors in driven systems.
-
-4.2 Reconstruction-Error Trust Metric
-
-The invention defines trust as a function of EDMD reconstruction error:
-
-    trust = max(0, 1 - recon_error / η_max)
-
-where:
-    - recon_error = ‖Φ(X') - K·Φ(X)‖_F / ‖Φ(X')‖_F
-      (Frobenius-norm relative error of Koopman propagation)
-    - η_max is calibrated on purely random (white noise) trajectories as the
-      maximum expected reconstruction error when no Koopman structure exists
-    - trust ∈ [0, 1], where trust = 1 means perfect Koopman structure
-
-Classification:
-    is_periodic (Abelian) : trust ≥ 0.3
-    is_chaotic             : trust < 0.3
-
-Physical basis: A periodic attractor has a finite-dimensional Koopman invariant
-subspace that the EDMD polynomial basis can span, resulting in low reconstruction
-error. A chaotic attractor has an infinite-dimensional or fractal Koopman
-spectrum that the polynomial basis cannot capture, resulting in high error.
-
-4.3 Period Classification via Poincaré Section
-
-Given classification as periodic, the period multiplicity is determined by a
-Poincaré section with orbit-range normalization:
-
-    (a) Sample state x at t = n · T_drive for n = n_transient, ..., n_total
-        (stroboscopic sampling synchronized to the drive period T_drive)
-    (b) Compute orbit_range = max(x_Poincaré) - min(x_Poincaré)
-    (c) Compute normalized span: span_norm = span / orbit_range
-    (d) Count clusters: period-k identified by k distinct clusters with
-        inter-cluster gaps > 12% of section span
-
-Orbit-range normalization is required because phase drift (when T_drive/dt
-is not an integer) introduces a 1-3% smearing of Poincaré points that would
-otherwise be misclassified as multi-period oscillations.
-
-The invention thereby classifies driven Duffing dynamics as:
-period-1, period-2, period-4 (period-doubling cascade), or chaotic,
-using only trajectory data and without access to the governing equations.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 5: ANALYTIC CRITICAL CLEARING TIME WITH UNIVERSAL DAMPING CORRECTION
-────────────────────────────────────────────────────────────────────────────────
-
-5.1 Problem Statement
-
-Transient stability assessment of a power grid requires determining the Critical
-Clearing Time (CCT) — the maximum fault duration for which a generator maintains
-synchronism after a fault. N-1 contingency screening requires O(G × F) CCT
-computations, where G is the number of generators and F is the number of
-credible faults. The standard reference method — binary search over fault
-duration with 4th-order Runge-Kutta (RK4) integration — requires approximately:
-
-    ~13 binary-search iterations × 3,000 settle-steps × 4 RK4 evaluations
-    ≈ 156,000 ODE evaluations per CCT
-
-This is computationally prohibitive for real-time or near-real-time screening.
-
-5.2 System Model
-
-The Single-Machine Infinite Bus (SMIB) classical swing equation is:
-
-    M · δ̈ + D · δ̇ = Pₘ − Pₑ · sin(δ)
-
-where δ is rotor angle [rad], ω = δ̇ is speed deviation [rad/s], M = 2H/ωs is
-inertia [pu·s²/rad] (H is inertia constant [s], ωs = 2π·60 rad/s), D is damping
-[pu·s/rad], Pₘ is mechanical power [pu], and Pₑ is peak electrical power [pu].
-
-The stable equilibrium is δs = arcsin(Pₘ/Pₑ). The unstable equilibrium is
-δu = π − δs. The separatrix energy (energy barrier to loss of synchronism) is:
-
-    E_sep = 2Pₑ·cos(δs) − Pₘ·(π − 2δs)
-
-This is structurally identical to the separatrix energy α²/(4|β|) of the
-softening Duffing oscillator — both define the energy boundary of the stability
-region in the invariant manifold shared across dynamical domains.
-
-5.3 Equal-Area Criterion (Undamped, Three-Phase Fault)
-
-For a complete three-phase fault (Pₑ → 0 during fault) and zero damping (D=0),
-the equal-area criterion gives the critical clearing angle analytically:
-
-    cos(δc) = Pₘ·(π − 2δs) / Pₑ  −  cos(δs)                 (EAC-1)
-
-The critical clearing time follows from exact integration of M·δ̈ = Pₘ:
-
-    CCT_EAC = √( 2M·(δc − δs) / Pₘ )                          (EAC-2)
-
-This formula requires zero ODE evaluations. It is analytically exact for D = 0
-and a complete three-phase fault.
-
-5.4 Universal Invariant: ω₀ · CCT_EAC
-
-The linearized natural frequency at stable equilibrium is:
-
-    ω₀ = √(Pₑ · cos(δs) / M)
-
-For all generators operating at the same loading ratio Pₑ/Pₘ = 2 (δs = 30°),
-the product:
-
-    ω₀ · CCT_EAC = √(2 · √3 · (δc − δs)) ≈ 1.73              (INV-1)
-
-is a universal constant, independent of M, Pₘ, Pₑ individually. This invariant
-is a consequence of the geometry of the equal-area constraint — the same
-geometric structure that defines the invariant manifold of Contribution 1.
-Equation (INV-1) guarantees that a single scalar correction to CCT_EAC applies
-universally across all generators at the same loading ratio.
-
-5.5 Damping Correction
-
-For D > 0, damping reduces rotor kinetic energy during the fault phase, causing
-the true CCT (reference) to exceed CCT_EAC. The first-order correction is:
-
-    CCT_corrected = CCT_EAC / (1 − a·ζ)                        (CORR-1)
-
-where ζ = D/(2Mω₀) is the damping ratio and a is fitted by ordinary least
-squares (OLS). Defining eᵢ = CCT_EAC,i − CCT_ref,i < 0 and xᵢ = ζᵢ·CCT_ref,i:
-
-    a = −Σ(eᵢ·xᵢ) / Σ(xᵢ²)                                    (OLS-1)
-
-The universality of a follows from (INV-1): since ω₀·CCT_EAC is constant, the
-first-order perturbation slope C = ω₀·CCT_EAC/3 ≈ 0.577 is also constant. The
-fitted a absorbs higher-order terms and is therefore generator-independent.
-
-5.6 Cross-Validation of Universality
-
-To verify that a is a structural property and not a fitting artifact, leave-2-out
-cross-validation is performed across all C(G,2) generator subsets. For each
-split, a is fitted on (G−2) generators and tested on the 2 held-out generators.
-
-On the IEEE 39-bus New England system (G=10, Anderson & Fouad 2003):
-    - a (mean): 1.5109
-    - a (std):  0.0100  (CV = 0.66%)
-    - a (range/mean): 2.3%  (stability gate: < 10%)
-    - Max test error on held-out generators: 2.90%
-
-The near-zero coefficient of variation (0.66%) confirms that a is determined
-by the geometry of the equal-area constraint (Equation INV-1), not by which
-machines appear in the training set.
-
-5.7 Invariant Embedding Distance
-
-The embedding distance of a generator in the domain-invariant triple space
-(log_ω₀_norm, log_Q_norm, ζ) varies by less than 10⁻⁸ across all 10 generators
-at the same ζ — confirming that the triple is generator-independent and that
-the damping correction operates on a geometrically universal quantity.
-
-5.8 Empirical Results — IEEE 39-Bus Benchmark
-
-Reference data: Anderson & Fouad (2003), Table 2.7, 10-generator New England
-equivalent of the IEEE 39-bus system. All generators at Pₑ = 2Pₘ (δs = 30°).
-Damping sweep: ζ ∈ {0.01, 0.03, 0.05, 0.10, 0.20}.
-
-    Undamped (D=0): mean CCT error = 0.8%, mean speedup = 57,946×
-    Corrected (D>0): max CCT error = 2.73% across all 50 (generator, ζ) pairs
-    Validated range: ζ ∈ [0, 0.20], Q ∈ [2, ∞) — full inter-area and local mode range
-
-The corrected formula:
-    CCT_corrected = √(2M·(δc−δs)/Pₘ) / (1 − 1.51·ζ)
-
-requires zero ODE evaluations per machine per contingency.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 6: SYSTEM ARCHITECTURE AND INTEGRATION
-────────────────────────────────────────────────────────────────────────────────
-
-5.1 System Components
-
-The invention is implemented as an integrated computational system comprising:
-
-Component A: Domain Encoder
-    Input: domain-specific parameters (L, R, C for RLC; k, m, b for spring-mass;
-           lr, κ, β for gradient descent; α, β_nl, δ for Duffing oscillator)
-    Output: domain-invariant triple (log_ω₀_norm, log_Q_norm, ζ)
-    Method: domain-specific mapping to (ω₀, Q), followed by normalization
-
-Component B: EDMD Koopman Fitter
-    Input: trajectory data {x(t₀), x(t₁), ..., x(t_N)}
-    Output: Koopman matrix K, eigenvalues {λᵢ}, eigenvectors {φᵢ},
-            reconstruction error, spectral gap
-    Method: Extended Dynamic Mode Decomposition with polynomial observable basis
-            G = Φ(X)·Φ(X)ᵀ, A = Φ(X')·Φ(X)ᵀ, K = G⁺·A
-    Preprocessing: Discard near-zero amplitude tail (amplitude < 3% of peak)
-                   before fitting to avoid fitting to numerical noise
-
-Component C: Energy-Conditioned Retrieval Gate
-    Input: query (ω₀, Q, E₀), memory entries
-    Output: filtered memory candidates
-    Method: Compute E_sep from query parameters; classify query energy regime;
-            filter memory to matching regime before nearest-neighbor retrieval
-
-Component D: Topology Discriminator
-    Input: stored curvature profile, query curvature profile
-    Output: compatibility score ∈ [0, 1]
-    Method: Cosine similarity of geometric signatures; reject if score < 0.7
-
-Component E: Trust Classifier
-    Input: EDMD reconstruction error
-    Output: {is_periodic, is_chaotic, period_multiplicity}
-    Method: Reconstruction-error trust metric + Poincaré section analysis
-
-Component F: Memory Store
-    Structure: List of entries {v, params, E_regime, curvature_signature,
-               trust, near_separatrix, objective_value}
-    Indexed by: domain-invariant triple v for approximate nearest-neighbor search
-    Operations: insert, retrieve_candidates(v_query, regime_filter)
-
-5.2 Optimization Workflow
-
-Given a new optimization target in domain D with target (ω₀_target, Q_target):
-
-    Step 1: Compute v_query from (ω₀_target, Q_target, domain=D)
-    Step 2: Run energy estimation on representative initial condition
-    Step 3: Apply retrieval gate (Components C, D) to get candidates
-    Step 4: If candidates exist:
-               Infer domain-D native parameters from best candidate
-               Initialize optimizer at inferred parameters
-            Else:
-               Initialize optimizer at domain-D default (cold start)
-    Step 5: Run local optimization; evaluate objective
-    Step 6: Fit EDMD on resulting trajectory (Component B)
-    Step 7: Classify dynamics (Component E)
-    Step 8: Store result in Memory (Component F) with domain-invariant triple
-
-5.3 Multi-Objective Extension
-
-The domain-invariant triple naturally extends to multi-objective optimization
-over (ω₀, Q) simultaneously:
-
-    Objective: J = w_freq · |ω₀_achieved - ω₀_target| / ω₀_target
-                 + w_Q   · |Q_achieved  - Q_target|  / Q_target
-
-Memory entries store the 2D operating point (ω₀, Q) and retrieval is by
-Euclidean distance in the 2D (log_ω₀_norm, log_Q_norm) subspace.
-
-Spearman rank correlation of retrieved-solution quality vs. memory distance
-achieves ρ ≥ 0.9 for both RLC and spring-mass domains across Q ∈ {0.5, 1, 2, 5}.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 7: ALTERNATIVE EMBODIMENTS
-────────────────────────────────────────────────────────────────────────────────
-
-7.1 Alternative Basis Functions for EDMD
-The polynomial observable basis can be replaced with radial basis functions,
-Fourier modes, or neural network embeddings (Deep EDMD) without departing from
-the scope of the invention. The trust metric and reconstruction-error formulation
-apply to any EDMD variant.
-
-7.2 Alternative Distance Metrics
-The domain-invariant triple can be indexed using any metric supporting
-approximate nearest-neighbor search: cosine distance, Mahalanobis distance
-with learned covariance, or graph-based indices (HNSW, FAISS). The energy-
-conditioning gate applies regardless of the chosen metric.
-
-7.3 Non-Duffing Nonlinear Oscillators
-The energy-conditioned separatrix detection applies to any potential V(x) with
-a local maximum. The separatrix energy E_sep generalizes to the saddle-point
-potential energy. For van der Pol oscillators, limit-cycle energy replaces E_sep
-as the conditioning quantity.
-
-7.4 Discrete-Time Systems
-The domain-invariant triple applies to discrete-time dynamical systems by
-interpreting ω₀ as frequency in [rad/step] rather than [rad/s]. The trust
-metric applies without modification to EDMD fitted to discrete-time trajectories.
-
-7.5 Higher-Dimensional Systems
-The curvature profile generalizes to multi-dimensional systems by tracking
-the dominant Koopman eigenvalue frequency as a function of energy in the
-dominant mode direction. The geometric signature remains a 1D profile
-parameterized by energy level.
-
-7.6 Neural Network Koopman Approximation
-The EDMD Koopman matrix K can be approximated by a neural network trained
-to minimize reconstruction error. The trust metric — reconstruction error
-relative to random-noise baseline — applies directly to the neural
-approximation.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 8: DOMAIN APPLICABILITY — THE UNIVERSAL GEOMETRIC PATTERN
-────────────────────────────────────────────────────────────────────────────────
-
-8.1 The Unifying Mathematical Structure
-
-All domains covered by this invention share the same normalized governing
-equation. Any physical, computational, or biological system that can be
-characterized — exactly or approximately — by a second-order ordinary
-differential equation:
-
-    M·ẍ + D·ẋ + K·x = F(t)                                     (GEN-1)
-
-or its discrete-time equivalent, is characterizable by the domain-invariant
-triple (ω₀, Q, ζ) where ω₀ = √(K/M), Q = Mω₀/D, ζ = 1/(2Q).
-
-The invention's methods — domain-invariant indexing, energy-conditioned
-retrieval, topology discrimination, EDMD trust classification, and universal
-correction scalar fitting — apply to any system of this form, regardless of
-the physical interpretation of the variables x, M, D, K.
-
-The core IP claim: the geometric structure of the invariant manifold
-(log_ω₀_norm, log_Q_norm, ζ) is universal. Any domain-specific quantity
-whose characteristic time T_char satisfies the universality condition:
-
-    ω₀ · T_char = f(loading_ratio_only)                         (UNI-1)
-
-admits a loading-class-specific scalar correction a such that:
-
-    T_corrected = T_analytic / (1 − a·ζ)                        (UNI-2)
-
-where a is invariant across all instances within the same loading class.
-This is the geometric fingerprint of the equal-area / separatrix structure
-in the invariant manifold.
-
-8.2 Validated Domains
-
-The following domains have been explicitly validated in this invention:
-
-    Domain 1 — RLC Electrical Circuits
-    Parameters: L (inductance), R (resistance), C (capacitance)
-    ω₀ = 1/√(LC), Q = ω₀L/R
-    Application: cross-domain warm-start retrieval (2708× speedup validated)
-
-    Domain 2 — Spring-Mass-Damper Mechanical Systems
-    Parameters: k (stiffness), m (mass), b (damping coefficient)
-    ω₀ = √(k/m), Q = mω₀/b
-    Application: cross-domain source for RLC retrieval (3.7× improvement)
-
-    Domain 3 — Gradient Descent with Momentum
-    Parameters: lr (learning rate), κ (curvature), β (momentum coefficient)
-    ω₀ = √(lr·κ) [rad/step], Q = ω₀/(1−β)
-    Application: optimizer regime indexing; stability gate (ω₀² < 2(1+β)·0.95)
-
-    Domain 4 — Duffing Oscillator (Hardening and Softening)
-    Parameters: α (linear stiffness), β (cubic coefficient), δ (damping)
-    ω₀_linear = √α, Q = √α/δ; E_sep = α²/(4|β|) for β < 0
-    Application: topology discrimination, separatrix gate, bifurcation detection
-
-    Domain 5 — Power Grid SMIB (Transient Stability)
-    Parameters: M (inertia), D (damping), Pₘ (mechanical), Pₑ (electrical)
-    ω₀ = √(Pₑcos(δs)/M), Q = Mω₀/D; E_sep = 2Pₑcos(δs) − Pₘ(π−2δs)
-    Application: CCT estimation — 57,946× speedup, 2.73% max error validated
-
-8.3 Claimed Domains by Analogy
-
-The following domains are claimed as embodiments of the invention by direct
-mathematical analogy to GEN-1. For each, the domain-invariant triple (ω₀, Q)
-is identified and the applicable inventive contribution is stated.
-
-    Domain 6 — Superconducting Quantum Circuits (Transmon Qubits)
-    Governing equation: the Josephson junction circuit is governed by:
-        C·φ̈ + (1/R)·φ̇ + Ic·sin(φ) = I_ext
-    where φ is the superconducting phase. This is exactly the SMIB swing
-    equation under the substitution δ → φ, Pₘ → I_ext, Pₑ → Ic. The
-    cosine potential creates a separatrix at the junction critical current.
-    The Kerr nonlinearity of a transmon qubit is the β < 0 Duffing term.
-    ω₀ = √(Ic/C·ħ/2e) (plasma frequency), Q = ω₀·C·R.
-    Applicable contributions: Contributions 2, 3, 5 (energy-conditioned gate,
-    topology discrimination, universal characteristic-time correction).
-    The escape time from the superconducting state (switching time) is the
-    quantum analog of CCT and admits the universal correction (UNI-2).
-
-    Domain 7 — Phase-Locked Loops (PLLs)
-    A second-order charge-pump PLL with loop filter has:
-        φ̈ + (Kd·Kv·τ₂/τ₁)·φ̇ + (Kd·Kv/τ₁)·φ = ω_ref
-    where Kd is detector gain, Kv is VCO gain, τ₁, τ₂ are filter constants.
-    ω₀ = √(Kd·Kv/τ₁), Q = ω₀·τ₁/(1 + Kd·Kv·τ₂).
-    Lock acquisition time T_lock is the PLL analog of CCT. When ω₀·T_lock is
-    loop-bandwidth-determined (fixed ω₀/ω_ref ratio), the universal correction
-    (UNI-2) applies for damping ζ in the PLL's operating range.
-    Applicable contributions: Contributions 1, 5.
-
-    Domain 8 — Structural / Civil Engineering (Seismic Response)
-    A single-degree-of-freedom building model under seismic excitation obeys:
-        m·ẍ + c·ẋ + k·x = −m·ẍ_ground
-    This is GEN-1 with F = −m·ẍ_ground. ω₀ = √(k/m) (natural frequency),
-    Q = mω₀/c. The collapse capacity ratio (CCR) — maximum ground motion
-    intensity before structural collapse — is structurally identical to CCT.
-    At fixed ductility ratio (loading ratio equivalent), ω₀·T_collapse is
-    approximately constant across structures, admitting the universal correction.
-    Applicable contributions: Contributions 1, 5.
-
-    Domain 9 — Nuclear Reactor Point Kinetics (Prompt Criticality)
-    The one-group point kinetics equation with a single delayed neutron group:
-        (1/v)·dφ/dt = (k−1)·φ/L + λ·C
-        dC/dt = β·k·φ/L − λ·C
-    near steady state linearizes to a second-order system with:
-        ω₀² ≈ λ·(k−1)/L (for k near 1), Q ≈ ω₀·L/β·v
-    The scram time (time to shut down on a reactivity transient) is the
-    nuclear analog of CCT. Applicable contributions: Contributions 1, 5.
-
-    Domain 10 — Acoustic Resonators (Loudspeakers, Microphones, MEMS)
-    An electrodynamic loudspeaker moving mass obeys:
-        Mₘₛ·ẍ + Rₘₛ·ẋ + (1/Cₘₛ)·x = Bl·i
-    where Mₘₛ, Rₘₛ, Cₘₛ are mechanical mass, resistance, compliance; Bl is
-    the force factor; i is coil current.
-    ω₀ = 1/√(Mₘₛ·Cₘₛ) (resonance frequency), Q = Mₘₛ·ω₀/Rₘₛ.
-    MEMS gyroscopes and accelerometers are spring-mass systems at microscale
-    with identical mathematical form (Q = 10³–10⁶ typical).
-    Applicable contributions: Contributions 1, 2, 3.
-
-    Domain 11 — Laser Cavities and Optical Resonators
-    A laser cavity with gain saturation near threshold obeys a rate equation
-    system linearizable to GEN-1 around steady-state photon density:
-        ω₀² ≈ g₀·(1/τₚ·τₑ), Q ≈ ω₀·τₑ
-    where g₀ is small-signal gain, τₚ photon lifetime, τₑ carrier lifetime.
-    The relaxation oscillation frequency is ω₀; damping ratio ζ ≈ 1/(2Q).
-    Turn-on delay (time to reach threshold photon density from injection) is
-    the laser analog of CCT. Applicable contributions: Contributions 1, 5.
-
-    Domain 12 — RF / Antenna Resonators and Tank Circuits
-    Any parallel or series RLC tank circuit in RF systems:
-        ω₀ = 1/√(LC), Q = R·√(C/L) (parallel), Q = (1/R)·√(L/C) (series)
-    Transmitter frequency stabilization, impedance matching networks, and
-    crystal oscillators (Q = 10⁴–10⁶) are embodiments.
-    Applicable contributions: Contributions 1, 3, 4.
-
-    Domain 13 — Thermodynamic / Thermal Systems
-    A two-body thermal system (e.g., building HVAC, heat exchanger):
-        C_th·dT/dt = (T_env − T)/R_th + P_heater
-    Second-order thermal systems (two-zone models) obey GEN-1 with:
-        ω₀ = 1/√(C₁·C₂·R₁·R₂), Q = ω₀·√(C₁·C₂)/(1/R₁ + 1/R₂)
-    The thermal settling time (time to reach setpoint from disturbance) is
-    the thermal analog of T_char. Applicable contributions: Contributions 1, 5.
-
-    Domain 14 — Biological Neural Oscillators
-    The Hodgkin-Huxley model linearized around resting potential is:
-        Cm·dV/dt ≈ −gL·V − gNa·m∞(V)·V − gK·n∞(V)·V + I_ext
-    which at the subthreshold regime reduces to GEN-1 with effective:
-        ω₀ ≈ √(gNa·gK/Cm²), Q ≈ Cm·ω₀/gL
-    Firing threshold crossing time (interspike interval) is the neural analog
-    of CCT. Applicable contributions: Contributions 1, 2, 5.
-
-    Domain 15 — Economic and Business Cycle Oscillators
-    The Samuelson-Hicks multiplier-accelerator model and its extensions obey:
-        Ÿ + (s − α)·Ẏ + s·Y = G
-    where Y is output, s is the marginal propensity to save, α is the
-    accelerator coefficient. ω₀ = √(s), Q = s/(s−α) for α < s.
-    The recession depth and recovery time are business-cycle analogs of CCT.
-    Applicable contributions: Contributions 1, 5 (universality of recovery
-    time correction when ω₀·T_recovery is savings-rate-determined).
-
-    Domain 16 — Railway Vehicle Hunting Oscillations
-    Lateral hunting of a railway bogie obeys:
-        m·ÿ + b·ẏ + (kψ/R²)·y = 0
-    where m is bogie mass, b is lateral damping, kψ is yaw stiffness, R is
-    wheel conicity radius. ω₀ = √(kψ/(m·R²)), Q = m·ω₀/b.
-    Critical speed (speed above which hunting becomes unstable) is structurally
-    equivalent to a CCT threshold. Applicable contributions: Contributions 1, 5.
-
-    Domain 17 — Transmission Lines (Distributed RLC)
-    A finite transmission line segment (telegrapher's equations) reduces to
-    a lumped RLC model for wavelength >> segment length:
-        L'·C'·Ÿ + R'·C'·Ẏ + Y = Y_source
-    ω₀ = 1/√(L'C'), Q = √(L'/C')/R'. Signal propagation delay (time for
-    step to traverse line within tolerance) is the transmission analog of CCT.
-    Applicable contributions: Contributions 1, 5.
-
-    Domain 18 — Gyroscope Precession Dynamics
-    A gyroscope with rotor spin angular momentum H and applied torque τ:
-        I·θ̈ + b·θ̇ + (H²/I)·θ = τ
-    ω₀ = H/I (precession frequency), Q = ω₀·I/b.
-    Settling time after angular disturbance is the gyroscope analog of CCT.
-    Applicable contributions: Contributions 1, 2.
-
-8.4 The Universal Correction Principle (Domain-Agnostic Claim)
-
-For any system in any domain satisfying GEN-1 with a characteristic time
-T_char(params, loading) that obeys universality condition (UNI-1):
-
-    STEP 1: Compute T_analytic using the undamped (D=0) analytic formula
-            applicable to that domain.
-    STEP 2: Compute ζ = D/(2Mω₀) from domain parameters.
-    STEP 3: Apply correction: T_corrected = T_analytic / (1 − a·ζ)
-    STEP 4: Fit a once per loading class by OLS across representative
-            instances; verify universality by cross-validation.
-
-This procedure is claimed for all domains listed in Sections 8.2, 8.3, and 9,
-and for any future domain where universality condition (UNI-1) holds.
-
-8.5 Nonlinear Extension of the Domain-Invariant Triple
-
-For nonlinear systems where K and D are state-dependent, the domain-invariant
-triple is generalized as follows:
-
-(a) EDMD-extracted triple: ω₀_eff and Q_eff are computed from the dominant
-    Koopman eigenvalue pair extracted from trajectory data, as specified in
-    Claim 20. This is valid for any nonlinear system admitting a finite-
-    dimensional Koopman invariant subspace (periodic and quasi-periodic attractors).
-
-(b) Energy-parameterized triple: For systems with a known potential V(x),
-    ω₀_eff(E) = sqrt(V''(x_eq(E)) / M_eff(E)) varies with energy E. The
-    triple is evaluated at the operating energy level and the energy-conditioned
-    gate (Contribution 2) partitions the nonlinear state space into distinct
-    retrieval regimes separated by the separatrix.
-
-(c) Linearized triple at equilibrium: ω₀ = sqrt(K(x_eq)/M), Q = M·ω₀/D(x_eq,0)
-    evaluated at the stable equilibrium x_eq provides a first-order index valid
-    for small-to-moderate deviations. The curvature profile (Contribution 3)
-    quantifies the energy range over which this linearization remains accurate.
-
-The invention thereby covers the full spectrum from weakly nonlinear systems
-(where the linearized triple suffices) to strongly nonlinear systems near
-bifurcation or separatrix crossing (where the energy-conditioned gate and
-topology discriminator are essential). All three nonlinear extension modes are
-implemented and claimed in Claims 1–29.
-
-────────────────────────────────────────────────────────────────────────────────
-SECTION 9: EXTENDED DOMAIN APPLICABILITY
-────────────────────────────────────────────────────────────────────────────────
-
-The inventive methods of Contributions 1–5 apply to any domain in which a
-dynamical regime can be characterized by a frequency-like scale ω₀, a
-dissipation-like ratio Q (or ζ = 1/(2Q)), and a topological energy boundary
-(separatrix or stability limit). This section enumerates additional domains
-organized by field. For each domain, the role of ω₀, Q, T_char, and the
-applicable inventive contribution are identified.
-
-────────────────────────────────
-9.A COMPUTATIONAL SCIENCE AND PHYSICS-INFORMED AI
-────────────────────────────────
-
-9.A.1 Nonlinear PDE Solving and Physics-Informed Neural Networks (PINNs)
-PINNs embed a PDE residual into a neural network loss and minimize over a
-collocation grid. The loss landscape near a trained solution is governed by
-the PDE's spectral structure: the dominant eigenvalue of the linearized
-residual operator defines an effective ω₀, and the ratio of dominant to
-subdominant eigenvalues defines an effective Q. The invention's domain-invariant
-triple indexes PINN training regimes; the energy-conditioned gate identifies when
-residual energy exceeds a stability threshold (separatrix analog in loss space);
-and the EDMD trust metric classifies whether training has converged to a periodic
-attractor (limit cycle in gradient flow) or is chaotic (stochastic gradient noise
-dominated). The universal correction (UNI-2) applies to convergence time
-estimates: T_convergence = T_analytic_linear / (1 − a·ζ_eff) where ζ_eff is the
-effective damping ratio of the gradient flow around the solution manifold.
-
-9.A.2 Neural Operators for Parametric PDE Families
-Neural operators (DeepONet, Fourier Neural Operator) learn mappings from PDE
-parameters to solution fields. For a parametric family sharing the same operator
-topology (same differential order, same boundary condition type, same coupling
-structure), solutions share a dominant frequency ω₀(parameters) and quality
-factor Q(parameters). The invention indexes neural operator regimes by the
-domain-invariant triple of the PDE's linearized spectral profile; retrieves
-stored operator weights from a nearby regime as warm initialization; and applies
-the topology discriminator (Contribution 3) to reject initialization from
-topologically distinct operator classes (e.g., elliptic vs. parabolic PDE).
-
-9.A.3 Surrogate Modeling for CFD and Finite Element Analysis (FEA)
-Computational fluid dynamics and structural FEA models have dominant resonant
-modes (ω₀ = structural natural frequency; Q = modal quality factor). The
-invention stores prior simulation results indexed by the modal triple and
-retrieves warm-start basis vectors (POD modes, reduced basis) for a new
-simulation in the same dynamical regime. The energy-conditioned gate identifies
-when the query operating point is near a flutter or buckling bifurcation
-(separatrix analog in parameter space), preventing incorrect basis transfer.
-T_char = simulation wall-clock time to convergence; the universal correction
-applies when ω₀·T_converge is mesh-resolution-determined.
-
-9.A.4 Turbulence Closure Modeling
-Turbulent flows exhibit a cascade of eddy structures with characteristic
-frequencies ω₀(k) at wavenumber k and effective quality factors Q(k) = ω₀(k)/
-γ(k) where γ(k) is the eddy decay rate. The Koopman EDMD decomposition
-(Contribution 4) extracts dominant turbulent modes; the trust metric classifies
-whether the flow is in an organized (low-dimensional Koopman) or chaotic regime.
-The universal correction applies to large-eddy simulation subgrid closure: the
-subgrid stress tensor correction scales as 1/(1 − a·ζ_subgrid) where ζ_subgrid
-is the damping ratio of the subgrid model.
-
-9.A.5 Inverse Parameter Identification
-Inverse problems (parameter estimation from observations) reduce to minimization
-of a residual over parameter space. The gradient flow of the residual near the
-true parameter is a damped oscillator with ω₀ = √(λ_min(∇²J)) and Q inversely
-proportional to the condition number. The invention retrieves warm-start parameter
-estimates from memory entries at nearby (ω₀, Q) operating points, accelerating
-convergence. The topology discriminator rejects retrieval when the query
-parameter space has a different separatrix structure (multimodal posteriors).
-
-9.A.6 Chaotic System Prediction
-Directly covered by Contribution 4 (EDMD trust metric) and Contribution 3
-(curvature profile bifurcation approach). Extended application: for any
-observable time series from an unknown system, the invention classifies the
-generating system as periodic, quasi-periodic, or chaotic using Koopman
-reconstruction error, without access to the governing equations. Short-term
-prediction is achievable in the Abelian (low-chaos) regime; long-term prediction
-fails gracefully in the chaotic regime (trust < threshold) with explicit
-uncertainty quantification.
-
-9.A.7 Multi-Scale Physical Simulation Acceleration
-Multi-scale systems (molecular dynamics + continuum, micro + macro-structural)
-operate at multiple ω₀ scales. The invention stores Koopman representations at
-each scale indexed by the domain-invariant triple and retrieves compatible
-fine-scale solutions given a coarse-scale regime query. The energy-conditioned
-gate identifies when scales are coupled (near-separatrix in scale coupling
-energy), preventing inappropriate single-scale retrieval. T_char is the fine-
-scale integration time per coarse timestep; universal correction applies when
-ω₀_fine·T_fine is ratio-of-scales determined.
-
-9.A.8 Quantum System Approximation
-Extended from Claim 11. Beyond Josephson junctions, applies to:
-(a) Quantum harmonic oscillator arrays (ion traps, optical lattices): ω₀ from
-    trap frequency, Q from motional coherence time, T_char = thermalization time.
-(b) Quantum annealing: the transverse field Ising model near the phase transition
-    is a softening Duffing analog (β < 0, separatrix = gap closing point). The
-    annealing time T_anneal ~ 1/gap² is the CCT analog; universal correction
-    applies when the gap closing rate is loading-class-determined.
-(c) Variational quantum eigensolvers (VQE): gradient flow on the variational
-    manifold has ω₀ from the Hessian spectrum and Q from measurement noise;
-    the invention warm-starts VQE from memory of nearby Hamiltonians.
-
-9.A.9 Materials Discovery and Lattice Property Prediction
-Crystal lattice vibrations (phonons) are characterized by a phonon dispersion
-relation ω(k) and phonon lifetimes τ(k) = Q(k)/ω(k). The domain-invariant triple
-at each wavevector k indexes phonon regimes. The invention retrieves Koopman
-representations of lattice dynamics from memory of structurally similar materials
-(same space group symmetry, similar force constants → similar ω₀/Q topology),
-enabling rapid phonon band structure prediction without full DFT calculation.
-The energy-conditioned gate identifies phonon instabilities (imaginary frequency
-modes = β < 0 Duffing, separatrix = phase transition energy).
-
-9.A.10 Semiconductor Device Modeling
-Carrier transport in semiconductor devices is governed by drift-diffusion
-equations that in the small-signal regime reduce to GEN-1:
-    Cg·V̈ + (1/Rds)·V̇ + (1/Ls)·V = I_gate
-where Cg is gate capacitance, Rds drain-source resistance, Ls parasitic
-inductance. ω₀ = 1/√(Cg·Ls), Q = Rds/√(Ls/Cg). The invention retrieves
-device operating point warm-starts from memory indexed by (ω₀, Q); topology
-discriminator identifies punch-through or avalanche breakdown bifurcations
-(separatrix in carrier density space).
-
-9.A.11 Electromagnetic Field Approximation
-Maxwell's wave equation in a resonant cavity:
-    ε₀·Ë + σ·Ė + (1/μ₀)·∇²E = J_source
-reduces to GEN-1 with ω₀ = c/√(με)·(mπ/L) for mode (m) in a cavity of length L,
-and Q = ω₀·ε₀/σ. The invention retrieves cavity mode Koopman representations
-from memory indexed by (ω₀, Q) for rapid field approximation across geometries.
-
-9.A.12 Circuit Nonlinear Component Modeling
-Nonlinear circuit elements (varactor diodes, Josephson junctions, memristors)
-introduce β ≠ 0 terms into GEN-1, creating Duffing-type dynamics. The topology
-discriminator (Contribution 3) classifies hardening (β > 0, e.g., saturable
-inductor) vs. softening (β < 0, e.g., tunnel diode) nonlinearities. The energy-
-conditioned gate identifies when the operating point approaches the nonlinear
-region (E₀/E_sep > 0.85), preventing incorrect linear-regime retrieval.
-
-────────────────────────────────
-9.B ENERGY, POWER, AND INDUSTRIAL SYSTEMS
-────────────────────────────────
-
-9.B.1 Smart Grid Optimization
-Extension of Contribution 5. Multi-machine power systems with center-of-inertia
-corrections: each generator's SMIB representation is indexed by its domain-
-invariant triple; the invention identifies inter-area oscillation modes by
-clustering generators with similar (ω₀, Q) in triple-space. Universal correction
-parameter a is fitted per inter-area mode class (loading ratio class). T_char =
-inter-area oscillation damping time (time for a contingency disturbance to damp
-to ±5% of steady state).
-
-9.B.2 Renewable Energy Output Forecasting
-Wind turbine mechanical output obeys GEN-1 as a torsional oscillator:
-    J·Ω̈ + b·Ω̇ + k·Ω = τ_wind
-where J is rotor inertia, b is damping, k is drivetrain stiffness, τ_wind is
-wind torque. ω₀ = √(k/J), Q = Jω₀/b. Solar irradiance has dominant harmonic
-at ω₀ = 2π/24h (diurnal) with seasonal amplitude modulation. The invention
-indexes forecast regimes by (ω₀, Q, ζ) and retrieves stored production profiles;
-topology discriminator identifies intermittency regime shifts (β-change events).
-
-9.B.3 Battery Degradation Modeling
-The Randles circuit model of a battery cell is:
-    L·İ + (R_s + R_ct)·I + V_c = V_OCV − V_terminal
-where R_ct, C_dl (charge-transfer resistance, double-layer capacitance) form an
-RC circuit with ω₀ = 1/√(L·C_dl), Q = ω₀·C_dl·R_ct. Degradation shifts (ω₀, Q)
-over charge cycles; the invention tracks this shift in triple-space as a
-degradation trajectory. The energy-conditioned gate identifies when the cell
-approaches lithium plating or thermal runaway (separatrix in electrochemical
-energy space). T_char = time to reach end-of-life capacity threshold.
-
-9.B.4 Predictive Maintenance for Industrial Systems
-Rotating machinery (bearings, gears, motors) exhibits resonances at ω₀
-(bearing race frequency, gear mesh frequency) with Q determined by lubrication
-and structural damping. Incipient faults shift ω₀ and reduce Q. The invention
-indexes healthy-state Koopman representations in triple-space; fault detection
-is triggered when the live (ω₀, Q) deviates beyond a retrieval threshold from
-the nearest healthy memory entry. The topology discriminator identifies
-qualitative fault type changes (crack initiation = new β < 0 term in GEN-1).
-
-9.B.5 Digital Twin Industrial Modeling
-A digital twin mirrors a physical asset's dynamical state. The invention provides
-the indexing infrastructure: each physical operating regime is a memory entry
-(ω₀, Q, trust, curvature_profile); the twin retrieves the matching entry and
-uses stored Koopman eigenfunctions as a reduced-order model. Regime transitions
-(startup, shutdown, fault) are flagged by the topology discriminator and trust
-metric. Universal correction: T_char = time to synchronize twin state to physical
-state after a disturbance.
-
-9.B.6 Oil and Gas Reservoir Modeling
-Pressure transient analysis in porous media (diffusivity equation) admits a
-second-order telegraph approximation at high frequencies:
-    (ρ·c/κ)·p̈ + (1/κ)·ṗ − ∇²p = q_source
-with ω₀ = √(κ·c)/L (reservoir diffusion frequency), Q inversely proportional
-to viscous dissipation. The invention indexes pressure transient regimes by
-(ω₀, Q); retrieves stored decline curve models from nearby reservoir types;
-applies universal correction to well productivity index (CCT analog = time to
-pseudosteady state).
-
-────────────────────────────────
-9.C ENGINEERING, AEROSPACE, AND TRANSPORTATION
-────────────────────────────────
-
-9.C.1 Structural Health Monitoring
-Extension of Claim 13. Structural modes (beams, plates, shells, bridges) shift
-ω₀ downward and Q decreases as damage accumulates (stiffness reduction, damping
-increase). The invention provides a baseline Koopman memory indexed by healthy
-modal triples; continuous monitoring detects deviation from baseline in triple-
-space. The curvature profile detects onset of nonlinear behavior (crack breathing
-= β-type nonlinearity). T_char = remaining useful life; universal correction
-applies when ω₀·T_RUL is fatigue-loading-class-determined.
-
-9.C.2 Autonomous Robotics Control
-Robot joint dynamics (series elastic actuator, flexible link):
-    I·θ̈ + b·θ̇ + k·θ = τ_motor
-obey GEN-1 with ω₀ = √(k/I), Q = Iω₀/b. The invention indexes joint control
-regimes and retrieves warm-start PID/impedance controller gains from memory at
-nearby (ω₀, Q) operating points (load-dependent ω₀). Multi-joint systems are
-indexed by their dominant mode triple; the topology discriminator prevents
-coupling of modes in different stability regimes.
-
-9.C.3 Multi-Agent Robotic Coordination
-N coupled robots with elastic interconnections obey a network of GEN-1 equations:
-    Mᵢ·ẍᵢ + Dᵢ·ẋᵢ + Σⱼ Kᵢⱼ·(xᵢ − xⱼ) = Fᵢ
-The network's collective modes have frequencies ω₀,k = √(λk/Meff) where λk is
-the kth Laplacian eigenvalue. The invention indexes collective modes by
-(ω₀,k, Qk); the topology discriminator identifies synchronization vs.
-desynchronization regimes (separatrix in coupling energy space). T_char =
-synchronization time; universal correction applies per coupling-topology class.
-
-9.C.4 Aerospace Trajectory Optimization
-Orbital mechanics near circular orbit reduces to the Clohessy-Wiltshire equations:
-    ẍ − 2n·ẏ − 3n²·x = Fx/m
-    ÿ + 2n·ẋ = Fy/m
-The in-plane oscillation frequency ω₀ = n (mean motion), Q determined by
-atmospheric drag. Transfer trajectory time (CCT analog = time to reach target
-orbit) admits the universal correction when ω₀·T_transfer is orbit-ratio-
-determined. The invention retrieves warm-start maneuver sequences from memory
-indexed by (n, Q_drag).
-
-9.C.5 Smart City Traffic Modeling and Transportation Networks
-Macroscopic traffic flow (Lighthill-Whitham-Richards model) supports kinematic
-waves with ω₀ = √(∂F/∂k·∂²F/∂k²) (speed of wave propagation × curvature of
-flow-density curve), Q from traffic damping. Stop-and-go oscillations are a
-nonlinear Duffing-type phenomenon (traffic flow softening at jam density).
-The invention detects approach to traffic breakdown (separatrix = capacity drop)
-using the energy-conditioned gate; T_char = clearance time for incident.
-
-9.C.6 Materials Stress and Fatigue Failure Forecasting
-Cyclic fatigue loading at frequency ω₀ with amplitude-dependent damage:
-    Ṅ_fail = C·(ΔK/K_Ic)^m·ω₀
-where ΔK is stress intensity range and K_Ic is fracture toughness. This maps to
-GEN-1 near resonance. The energy-conditioned gate identifies when the stress
-intensity ratio ΔK/K_Ic exceeds the separatrix threshold. T_char = cycles to
-failure (CCT analog); universal correction applies per material-class loading ratio.
-
-────────────────────────────────
-9.D ENVIRONMENTAL, CLIMATE, AND EARTH SYSTEMS
-────────────────────────────────
-
-9.D.1 Climate Simulation Acceleration
-General circulation models (GCMs) solve coupled PDE systems for atmosphere,
-ocean, and land. Dominant modes (planetary waves, ENSO, AMO) have characteristic
-ω₀ (annual, decadal) and Q (inter-annual persistence). The invention indexes
-climate mode regimes in triple-space; regime-memory reuse provides warm-start
-basis vectors for model initialization; topology discriminator identifies
-abrupt regime transitions (tipping points = separatrix crossing in energy space).
-
-9.D.2 Weather Forecasting
-Numerical weather prediction solves the primitive equations (PDE system). Dominant
-synoptic-scale eddies have ω₀ ≈ 2π/5 days, Q from baroclinic growth rate.
-The invention retrieves stored Koopman mode decompositions from memory at
-matching (ω₀, Q) for rapid forecast initialization. Universal correction: T_char
-= forecast skill horizon; universal correction applies per atmospheric regime class
-(blocking, cyclone, anticyclone loading classes).
-
-9.D.3 Flood and Hydraulic Prediction
-Saint-Venant equations for open channel flow:
-    ∂A/∂t + ∂Q/∂x = 0
-    ∂Q/∂t + ∂(Q²/A)/∂x + gA·∂h/∂x + gA·(Sf − S₀) = 0
-linearized around steady flow yield a wave equation with ω₀ = c/L (celerity/
-channel length), Q from friction slope Sf. T_char = peak flow arrival time
-(flood CCT analog); universal correction applies per catchment loading class.
-
-9.D.4 Wildfire Prediction
-Reaction-diffusion PDE for fire spread:
-    ∂T/∂t = D·∇²T − λ·T + S·exp(−Ea/RT)
-near the ignition threshold reduces to GEN-1 with ω₀ from the linearized
-reaction rate (Damköhler frequency), Q from the ratio of diffusion to reaction
-timescales. T_char = time to fire perimeter escape (CCT analog = energy to exceed
-containment). The energy-conditioned gate identifies near-critical fire conditions.
-
-9.D.5 Ocean Current Modeling
-Geostrophic and quasi-geostrophic ocean dynamics support Rossby waves:
-    ∂q/∂t + J(ψ, q + βy) = F − r·q
-with ω₀ = β·k/(k² + l² + f²/N²H²), Q from dissipation rate r. The invention
-indexes ocean regime Koopman representations; retrieves warm-start basis for
-mesoscale eddy prediction; topology discriminator identifies eddy merging events
-(separatrix in potential vorticity space).
-
-9.D.6 Agricultural Yield Prediction
-Crop growth dynamics (logistic + seasonal forcing):
-    ẋ = r·x·(1 − x/K) + A·cos(ω₀t)·x
-where ω₀ = 2π/365 days (annual), Q from weather variability damping. The
-invention indexes crop growth regimes by dominant ω₀ and Q (climate zone
-class); retrieves stored yield trajectories for similar agroclimatic regimes.
-Separatrix analog = wilting point or frost threshold in water/temperature space.
-
-9.D.7 Seismic Risk Modeling
-Extension of Claim 13. Site response amplification:
-    m·ẍ + c·ẋ + k·x = −m·a_ground(t)
-Site resonance at ω₀ = √(k/m) amplifies ground motion. Q = mω₀/c (site
-quality factor). The invention retrieves Koopman response representations from
-memory indexed by site (ω₀, Q); universal correction: T_char = duration of
-strong shaking at site; a is fitted per soil-class loading ratio.
-
-9.D.8 Carbon Cycle Modeling
-The coupled atmosphere-ocean-land carbon cycle is governed by a system of ODEs
-with dominant relaxation frequencies ω₀ (decadal = ocean uptake, century =
-deep ocean saturation) and effective Q (carbon sink efficiency). The invention
-indexes carbon cycle regimes; topology discriminator identifies abrupt transitions
-(permafrost thaw, Amazon dieback = separatrix crossings).
-
-────────────────────────────────
-9.E BIOLOGICAL, MEDICAL, AND NEURAL SYSTEMS
-────────────────────────────────
-
-9.E.1 ECG and EEG Anomaly Detection
-Extension of Claim 17. Cardiac rhythm: the sinoatrial pacemaker is a nonlinear
-oscillator with ω₀ = 2π × (heart rate/60) and Q from autonomic regulation.
-Arrhythmia = bifurcation (ω₀ shift + Q collapse). EEG oscillations: alpha
-(8–12 Hz), beta (13–30 Hz), gamma (>30 Hz) bands each have domain-invariant
-triples indexed by frequency and coherence (Q analog). The invention detects
-anomalies as deviations from healthy-state triple in memory and applies the
-trust metric to classify seizure (chaotic) vs. sleep (periodic) dynamics.
-
-9.E.2 ICU Risk Prediction
-Heart rate variability (HRV) is characterized by ω₀ (LF: 0.04–0.15 Hz; HF:
-0.15–0.4 Hz) and Q (reciprocal of band relative power). Sepsis, cardiovascular
-failure, and neurological deterioration manifest as Q collapse in one or more
-bands. The invention monitors ICU patient HRV triples over time; retrieves
-nearest historical patient trajectories from memory for risk stratification.
-
-9.E.3 Epidemiological Forecasting
-SIR model:
-    Ṡ = −β·S·I
-    İ = β·S·I − γ·I
-    Ṙ = γ·I
-linearized around endemic equilibrium gives oscillations with:
-    ω₀ = √(βγ·S* − γ²), Q = ω₀/(2γ)
-Epidemic waves are periodic for ω₀ > 0 (above herd immunity threshold). The
-energy-conditioned gate identifies when effective reproduction number Reff ≈ 1
-(near-separatrix = near herd immunity). T_char = epidemic peak time; universal
-correction applies per disease-class R₀ loading ratio.
-
-9.E.4 Wearable Health Data Integration
-Physiological signals from wearables (accelerometer, PPG, skin conductance)
-contain oscillatory components at ω₀ (respiration ≈ 0.25 Hz, cardiac ≈ 1 Hz,
-circadian ≈ 11.6 μHz) with Q from inter-individual variability. The invention
-provides real-time regime monitoring: the live (ω₀, Q) triple is compared to
-memory of the individual's baseline healthy states; deviations trigger alerts.
-
-9.E.5 Gene Regulatory Network Inference
-The Goodwin oscillator (negative feedback gene regulation):
-    ẋ = α/(1 + zⁿ) − β·x
-    ẏ = k₁·x − k₂·y
-    ż = k₃·y − k₄·z
-supports limit-cycle oscillations with ω₀ from feedback delay and Q from
-degradation rates. The topology discriminator classifies GRN dynamics as
-periodic (circadian, cell cycle) or chaotic. The invention retrieves Koopman
-representations of known regulatory networks from memory to warm-start inference
-on unknown networks with similar oscillatory signatures.
-
-9.E.6 Population Dynamics and Ecological Modeling
-Lotka-Volterra predator-prey:
-    ẋ = (α − βy)·x,  ẏ = (δx − γ)·y
-linearized around coexistence equilibrium: ω₀ = √(αγ), Q from environmental
-damping (real ecosystems have weak dissipation). The curvature profile detects
-approach to extinction bifurcation (separatrix in population state space).
-Extended: competitive exclusion, mutualism, trophic cascade networks are all
-GEN-1 analogs at the dominant mode level.
-
-9.E.7 Brain-Computer Interface and Neural Decoding
-Extension of Claims 17, 9.E.1. Motor cortex local field potentials have
-dominant oscillatory modes (beta suppression at ω₀ ≈ 20 Hz during movement).
-The invention fits EDMD Koopman operators to neural trajectories in electrode
-space; the trust metric classifies decoded intention states (periodic = clear
-intent; chaotic = ambiguous). The domain-invariant triple of neural oscillations
-is retrieved from a library of movement-associated Koopman modes to decode
-intended motor commands without retraining per session.
-
-9.E.8 Molecular Docking and Drug-Receptor Interaction
-Ligand binding to a receptor is governed by a potential energy surface V(r)
-with a binding well separated from the unbound state by a saddle-point energy
-E_barrier (= E_sep analog). The softening Duffing model (β < 0) approximates
-the binding well near the saddle. The energy-conditioned gate (Contribution 2)
-identifies near-barrier configurations (E₀/E_barrier > 0.85); the topology
-discriminator classifies binding pocket type (hardening = tight binding;
-softening = loose/non-specific binding). T_char = binding dwell time; universal
-correction applies per receptor-class loading ratio.
-
-────────────────────────────────
-9.F ECONOMIC, FINANCIAL, AND SOCIAL SYSTEMS
-────────────────────────────────
-
-9.F.1 Financial Time-Series Forecasting
-The Ornstein-Uhlenbeck (OU) process for mean-reverting asset prices:
-    dX = −κ·(X − μ)·dt + σ·dW
-is the stochastic analog of GEN-1 with ω₀ = √κ (mean-reversion rate), Q = κ/σ²
-(signal-to-noise ratio). The invention indexes financial regimes (bull, bear,
-volatile) by (ω₀, Q) in triple-space; retrieves stored regime statistics for
-risk modeling; topology discriminator identifies regime change events. T_char =
-time to return to mean after shock; universal correction applies per
-asset-class mean-reversion loading ratio.
-
-9.F.2 Macroeconomic and Business Cycle Forecasting
-Extension of Claim 15 (Samuelson-Hicks). Real Business Cycle (RBC) and DSGE
-models produce oscillatory impulse responses with ω₀ (cycle frequency ≈ 2π/8yr)
-and Q from monetary policy damping. The invention indexes macroeconomic regime
-Koopman representations; retrieves recession/expansion dynamics from historical
-memory. Universal correction: T_char = recovery time from recession trough;
-a is fitted per monetary-regime loading class.
-
-9.F.3 Energy Demand Forecasting
-Electricity demand follows GEN-1 forced oscillator dynamics (diurnal ω₀ = 2π/24h,
-weekly, seasonal harmonics) with Q from thermal inertia of buildings. The
-invention retrieves demand profile templates from memory indexed by (ω₀, Q,
-season_class); topology discriminator identifies demand regime shifts (heat wave,
-holiday = loading class change). Universal correction: T_char = ramp-up time
-for generation dispatch; a fitted per demand-class.
-
-9.F.4 Commodity and Energy Market Prediction
-Commodity price cycles (Cobweb model, storage dynamics):
-    P̈_t + (1/τ_d + 1/τ_s)·Ṗ_t + (1/(τ_d·τ_s))·Pt = const
-ω₀ = 1/√(τ_d·τ_s), Q = √(τ_s/τ_d). The invention indexes commodity cycle
-regimes; retrieves historical supercycle analogs from memory for forward price
-estimation.
-
-9.F.5 Epidemiological and Social Contagion Modeling
-Social influence propagation, misinformation diffusion, and information cascades
-follow SIR-analog dynamics (same mathematical form as 9.E.3) with:
-    ω₀ = √(β·γ·S* − γ²), Q = ω₀/(2γ)
-where β is transmission rate and γ is recovery/forgetting rate. Viral phenomena
-correspond to near-critical (near-separatrix) dynamics. The energy-conditioned
-gate identifies when contagion is near the spreading threshold (Reff ≈ 1).
-
-9.F.6 Systemic Risk and Financial Network Modeling
-Interbank contagion dynamics are governed by coupled GEN-1 equations (bank
-balance sheet dynamics with interbank exposures as spring terms). Dominant
-collective modes have ω₀ from network Laplacian eigenvalues (as in 9.C.3).
-Systemic crisis = synchronization of failure modes (separatrix crossing in
-network energy space). The topology discriminator identifies systemic risk
-regime shifts before they occur.
-
-────────────────────────────────
-9.G ARTIFICIAL INTELLIGENCE AND AUTONOMOUS SYSTEMS
-────────────────────────────────
-
-9.G.1 Cross-Domain Transfer Learning Systems
-Contribution 1 is itself a cross-domain transfer learning system in the
-dynamical regime sense. Extended application: any machine learning system
-that maps input distributions to outputs, where the input distribution's
-dominant variation mode has characteristic frequency ω₀ (e.g., dominant PCA
-eigenvalue), quality factor Q (ratio of dominant to subdominant eigenvalue),
-and damping ratio ζ (distribution flatness), can be indexed by the domain-
-invariant triple. Knowledge (model weights, optimizer states, architecture
-configurations) from a previously solved task at (ω₀, Q) is retrieved and
-transferred to a new task at a nearby triple.
-
-9.G.2 Meta-Learning and Few-Shot Optimization
-Memory-augmented meta-learning (MAML, Prototypical Networks) stores prior
-task solutions indexed by task difficulty metrics. The invention replaces
-naive task-similarity metrics with the domain-invariant triple (ω₀ = dominant
-gradient curvature, Q = inverse condition number, ζ = learning-rate-to-curvature
-ratio) for more physically grounded similarity. Regime-memory retrieval provides
-a warm-start initialization that is topologically compatible with the query task.
-
-9.G.3 Autonomous Robotics and Multi-Agent Coordination
-Extension of 9.C.2, 9.C.3. Reinforcement learning agents controlling physical
-systems (robot arm, legged robot, drone) operate in environments governed by
-GEN-1 dynamics. The invention provides the agent's world model with a structured
-regime memory indexed by (ω₀, Q) of the environment's mechanical modes. Transfer
-between robot platforms (sim-to-real, robot-to-robot) uses the topology
-discriminator to verify regime compatibility before weight transfer.
-
-9.G.4 Swarm Intelligence Systems
-N-agent swarms with local interaction rules (Reynolds flocking, Vicsek model)
-exhibit collective oscillatory modes. The linearized mean-field dynamics obey
-GEN-1 with ω₀ from flock cohesion stiffness and Q from alignment damping.
-The invention indexes swarm behavioral regimes (ordered, disordered, near-
-transition) by (ω₀, Q); the energy-conditioned gate identifies near-phase-
-transition swarm states; the trust metric classifies emergent swarm dynamics
-as periodic (ordered flight) or chaotic (dispersal).
-
-9.G.5 Autonomous Scientific Experiment Design
-Scientific experiments explore parameter spaces of physical or biological
-systems. The invention provides the experimental design agent with a structured
-memory of previously explored dynamical regimes. New experiment parameters are
-chosen by navigating the triple-space to unexplored (ω₀, Q) regions (Thompson
-sampling on the invariant manifold). The energy-conditioned gate prevents
-experimental designs that would drive the system beyond the separatrix
-(destructive operating conditions).
-
-9.G.6 Federated Learning Across Institutions
-In federated learning, distributed clients share model updates without sharing
-raw data. The invention provides a regime-aware aggregation mechanism: clients
-with the same (ω₀, Q) dynamical regime (same data distribution type) are
-identified and their updates are aggregated using the domain-invariant triple
-as a compatibility gate, preventing topologically incompatible gradient mixing.
-
-9.G.7 Autonomous Defense, Surveillance, and Security Systems
-Radar and sonar signal processing: target returns have ω₀ (Doppler frequency)
-and Q (coherence time). The invention indexes target dynamic regimes and
-retrieves stored Koopman representations for rapid track initiation. Anomaly
-detection: the trust metric classifies sensor time series as structured
-(periodic attractor, known target type) or anomalous (chaotic, unknown contact).
-Trajectory prediction: the universal correction applies to intercept time
-estimation when ω₀·T_intercept is geometry-class-determined.
-
-9.G.8 Speech and Audio Signal Analysis
-Vocal tract resonances (formants) are characterized by ω₀ (formant frequency)
-and Q (formant bandwidth). The invention indexes phonetic regimes by formant
-triples; retrieves acoustic templates from memory for speech recognition,
-speaker identification, and language processing. The topology discriminator
-classifies voiced (periodic, high Q) vs. unvoiced (aperiodic, low Q) segments.
-Laryngeal pathology (dysphonia) manifests as Q reduction and ω₀ instability,
-detectable by the trust metric.
-
-================================================================================
-CLAIMS
-================================================================================
-
-Note: These are informal claims for provisional filing purposes. Formal
-independent and dependent claims will be drafted for the non-provisional
-application within 12 months of this provisional filing date.
-
-CLAIM 1 (System — Domain-Invariant Retrieval):
-A computer-implemented system for cross-domain solution retrieval in
-dynamical system optimization, comprising:
-(a) a domain encoder that maps domain-specific physical or computational
-    parameters to a domain-invariant triple comprising normalized natural
-    frequency, normalized quality factor, and damping ratio, wherein said
-    natural frequency and quality factor are computed either (i) analytically
-    from linearization of the governing equation about an equilibrium, or
-    (ii) from the dominant Koopman eigenvalue extracted by Extended Dynamic
-    Mode Decomposition (EDMD) of observed trajectory data, thereby covering
-    both linear and nonlinear dynamical systems;
-(b) a memory store indexed by said domain-invariant triple;
-(c) a retrieval module that locates memory entries nearest to a query
-    triple in triple-space and infers domain-native initialization
-    parameters from the retrieved entry; and
-(d) an optimizer initialized at said inferred parameters.
-
-CLAIM 2 (System — Energy-Conditioned Gate):
-The system of Claim 1, further comprising an energy-conditioned retrieval
-gate that:
-(a) computes separatrix energy E_sep from query system parameters;
-(b) computes total energy E₀ from query initial conditions;
-(c) when E₀/E_sep exceeds a near-separatrix threshold, restricts retrieval
-    to memory entries flagged as near-separatrix; and
-(d) when E₀/E_sep is below said threshold, excludes near-separatrix entries
-    from retrieval.
-
-CLAIM 3 (Method — Topology Discrimination):
-A computer-implemented method for detecting topological incompatibility
-between a stored dynamical system solution and a query dynamical system,
-comprising:
-(a) computing an effective natural frequency ω₀_eff as a function of
-    energy level for both stored and query systems using EDMD eigenvalue
-    extraction;
-(b) computing a curvature profile κ(log_E) = d(log(ω₀_eff/ω₀_linear))/
-    d(log_E) for each;
-(c) computing a fixed-length geometric signature by binning and normalizing
-    said curvature profile;
-(d) computing cosine similarity between the two geometric signatures; and
-(e) rejecting cross-domain invariant transfer when said cosine similarity
-    falls below a topological compatibility threshold.
-
-CLAIM 4 (Method — Bifurcation-Aware Trust Metric):
-A computer-implemented method for classifying the dynamics of a driven
-nonlinear system as periodic or chaotic without access to the governing
-equations, comprising:
-(a) collecting steady-state trajectory data after discarding a transient
-    fraction of the simulation;
-(b) fitting an Extended Dynamic Mode Decomposition Koopman matrix K to
-    said steady-state data;
-(c) computing reconstruction error as the relative Frobenius norm of
-    K · Φ(X) - Φ(X');
-(d) computing trust = max(0, 1 - reconstruction_error / η_max) where
-    η_max is calibrated on random trajectory data;
-(e) classifying the system as periodic (Abelian) when trust ≥ threshold
-    and as chaotic when trust < threshold; and
-(f) classifying period multiplicity via Poincaré stroboscopic sampling
-    with orbit-range normalization.
-
-CLAIM 5 (System — Integrated Architecture):
-A system that integrates the domain-invariant triple of Claim 1, the
-energy-conditioned gate of Claim 2, the topology discriminator of Claim 3,
-and the trust metric of Claim 4 into a memory-augmented dynamical system
-optimizer capable of cross-domain solution transfer with topology-aware
-rejection and chaos detection.
-
-CLAIM 6 (Method — Poincaré Orbit-Range Normalization):
-The method of Claim 4, wherein classifying period multiplicity comprises:
-(a) sampling system state at integer multiples of the drive period T_drive;
-(b) computing orbit_range as the range of said stroboscopic samples;
-(c) normalizing cluster span by orbit_range to compensate for phase drift
-    when T_drive/dt is non-integer; and
-(d) counting period-k clusters as k distinct groupings with inter-cluster
-    gaps exceeding 12% of normalized section span.
-
-CLAIM 7 (Method — Analytic CCT with Universal Damping Correction):
-A computer-implemented method for estimating Critical Clearing Time (CCT) of a
-synchronous generator in a power grid transient stability assessment, comprising:
-(a) receiving generator parameters M (inertia), Pₘ (mechanical power), Pₑ (peak
-    electrical power), and D (damping coefficient);
-(b) computing stable equilibrium angle δs = arcsin(Pₘ/Pₑ);
-(c) computing critical clearing angle δc from:
-        cos(δc) = Pₘ·(π − 2δs)/Pₑ − cos(δs)
-(d) computing undamped CCT analytically as:
-        CCT_EAC = √(2M·(δc − δs)/Pₘ)
-    requiring zero numerical ODE evaluations;
-(e) computing damping ratio ζ = D/(2Mω₀) where ω₀ = √(Pₑ·cos(δs)/M);
-(f) applying a universal scalar correction:
-        CCT_corrected = CCT_EAC / (1 − a·ζ)
-    where a is a scalar fitted once by ordinary least squares across a set of
-    generators at the same loading ratio and is invariant across generators
-    because the product ω₀·CCT_EAC is a loading-ratio-determined constant; and
-(g) returning CCT_corrected as the estimated critical clearing time.
-
-CLAIM 8 (Method — OLS Fitting of Universal Correction Scalar):
-The method of Claim 7, wherein the scalar a is determined by:
-(a) collecting (CCT_EAC,i, CCT_ref,i, ζᵢ) for a plurality of generators i
-    at a set of damping ratios ζᵢ, where CCT_ref,i is obtained by RK4
-    binary-search reference simulation;
-(b) defining eᵢ = CCT_EAC,i − CCT_ref,i and xᵢ = ζᵢ · CCT_ref,i; and
-(c) computing a = −Σ(eᵢ·xᵢ) / Σ(xᵢ²) by ordinary least squares.
-
-CLAIM 9 (Method — Universality Verification by Cross-Validation):
-The method of Claim 8, further comprising verifying universality of a by:
-(a) performing leave-k-out cross-validation across all C(G,k) generator subsets;
-(b) for each subset, fitting a on (G−k) generators and evaluating corrected
-    error on the k held-out generators; and
-(c) confirming universality when (max(a) − min(a))/mean(a) < a stability
-    threshold across all subsets, indicating a is determined by loading-ratio
-    geometry rather than by the specific generators in the training set.
-
-CLAIM 10 (Broad — Universal Geometric Pattern, Domain-Agnostic, Linear and Nonlinear):
-A computer-implemented method for cross-domain invariant indexing and
-characteristic-time correction applicable to any physical, computational, or
-biological dynamical system whose dynamics are governed by, or well-approximated
-by, an equation of the form:
-    M·ẍ + D(x,ẋ)·ẋ + K(x)·x = F(t)
-where D(x,ẋ) and K(x) may be nonlinear functions of state, or its discrete-time
-equivalent, comprising:
-(a) characterizing a system by its natural frequency ω₀ = √(K/M) and quality
-    factor Q = Mω₀/D to form a domain-invariant triple (log_ω₀_norm, log_Q_norm,
-    ζ) where ζ = 1/(2Q) and ω₀_norm is normalized to a domain-specific reference;
-(b) storing the domain-invariant triple and associated system behavior data in
-    a memory indexed by said triple;
-(c) retrieving stored behavior data for a query system by nearest-neighbor
-    search in triple-space, enabling cross-domain transfer from any stored domain
-    to any query domain sharing the same triple coordinates; and
-(d) when a domain-specific analytic formula T_analytic exists for a
-    characteristic time T_char under the assumption D=0, applying the universal
-    first-order correction:
-        T_corrected = T_analytic / (1 − a·ζ)
-    where a is a scalar fitted once per loading class from reference data
-    by the method of Claims 7–9.
-
-CLAIM 11 (Embodiment — Superconducting Quantum Circuits):
-The method of Claim 10, wherein the dynamical system is a Josephson junction
-superconducting circuit, the governing equation is:
-    C·φ̈ + (1/R)·φ̇ + Ic·sin(φ) = I_bias
-where φ is superconducting phase, C is junction capacitance, Ic is critical
-current, and the characteristic time is the switching time from the zero-voltage
-to finite-voltage state, and wherein the loading ratio is I_bias/Ic and the
-separatrix energy is the Josephson energy EJ = (ħ/2e)·Ic.
-
-CLAIM 12 (Embodiment — Phase-Locked Loops):
-The method of Claim 10, wherein the dynamical system is a second-order
-charge-pump phase-locked loop with a passive loop filter, the natural frequency
-is ω₀ = √(Kd·Kv/τ₁), the quality factor is Q = ω₀·τ₁/(1 + Kd·Kv·τ₂), and
-the characteristic time is the lock acquisition time T_lock, and wherein the
-loading ratio is the ratio of input frequency step to loop bandwidth.
-
-CLAIM 13 (Embodiment — Structural Seismic Response):
-The method of Claim 10, wherein the dynamical system is a single-degree-of-
-freedom structural model under seismic excitation, the natural frequency is
-ω₀ = √(k/m), the quality factor is Q = mω₀/c, and the characteristic time is
-the collapse capacity time or maximum displacement time under a normalized ground
-motion, and wherein the loading ratio is the spectral demand-to-capacity ratio.
-
-CLAIM 14 (Embodiment — Nuclear Reactor Scram):
-The method of Claim 10, wherein the dynamical system is a nuclear reactor
-described by one-group point kinetics equations, the linearized natural frequency
-is ω₀ ≈ √(λ·(k−1)/L), and the characteristic time is the scram time (time to
-reach safe shutdown flux level following a reactivity transient), and wherein
-the loading ratio is the reactivity insertion normalized to prompt critical.
-
-CLAIM 15 (Embodiment — Acoustic and MEMS Resonators):
-The method of Claim 10, wherein the dynamical system is an acoustic resonator,
-electrodynamic transducer, or MEMS sensor characterized by mechanical mass Mₘₛ,
-mechanical resistance Rₘₛ, and mechanical compliance Cₘₛ, with natural frequency
-ω₀ = 1/√(Mₘₛ·Cₘₛ) and quality factor Q = Mₘₛ·ω₀/Rₘₛ.
-
-CLAIM 16 (Embodiment — Laser Relaxation Oscillations):
-The method of Claim 10, wherein the dynamical system is a semiconductor or
-solid-state laser near threshold described by coupled photon and carrier rate
-equations, linearized to GEN-1 with natural frequency ω₀ = √(g₀/(τₚ·τₑ)) and
-quality factor Q = ω₀·τₑ, and the characteristic time is the turn-on delay.
-
-CLAIM 17 (Embodiment — Biological Neural Subthreshold Dynamics):
-The method of Claim 10, wherein the dynamical system is a biological neuron
-operating in the subthreshold (non-spiking) regime, modeled as a leaky
-integrate-and-fire or linearized Hodgkin-Huxley system with membrane capacitance
-Cm and total conductance g_total, with ω₀ = √(g_Na·g_K/Cm²) and ζ = g_total/
-(2Cm·ω₀), and the characteristic time is the interspike interval or first-spike
-latency.
-
-CLAIM 18 (Embodiment — Thermal Systems):
-The method of Claim 10, wherein the dynamical system is a two-zone thermal
-system (building envelope, heat exchanger, electronic package) with thermal
-capacitances C₁, C₂ and thermal resistances R₁, R₂, characterized by
-ω₀ = 1/√(C₁·C₂·R₁·R₂), and the characteristic time is the thermal settling
-time to a prescribed temperature tolerance following a disturbance.
-
-CLAIM 20 (Broad — Any Observable Oscillatory System):
-The method of Claim 10, wherein the domain-invariant triple (ω₀, Q, ζ) is
-extracted from observed time-series data rather than from explicit governing
-equations, by:
-(a) applying EDMD to the time-series to extract Koopman eigenvalues {λᵢ};
-(b) identifying the dominant oscillatory eigenvalue pair as ω₀ = |Im(log λ)|/Δt;
-(c) estimating Q from the eigenvalue decay rate as Q = |Im(log λ)|/(2·|Re(log λ)|);
-(d) computing ζ = 1/(2Q);
-and wherein the method is applicable to any physical, computational, biological,
-financial, social, or engineered system that produces time-series data exhibiting
-oscillatory structure, including but not limited to all systems described in
-Sections 8 and 9 of this specification.
-
-CLAIM 21 (Embodiment Group — Computational Science and Physics-Informed AI):
-The method of Claim 10, wherein the dynamical system is selected from the group
-consisting of: a physics-informed neural network optimization trajectory on a PDE
-residual loss landscape; a neural operator applied to a parametric PDE family;
-a surrogate model for computational fluid dynamics or finite element analysis;
-a turbulence closure model extracting Koopman modes from turbulent flow data;
-an inverse parameter identification gradient flow; a chaotic system prediction
-system applying the EDMD trust metric of Contribution 4; a multi-scale physical
-simulation regime-memory warm-start system; a variational quantum eigensolver
-gradient flow; a phonon dispersion calculator for crystal lattice materials; a
-semiconductor small-signal equivalent circuit; and an electromagnetic cavity
-resonator mode approximation system.
-
-CLAIM 22 (Embodiment Group — Energy, Power, and Industrial Systems):
-The method of Claim 10, wherein the dynamical system is selected from the group
-consisting of: a multi-machine power grid with inter-area oscillation mode
-indexing; a wind turbine torsional oscillator or solar irradiance harmonic model;
-a battery Randles circuit model indexed by electrochemical (ω₀, Q); a rotating
-machinery bearing or gear resonance monitoring system for predictive maintenance;
-a digital twin regime-memory system for industrial asset monitoring; and an oil
-and gas reservoir pressure transient analysis system.
-
-CLAIM 23 (Embodiment Group — Civil, Structural, Aerospace, and Transportation):
-The method of Claim 10, wherein the dynamical system is selected from the group
-consisting of: a structural health monitoring system tracking modal frequency
-and quality factor deviation; a robot joint spring-mass dynamics system with
-load-dependent (ω₀, Q) retrieval; a multi-agent robot coordination system using
-network Laplacian modal triples; an orbital mechanics transfer trajectory
-optimization system with mean-motion ω₀; a smart city traffic flow oscillation
-system with kinematic wave ω₀; and a materials fatigue life prediction system
-with cyclic loading frequency ω₀.
-
-CLAIM 24 (Embodiment Group — Environmental, Climate, and Earth Systems):
-The method of Claim 10, wherein the dynamical system is selected from the group
-consisting of: a general circulation model (GCM) regime warm-start system indexed
-by planetary wave (ω₀, Q); a numerical weather prediction system with synoptic
-eddy Koopman retrieval; a Saint-Venant hydraulic flood prediction system with
-celerity-based ω₀; a wildfire reaction-diffusion PDE with Damköhler frequency
-ω₀; an ocean quasi-geostrophic eddy system with Rossby wave ω₀; a crop growth
-phenological oscillator with annual ω₀; and a seismic site response amplification
-system with structural resonance ω₀.
-
-CLAIM 25 (Embodiment Group — Biological, Medical, and Neural Systems):
-The method of Claim 10, wherein the dynamical system is selected from the group
-consisting of: a cardiac rhythm anomaly detection system treating the sinoatrial
-pacemaker as a nonlinear oscillator; an ICU patient physiological oscillation
-monitoring system using heart rate variability (ω₀, Q); an SIR-model epidemic
-forecasting system with endemic equilibrium oscillation ω₀; a wearable health
-sensor regime monitoring system with physiological band (ω₀, Q); a gene
-regulatory Goodwin oscillator inference system; a predator-prey or trophic
-cascade ecological system with Lotka-Volterra mode ω₀; a brain-computer
-interface neural decoding system using Koopman motor cortex modes; and a
-molecular docking binding well classification system using separatrix energy.
-
-CLAIM 26 (Embodiment Group — Economic, Financial, and Social Systems):
-The method of Claim 10, wherein the dynamical system is selected from the group
-consisting of: an Ornstein-Uhlenbeck mean-reverting financial asset price model;
-a DSGE macroeconomic model with business cycle oscillation ω₀; an electricity
-demand forecasting system with diurnal and seasonal harmonic oscillations;
-a commodity price Cobweb cycle model with supply-demand delay ω₀; a social
-influence or misinformation propagation SIR-analog system with spreading ω₀;
-and a financial interbank network contagion system with Laplacian collective mode.
-
-CLAIM 27 (Embodiment Group — AI, Autonomous Systems, and Signal Processing):
-The method of Claim 10, wherein the dynamical system is selected from the group
-consisting of: a cross-domain machine learning transfer system indexed by
-gradient curvature triple; a meta-learning warm-start system using domain-
-invariant task similarity; a federated learning gradient aggregation system with
-regime-compatibility gating; a swarm intelligence collective oscillation system
-with Vicsek-model (ω₀, Q); a radar or sonar Doppler target tracking system
-with Koopman mode retrieval; an autonomous experiment design system navigating
-the invariant manifold; and a speech formant analysis system treating vocal tract
-resonances as GEN-1 oscillators.
-
-CLAIM 28 (Broad — Universal Characteristic-Time Correction for Any Oscillatory Domain):
-A computer-implemented method for accelerating estimation of any characteristic
-time T_char in any oscillatory dynamical domain, wherein T_char is defined as
-the time for the system to cross a stability, convergence, or state-transition
-threshold, comprising:
-(a) identifying the system's natural frequency ω₀ and damping ratio ζ from
-    domain-specific parameters or from EDMD of observed time-series data;
-(b) computing T_analytic using an analytic formula valid in the zero-damping
-    (ζ = 0) limit for said system;
-(c) applying the universal correction: T_corrected = T_analytic / (1 − a·ζ),
-    where a is a loading-class-specific scalar satisfying ω₀·T_analytic =
-    f(loading_class), verified by leave-k-out cross-validation over system
-    instances within the same loading class; and
-(d) returning T_corrected as the estimated characteristic time, requiring no
-    numerical integration of the governing equations,
-wherein said method is applicable to all domains enumerated in Sections 8 and 9
-and any domain satisfying the universality condition ω₀·T_analytic = f(loading_class).
-
-CLAIM 19 (Broad — Universal Correction Scalar Principle):
-A method for computing a universal first-order correction scalar a applicable
-to any parameterized family of dynamical systems satisfying:
-    ω₀ · T_analytic = f(loading_class)
-where T_analytic is an analytic characteristic time computed under zero-damping
-assumptions and f depends only on the system loading class (not on individual
-system parameters within the class), comprising:
-(a) collecting (T_analytic,i, T_ref,i, ζᵢ) across a plurality of instances i
-    within the same loading class, where T_ref,i is a reference value computed
-    by numerical integration or direct measurement;
-(b) fitting a = −Σ(eᵢ·xᵢ)/Σ(xᵢ²) where eᵢ = T_analytic,i − T_ref,i and
-    xᵢ = ζᵢ·T_ref,i; and
-(c) applying T_corrected = T_analytic / (1 − a·ζ) to any new instance in the
-    same loading class without additional numerical integration,
-wherein the universality of a within a loading class is guaranteed when the
-condition ω₀·T_analytic = f(loading_class) holds, and wherein a is applicable
-to all domains enumerated in Section 8 and any future domain satisfying said
-condition.
-
-CLAIM 29 (Nonlinear Systems — Explicit Coverage):
-A computer-implemented method for invariant indexing and regime-aware retrieval
-in nonlinear dynamical systems, comprising:
-(a) receiving trajectory data from a nonlinear system governed by an equation
-    of the form M·ẍ + D(x,ẋ)·ẋ + K(x)·x = F(t), where D and K are nonlinear
-    functions of state;
-(b) extracting an effective natural frequency ω₀_eff and effective quality
-    factor Q_eff from said trajectory data using one or more of:
-    (i)  Extended Dynamic Mode Decomposition (EDMD) on observed state trajectories,
-         identifying the dominant oscillatory Koopman eigenvalue pair;
-    (ii) energy-parameterized linearization, computing ω₀_eff(E) = sqrt(K(x_eq(E))/
-         M_eff(E)) as a function of the system's total energy E; or
-    (iii) linearization at the stable equilibrium x_eq of the nonlinear system;
-(c) forming the domain-invariant triple (log(ω₀_eff/ω₀_ref), log(Q_eff), ζ_eff)
-    where ζ_eff = 1/(2Q_eff);
-(d) applying the energy-conditioned separatrix gate of Contribution 2 to
-    classify the operating regime as sub-separatrix, near-separatrix, or
-    beyond-separatrix based on the ratio E₀/E_sep, where E_sep is the
-    separatrix energy of the nonlinear potential;
-(e) applying the topology discriminator of Contribution 3 to classify the
-    nonlinear regime type (hardening, softening, or linear) and reject
-    cross-regime retrieval when curvature profile cosine similarity is below
-    threshold; and
-(f) retrieving from memory the nearest stored solution in the same topological
-    regime and using it to warm-start optimization or simulation of the
-    nonlinear system,
-wherein said method is applicable to any nonlinear oscillatory system including
-but not limited to: Duffing oscillators (hardening β>0 and softening β<0),
-van der Pol oscillators, Lorenz and other chaotic systems, Josephson junction
-circuits, SMIB power grid swing equation with sin(δ) nonlinearity, molecular
-dynamics with anharmonic potentials, traffic flow with nonlinear flux-density
-relations, biological oscillators with sigmoidal coupling, and any system
-admitting a Koopman invariant subspace of finite or approximate dimension.
+FILING DATE: [assigned by USPTO]
 
 ================================================================================
 ABSTRACT
 ================================================================================
 
-A system and method for topology-aware invariant indexing, cross-domain
-dynamical memory, and analytic power grid stability estimation exploits
-dynamical equivalence across physical domains. A domain-invariant triple
-(normalized natural frequency, normalized quality factor, damping ratio) indexes
-memory entries across physically disparate domains (electrical circuits,
-mechanical systems, gradient-descent optimizers, power grid generators) that
-obey equivalent governing dynamics. An energy-conditioned separatrix gate
-restricts retrieval to entries in the same topological energy regime, preventing
-incorrect transfer across the separatrix boundary of softening nonlinear
-oscillators. A curvature-profile discriminator computes cosine similarity between
-geometric signatures of Koopman effective-frequency-vs-energy profiles, achieving
-zero similarity between topologically distinct (hardening vs. softening) regimes.
-A bifurcation-aware trust metric classifies driven nonlinear system dynamics as
-periodic or chaotic using EDMD reconstruction error relative to a random-
-trajectory baseline, overcoming the failure of spectral gap in limit-cycle
-systems. An analytic Critical Clearing Time (CCT) method applies the Equal-Area
-Criterion with a single universal damping correction scalar — fitted once by
-ordinary least squares and invariant across generators because the product
-ω₀·CCT_EAC is loading-ratio-determined — to estimate power grid transient
-stability without ODE integration. Together these components achieve 2708×
-warm-start speedup over cold-start optimization, 3.7× cross-domain transfer
-improvement for RLC circuit optimization initialized from spring-mass mechanical
-system solutions, and 57,946× CCT estimation speedup with 2.73% maximum error
-across the full realistic damping range (ζ ∈ [0, 0.20]) validated on the IEEE
-39-bus New England system (10 generators).
+Determining critical clearing time (CCT) for power system transient stability
+currently requires binary-search time-domain simulation -- approximately 156,000
+ODE evaluations per generator per contingency -- precluding real-time N-1
+contingency screening.
+
+This invention discloses a loading-class geometric invariant in the Equal-Area
+Criterion (EAC): for generators sharing a loading ratio Pe/Pm, the product
+omega_0 * CCT_EAC is constant across all machines, independent of inertia,
+rating, or network position.  This invariant structure admits a universal,
+generator-independent first-order damping correction parameterized by a single
+scalar a fitted once per loading class by ordinary least squares:
+
+    CCT_corrected = CCT_EAC / (1 - a * zeta)
+
+Validated on the IEEE 39-bus New England system (10 generators, inertia H from
+24.3 s to 500 s): maximum CCT error 2.73% for damping ratio zeta <= 0.20,
+speedup 57,946x versus RK4 binary search.  Leave-two-out cross-validation
+across all C(10,2) = 45 generator subsets yields a = 1.5109 +/- 0.0100
+(coefficient of variation 0.66%), confirming the correction is a structural
+property of the loading class, not a curve-fitting artifact.
+
+The invention enables real-time N-1 and N-k dynamic security assessment for
+large power systems, with direct application to renewable-heavy grids where
+intermittent generation increases the frequency of dynamic stability assessment.
 
 ================================================================================
-INVENTOR DECLARATION (to be completed at filing)
+FIELD OF THE INVENTION
 ================================================================================
 
-I hereby declare that:
-(a) I am the sole inventor of the subject matter described in this application.
-(b) I have reviewed and understand the contents of this application.
-(c) I acknowledge my duty to disclose to the USPTO all information known to me
-    to be material to patentability.
-
-Inventor: Nikolas Yoo
-Date: _______________________
-Signature: _______________________
-Address: _______________________
+This invention relates to power system transient stability analysis,
+specifically to computer-implemented methods for computing critical clearing
+time (CCT) analytically for single-machine-infinite-bus (SMIB) models,
+and to real-time dynamic security assessment systems using loading-class
+geometric invariants.
 
 ================================================================================
-END OF PROVISIONAL PATENT SPECIFICATION
+BACKGROUND
+================================================================================
+
+A. The Dynamic Security Assessment Bottleneck
+
+Power system operators must assess transient stability for each credible fault
+contingency (N-1, N-2) to ensure generators remain synchronized after fault
+clearance.  The critical clearing time (CCT) -- the maximum fault duration
+consistent with maintaining synchronism -- is the key metric.
+
+The standard computational method is binary search over fault clearing time
+using time-domain simulation:
+
+    ~13 iterations x 3,000 RK4 settle-steps x 4 function evaluations
+    approximately 156,000 ODE evaluations per (generator, contingency) pair
+
+For a 500-bus system with 50 generators and 500 contingencies, full N-1
+CCT screening requires 25,000 such computations -- over four hours in
+optimized Python at 0.1 ms per ODE evaluation.  This cost eliminates real-time
+and near-real-time screening as operational tools.
+
+The need for real-time dynamic security assessment is increasing.  As renewable
+generation (wind, solar) displaces synchronous machines, grid inertia decreases
+and dynamic stability margins narrow.  Operators need CCT estimates on
+sub-second timescales for remedial action schemes, energy market clearing, and
+contingency pre-screening.
+
+B. The Equal-Area Criterion and Its Limitations
+
+The Equal-Area Criterion (EAC) provides an analytic CCT formula for the
+classical SMIB model with zero damping (D=0) and a complete three-phase fault:
+
+    CCT_EAC = sqrt(2*M*(delta_c - delta_s) / Pm)
+
+where delta_c is the critical clearing angle from the equal-area construction,
+delta_s is the pre-fault equilibrium angle, M = 2*H/omega_s is angular
+momentum, and Pm is mechanical power.
+
+This formula requires zero ODE evaluations.  However, it is exact only for
+D=0.  For realistic power systems with non-zero damping (zeta = 0.01 to 0.20),
+the undamped formula underestimates CCT -- it is conservative but inaccurate,
+with raw errors of 10-30% at zeta = 0.10-0.20.
+
+Prior art provides no systematic correction for this damping error with:
+(a) demonstrated generator independence within a loading class,
+(b) closed-form analytic expression for the correction, and
+(c) cross-validated stability across machine subsets.
+
+C. Gap in Prior Art
+
+Existing methods for damped CCT estimation either require:
+  (i)  full time-domain simulation (ODE-based, high cost); or
+  (ii) perturbative approximations without demonstrated cross-validation; or
+  (iii) machine-specific fitting that does not generalize.
+
+No prior method achieves analytic CCT estimation with bounded error across
+realistic damping ranges validated by leave-out cross-validation on a standard
+benchmark system.
+
+================================================================================
+SUMMARY OF THE INVENTION
+================================================================================
+
+The invention discloses three connected results:
+
+(1) LOADING-CLASS GEOMETRIC INVARIANT.  For generators operating at a fixed
+loading ratio Pe/Pm (equivalently, fixed pre-fault equilibrium angle delta_s),
+the undamped EAC formula produces a machine-independent invariant:
+
+    omega_0 * CCT_EAC = sqrt(2 * sqrt(3) * (delta_c - delta_s))   [constant]
+
+This product is independent of inertia constant H, machine rating, mechanical
+power Pm, or electrical power capacity Pe individually.  It depends only on
+the loading class (the ratio Pe/Pm, or equivalently delta_s).
+
+(2) UNIVERSAL DAMPING CORRECTION.  The deviation between CCT_EAC and the true
+CCT under damping is predicted by a first-order correction:
+
+    CCT_corrected = CCT_EAC / (1 - a * zeta)
+
+where zeta = D/(2*M*omega_0) is the damping ratio and a is a scalar that is
+(i) loading-class-determined, (ii) generator-independent within the class, and
+(iii) fittable by ordinary least squares from a small reference set.
+
+Universality of a is guaranteed by the invariant structure of result (1):
+because omega_0 * CCT_EAC is constant across all machines at fixed delta_s,
+the first-order perturbation of the fault-phase trajectory produces the same
+fractional CCT correction for every machine.
+
+(3) CROSS-VALIDATED STABILITY.  On the IEEE 39-bus benchmark (10 generators),
+leave-two-out cross-validation across all 45 generator subsets yields:
+    a = 1.5109 +/- 0.0100   (range 2.3%;  gate: <10%)
+This stability confirms that a is a structural parameter of the loading class,
+independent of which machines are used for fitting.
+
+Combined result: CCT estimation from analytic formula with no time-domain
+integration, maximum error 2.73% for zeta <= 0.20, speedup 57,946x.
+
+================================================================================
+BRIEF DESCRIPTION OF DRAWINGS
+================================================================================
+
+FIG. 1 -- CCT Error vs. Damping Ratio zeta.  Red curve: raw EAC formula (D=0
+approximation), showing growing error with damping.  Blue curve: corrected EAC
+with a=1.51.  Shaded bands: min/max spread across 10 IEEE 39-bus generators.
+Dashed line: 5% accuracy gate.  Blue shaded region: validated envelope
+zeta <= 0.20 (Q >= 2).
+
+================================================================================
+DETAILED DESCRIPTION
+================================================================================
+
+1. SYSTEM MODEL
+
+The classical single-machine-infinite-bus (SMIB) swing equation:
+
+    M * delta_ddot + D * delta_dot = Pm - Pe * sin(delta)           (Eq. 1)
+
+where:
+    delta       : rotor angle [rad]
+    omega       : speed deviation delta_dot [rad/s]
+    M           : M = 2*H/omega_s, angular momentum [s^2/rad]
+    omega_s     : rated synchronous speed, 2*pi*60 rad/s (60 Hz)
+    H           : inertia constant [s]
+    D           : damping coefficient [pu*s/rad]
+    Pm          : mechanical power [pu]
+    Pe          : peak electrical power [pu]
+
+Pre-fault stable equilibrium:  delta_s = arcsin(Pm/Pe)
+Unstable equilibrium:          delta_u = pi - delta_s
+Separatrix energy:             E_sep = 2*Pe*cos(delta_s) - Pm*(pi - 2*delta_s)
+
+Linearized natural frequency at delta_s:
+    omega_0 = sqrt(Pe * cos(delta_s) / M)
+
+Damping ratio and quality factor:
+    zeta = D / (2 * M * omega_0)
+    Q    = M * omega_0 / D = 1 / (2 * zeta)
+
+
+2. EQUAL-AREA CRITERION (D = 0, THREE-PHASE FAULT)
+
+For a complete three-phase fault (Pe drops to zero during fault) and D = 0,
+the equal-area criterion gives the critical clearing angle:
+
+    cos(delta_c) = Pm*(pi - 2*delta_s)/Pe - cos(delta_s)           (Eq. 2)
+
+The fault-phase equation of motion reduces to M*delta_ddot = Pm (exact for
+Pe_fault = 0), giving the analytic critical clearing time:
+
+    CCT_EAC = sqrt(2*M*(delta_c - delta_s) / Pm)                   (Eq. 3)
+
+This formula requires no numerical integration.  Computation cost is O(1)
+arithmetic operations per generator.  Reference RK4 binary search requires
+approximately 156,000 ODE evaluations per CCT -- a measured speedup of
+57,946x for the analytic formula.
+
+
+3. LOADING-CLASS GEOMETRIC INVARIANT
+
+For generators operating at a uniform loading ratio Pe = k * Pm (so that
+delta_s = arcsin(1/k) is fixed), multiplying Eq. 3 by omega_0:
+
+    omega_0 * CCT_EAC
+        = sqrt(Pe*cos(delta_s)/M) * sqrt(2*M*(delta_c - delta_s)/Pm)
+        = sqrt(2*(delta_c - delta_s) * k*cos(delta_s))              (Eq. 4)
+
+The right-hand side depends only on k (the loading ratio) and the loading-
+class constants delta_s and delta_c.  It is independent of:
+    - Inertia constant H (equivalently M)
+    - Machine rating (Pm or Pe individually)
+    - Network position
+
+For the standard loading Pe = 2*Pm (k=2, delta_s = 30 deg):
+
+    omega_0 * CCT_EAC = sqrt(2*sqrt(3)*(delta_c - delta_s)) approx 1.73  (Eq. 5)
+
+This invariance means all generators in the same loading class are
+geometrically equivalent under the EAC map.  Any perturbation to CCT
+(e.g., from non-zero damping) affects every machine in the class by the
+same fractional amount -- the basis for the universal correction.
+
+
+4. UNIVERSAL DAMPING CORRECTION
+
+4.1 Motivation
+
+For D > 0, damping dissipates kinetic energy during the fault phase.  The
+rotor accelerates more slowly, so the true CCT exceeds CCT_EAC: the undamped
+formula underestimates the true CCT.  This is the conservative direction for
+safety screening.
+
+4.2 First-Order Perturbation Argument
+
+Perturbing Eq. 1 to first order in D around D=0 during the fault phase
+[0, CCT], with fault dynamics M*delta_ddot approx Pm (Pe_fault=0):
+
+    CCT_ref/CCT_EAC approx 1 + (omega_0 * CCT_EAC / 3) * zeta
+
+By Eq. 5, the coefficient omega_0 * CCT_EAC approx 1.73 is constant for all
+generators in the loading class.  Therefore the first-order correction
+coefficient is approximately 1.73/3 approx 0.577 -- the same for every machine.
+
+The fitted scalar a in the full correction formula absorbs higher-order terms.
+Its universality is guaranteed by the invariant structure of Eq. 5.
+
+4.3 Correction Formula
+
+    CCT_corrected = CCT_EAC / (1 - a * zeta)                        (Eq. 6)
+
+For the IEEE 39-bus system at Pe=2*Pm loading: a = 1.51.
+Maximum error for zeta <= 0.20: 2.73%.
+
+4.4 Fitting Procedure (OLS)
+
+Given a reference data set {(CCT_EAC,i, CCT_ref,i, zeta_i)} for generators
+in a loading class:
+    e_i = CCT_EAC,i - CCT_ref,i    (negative; EAC underestimates)
+    x_i = zeta_i * CCT_ref,i
+    a   = -sum(e_i * x_i) / sum(x_i^2)                              (Eq. 7)
+
+This OLS fit requires one reference simulation set per loading class.
+Once fitted, a applies to all generators in that class -- no per-machine
+calibration is needed.
+
+
+5. VALIDATION: IEEE 39-BUS NEW ENGLAND SYSTEM
+
+5.1 Generator Data (Anderson & Fouad, 2003, Table 2.7)
+
+All 10 generators operate at Pe = 2*Pm (delta_s = 30 deg).
+
+    Gen  Bus   H [s]   omega_0 [rad/s]   CCT_EAC [s]   CCT_Ref [s]   Error
+    -----------------------------------------------------------------------
+    G1    30   500.0      1.278            1.3549        1.3553         0.0%
+    G2    31    30.3      7.858            0.2203        0.2249         2.1%
+    G3    32    35.8      7.699            0.2248        0.2249         0.0%
+    G4    33    28.6      8.494            0.2038        0.2048         0.5%
+    G5    34    26.0      8.863            0.1953        0.1950         0.2%
+    G6    35    34.8      8.834            0.1959        0.1950         0.5%
+    G7    36    26.4      7.699            0.2248        0.2249         0.0%
+    G8    37    24.3      9.023            0.1920        0.1950         1.5%
+    G9    38    34.5      8.863            0.1953        0.1950         0.2%
+    G10   39    42.0      8.834            0.1959        0.1950         0.5%
+    -----------------------------------------------------------------------
+    Mean CCT error (D=0): 0.8%    Mean speedup: 57,946x
+
+Residual error at D=0 is due to RK4 time discretisation and binary-search
+tolerance (+/-0.5 ms), not a limitation of the EAC formula itself.
+
+5.2 Damping Sweep and Correction (D > 0)
+
+Sweep: zeta in {0.01, 0.03, 0.05, 0.10, 0.20} x 10 generators = 50 points.
+Fitted a = 1.51 by OLS (Eq. 7).
+
+    zeta   Q      Raw mean err   Raw max err   Corr mean err   Corr max err
+    -----------------------------------------------------------------------
+    0.01   50.0      1.33%          3.64%          0.19%          2.15%
+    0.03   16.7      4.89%          6.37%          0.36%          1.91%
+    0.05   10.0      8.93%         10.10%          1.46%          2.73%
+    0.10    5.0     16.29%         17.07%          1.34%          2.26%
+    0.20    2.5     29.13%         30.12%          1.68%          2.69%
+    -----------------------------------------------------------------------
+    Max corrected error across all 50 (generator, zeta) pairs: 2.73%
+    Accuracy gate: 5%   STATUS: PASS
+
+5.3 Geometric Invariant Verification
+
+The loading-class invariant (Eq. 5) was numerically verified: the embedding
+distance among all 10 generators in (log_omega0_norm, log_Q_norm, zeta) space
+varies by less than 1e-8 at fixed zeta.  This confirms machine-independence
+of omega_0 * CCT_EAC as predicted analytically.
+
+
+6. CROSS-VALIDATION: STABILITY OF CORRECTION SCALAR
+
+Leave-two-out cross-validation across all C(10,2) = 45 generator subsets:
+    Fit a on 8 generators (40 data points); test on 2 held-out (10 points).
+
+    Statistic                  Value         Gate        Status
+    ----------------------------------------------------------
+    a (mean, 45 splits)        1.5109
+    a (std deviation)          0.0100
+    a (range: max - min)       0.0354        < 10%       PASS
+    Range / mean               2.3%          < 10%       PASS
+    CV (std / mean)            0.66%
+    Max test error             2.90%         < 5%        PASS
+    Mean test error            1.33%
+    ----------------------------------------------------------
+
+Stability verdict: PASS.
+
+The CV of 0.66% establishes that a is determined by the loading-class geometry
+of Eq. 5, not by which machines appear in the training set.
+
+
+7. IMPLEMENTATION
+
+7.1 Computational Procedure
+
+A processor-implemented embodiment executes the following for each
+(generator, contingency) pair:
+
+    (a) Receive: H, Pm, Pe, D
+    (b) Compute:
+            M           = 2*H / (2*pi*60)
+            delta_s     = arcsin(Pm/Pe)
+            cos_dc      = Pm*(pi - 2*delta_s)/Pe - cos(delta_s)
+            cos_dc      = clamp(cos_dc, -1, 1)
+            delta_c     = arccos(cos_dc)
+            CCT_EAC     = sqrt(2*M*(delta_c - delta_s) / Pm)
+            omega_0     = sqrt(Pe*cos(delta_s) / M)
+            zeta        = D / (2*M*omega_0)
+            CCT_corr    = CCT_EAC / (1 - a*zeta)
+    (c) Output: CCT_corr, without ODE integration
+
+7.2 Loading-Class Detection
+
+For systems with mixed loading ratios, generators are grouped by Pe/Pm
+(delta_s within +/-1 deg bins).  A separate correction scalar a_k is fitted
+for each loading class k by OLS (Eq. 7) using one reference simulation set
+per class.
+
+7.3 System Integration
+
+CCT_corr feeds directly into:
+    - N-1 and N-k contingency ranking tables
+    - Operator alarm systems (CCT_corr < t_relay + safety_margin)
+    - Remedial action scheme pre-computation
+    - Energy market contingency screening modules
+
+7.4 Computing System Description
+
+A system implementing this invention comprises:
+    (a) a memory storing generator parameters, loading-class scalar(s) a,
+        and rated operating points;
+    (b) one or more processors executing the procedure of Section 7.1; and
+    (c) an output interface transmitting CCT estimates to a dynamic security
+        assessment platform, operator display, or downstream control system.
+
+7.5 Accuracy Envelope and Escalation Policy
+
+  Validated domain:
+    - Classical SMIB model, three-phase fault (Pe_fault = 0)
+    - Uniform loading Pe = 2*Pm, zeta in [0, 0.20], Q >= 2
+
+  Boundary handling:
+    (i)  Partial faults (0 < Pe_fault < Pe): modified EAC construction with
+         refitted a for the partial-fault loading class; structure of Eq. 6
+         is preserved.
+    (ii) Mixed loading: loading-class detection per Section 7.2; one scalar
+         per class, fitted offline.
+    (iii) Near-critical cases (CCT_corr within 5% of t_relay): escalate to
+          full time-domain simulation.
+
+================================================================================
+CLAIMS
+================================================================================
+
+CLAIM 1.  A computer-implemented method for determining a critical clearing
+time (CCT) for a power system generator, comprising:
+  (a) receiving, by one or more processors, generator parameters including
+      inertia constant H, mechanical power Pm, electrical power capacity Pe,
+      and damping coefficient D;
+  (b) computing a pre-fault equilibrium angle delta_s = arcsin(Pm/Pe);
+  (c) computing a critical clearing angle delta_c from the Equal-Area
+      Criterion for a three-phase fault, as
+          cos(delta_c) = Pm*(pi - 2*delta_s)/Pe - cos(delta_s);
+  (d) computing an analytic undamped critical clearing time
+          CCT_EAC = sqrt(2*M*(delta_c - delta_s) / Pm)
+      where M = 2*H/(2*pi*f_s) and f_s is rated system frequency;
+  (e) computing a linearized natural frequency
+          omega_0 = sqrt(Pe*cos(delta_s) / M);
+  (f) computing a damping ratio  zeta = D / (2*M*omega_0);
+  (g) computing a corrected critical clearing time
+          CCT_corrected = CCT_EAC / (1 - a*zeta)
+      where a is a loading-class correction scalar; and
+  (h) outputting CCT_corrected without performing numerical time-domain
+      integration of the swing equation for said generator.
+
+CLAIM 2.  The method of claim 1, wherein the loading-class correction scalar a
+is determined by ordinary least squares over a reference set of generators
+sharing a loading ratio Pe/Pm, by:
+  computing e_i = CCT_EAC,i - CCT_ref,i and x_i = zeta_i * CCT_ref,i
+  for each reference generator i; and computing a = -sum(e_i*x_i)/sum(x_i^2).
+
+CLAIM 3.  The method of claim 2, wherein a single loading-class correction
+scalar a applies to all generators sharing said loading ratio Pe/Pm,
+independent of individual generator inertia constants, machine ratings, or
+network positions.
+
+CLAIM 4.  The method of claim 1, wherein the universality of the loading-class
+correction scalar a arises from the invariant property that the product
+omega_0 * CCT_EAC is constant across all generators sharing a loading ratio
+Pe/Pm, as expressed by:
+    omega_0 * CCT_EAC = sqrt(2*(delta_c - delta_s) * (Pe/Pm)*cos(delta_s)).
+
+CLAIM 5.  The method of claim 2, wherein the loading-class correction scalar a
+is verified by leave-two-out cross-validation across a plurality of generator
+subsets, and wherein the coefficient of variation of a across subsets is less
+than 5%.
+
+CLAIM 6.  The method of claim 1, applied iteratively to a plurality of
+generators for N-1 or N-k contingency screening, comprising:
+  (a) computing CCT_corrected for each (generator, contingency) pair
+      without time-domain simulation;
+  (b) comparing each CCT_corrected to a protection clearance time threshold;
+  (c) outputting a priority-ranked contingency list based on CCT_corrected;
+  wherein the complete ranked list is produced without time-domain simulation
+  of any pair in the screening batch.
+
+CLAIM 7.  The method of claim 6, further comprising flagging contingencies for
+which CCT_corrected is within a safety margin of the relay clearance time as
+requiring escalation to full time-domain simulation.
+
+CLAIM 8.  The method of claim 6, wherein the total computation time for a
+full N-1 screening batch across a plurality of generators is less than one
+second on a single processor core.
+
+CLAIM 9.  A system for real-time critical clearing time estimation, comprising:
+  (a) a memory storing generator parameters for a plurality of machines, at
+      least one loading-class correction scalar a fitted from reference data,
+      and processor-executable instructions;
+  (b) one or more processors configured to execute said instructions to compute
+      analytic CCT_EAC for each generator via the Equal-Area Criterion, apply a
+      universal damping correction parameterized by a and per-generator zeta,
+      and output corrected CCT estimates without time-domain integration; and
+  (c) an output interface for transmitting CCT estimates to a dynamic security
+      assessment system, remedial action scheme, or operator display.
+
+CLAIM 10.  A non-transitory computer-readable medium storing instructions that,
+when executed by one or more processors, cause the processors to:
+  (a) receive generator parameters H, Pm, Pe, D;
+  (b) compute analytic CCT_EAC via the Equal-Area Criterion for a three-phase
+      fault;
+  (c) compute zeta = D / (2*M*omega_0);
+  (d) output CCT_corrected = CCT_EAC / (1 - a*zeta) where a is a
+      loading-class-determined scalar;
+  without integrating any differential equation describing rotor dynamics.
+
+CLAIM 11.  The method of claim 1, wherein a partial fault is represented by
+Pe_fault = fault_factor * Pe with fault_factor in (0, 1), and the Equal-Area
+Criterion construction is modified accordingly, while the correction structure
+CCT_corrected = CCT_EAC / (1 - a*zeta) is retained with a scalar a refitted
+for said partial-fault loading class.
+
+CLAIM 12.  A computer-implemented method for real-time dynamic security
+assessment of a power transmission system, comprising:
+  (a) for each of a plurality of synchronous generators, computing a corrected
+      critical clearing time CCT_corrected analytically from generator inertia,
+      power, and damping parameters using a loading-class geometric invariant
+      and a universal damping correction scalar, without time-domain simulation;
+  (b) comparing CCT_corrected to a protection relay clearance time for each
+      generator; and
+  (c) generating a dynamic security margin indicator and contingency priority
+      ranking for operator or automated control use,
+  wherein said assessment is performed at a rate sufficient for real-time
+  grid operations.
+
+================================================================================
+ABSTRACT OF THE DRAWINGS
+================================================================================
+
+FIG. 1 depicts CCT estimation error (percent absolute value) as a function of
+damping ratio zeta for the IEEE 39-bus New England system (10 generators).
+The red curve and shaded band show the raw EAC formula (mean and min/max
+spread across generators).  The blue curve and shaded band show the corrected
+formula with a=1.51.  A dashed horizontal line marks the 5% accuracy gate.
+A vertical dotted line at zeta=0.20 marks the validated operating boundary.
+The blue shaded region indicates the validated envelope zeta <= 0.20, within
+which maximum corrected error is 2.73%.
+
 ================================================================================
