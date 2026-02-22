@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "unified-tensor-system"
+version = "0.1.0"
+description = "Regime-aware Koopman spectral acceleration for stability-critical simulation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Proprietary — Patent Pending"}
+
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.11",
+]
+
+[project.optional-dependencies]
+full = [
+    "pandas>=2.0",
+    "sympy>=1.12",
+    "fastapi>=0.100",
+    "uvicorn>=0.23",
+    "pydantic>=2.0",
+]
+dev = [
+    "pytest>=7.4",
+    "pytest-timeout>=2.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tensor*", "optimization*", "codegen*"]
+exclude = ["tests*", "platform*", "ecemath*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "platform/backend/tests"]

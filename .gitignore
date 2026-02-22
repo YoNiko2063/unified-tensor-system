@@ -16,3 +16,10 @@ tensor/data/*.db
 
 # Claude agent state
 .claude/
+
+# LaTeX build artifacts
+whitepaper/*.aux
+whitepaper/*.log
+whitepaper/*.out
+whitepaper/*.toc
+whitepaper/*.synctex.gz
