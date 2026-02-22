@@ -121,7 +121,7 @@ matrix, and Phi is a vector of observable functions.
     R_1 = -max_i(Re(lambda_i(K)))      (stability margin)
     R_2 = |lambda_1|/|lambda_2| - 1         (spectral separation)
     R_3 = 1 - epsilon_rec / eta_max    (reconstruction fidelity)
-    R_4 = 1 - E_Lyapunov / E_bound    (Lyapunov energy headroom)
+    R_4 = 1 - max_t(V(x(t))) / E_bound  (Lyapunov energy headroom)
 
     R = min(R_1, R_2, R_3, R_4)       (composite robustness score)
 
@@ -245,7 +245,12 @@ is the Frobenius norm.
 
     R_2 = |lambda_1| / |lambda_2| - 1
             Positive iff dominant mode is spectrally isolated.
-            Measures spectral gap (normalized).                 (Eq. 3b)
+            Measures spectral separation (ratio-normalized).    (Eq. 3b)
+
+            When |lambda_2| = 0 (degenerate case: rank-1 operator
+            or effectively one-dimensional dynamics), R_2 is set
+            to a maximum sentinel value R_2_max = 10, indicating
+            that the single mode dominates with no competing modes.
 
     R_3 = 1 - epsilon_rec / eta_max
             Positive iff reconstruction error below eta_max.
@@ -383,9 +388,12 @@ is added to the objective function as a penalty:
 
     J_total(theta) = J_domain(theta) - w_R * R(theta)          (Eq. 8)
 
-where J_domain is the domain-specific objective and w_R is a weight.
-Optimization over J_total yields solutions that balance domain
-performance against stability robustness.
+where J_domain is the domain-specific objective (minimized over
+theta), w_R > 0 is a robustness penalty weight, and R(theta) >= 0
+for stable candidates.  The optimizer minimizes J_total; the
+negative sign on the R term penalizes solutions with low robustness,
+driving the optimizer toward stable parameter regions.  The weight
+w_R controls the tradeoff between domain objective and stability.
 
 6.3 Multi-Objective Pareto Surface
 
@@ -394,8 +402,16 @@ robustness R, component cost, etc.), the optimizer constructs a
 Pareto front of non-dominated solutions.  Each point on the Pareto
 front is associated with:
   -- Objective vector (J_domain, R, cost, ...)
-  -- Structural feature vector B
-  -- Spectral coordinates (s_1, s_2, s_3)
+  -- Structural feature vector B = (B_1, ..., B_6) encoding
+     structural properties of the synthesized program (reference
+     density, branching factor, mutability ratio, nesting depth,
+     lifetime overlap, functional expression ratio; defined in
+     co-pending application [Provisional #3])
+  -- Spectral coordinates (s_1, s_2, s_3), where s_1 = log(omega_0)
+     is the log dominant oscillation frequency, s_2 = log(Q) is the
+     log quality factor, and s_3 = zeta is the damping ratio,
+     extracted from the runtime operator K (see co-pending
+     application [Provisional #2] for detailed definitions)
   -- Basin fraction beta
 
 This enables operators to select solutions with explicit robustness
@@ -436,29 +452,21 @@ stability-constrained optimization, comprising:
   (f) outputting the candidate with a stability certificate when the
       composite robustness score exceeds the threshold.
 
-CLAIM 2.  A computer-implemented method for runtime stability
-assessment, comprising:
+CLAIM 2.  The method of claim 1, wherein the composite robustness
+score is computed as:
 
-  (a) constructing a linear operator approximation of runtime
-      dynamics from state trajectories of an executing program or
-      dynamical system;
-  (b) computing eigenvalues {lambda_i} of the linear operator,
-      ordered by descending magnitude;
-  (c) computing a composite robustness score R as:
+    R = min(R_1, R_2, R_3, R_4)
 
-        R = min(R_1, R_2, R_3, R_4)
+where:
+    R_1 = -max_i( Re(lambda_i) )
+    R_2 = |lambda_1| / |lambda_2| - 1
+    R_3 = 1 - epsilon_rec / eta_max
+    R_4 = 1 - max_t(V(x(t))) / E_bound
 
-      where:
-        R_1 = -max_i( Re(lambda_i) )
-        R_2 = |lambda_1| / |lambda_2| - 1
-        R_3 = 1 - epsilon_rec / eta_max
-        R_4 = 1 - max_t(V(x(t))) / E_bound
-
-      epsilon_rec is reconstruction error on held-out trajectory,
-      eta_max is a reconstruction error threshold, V(x(t)) is a
-      Lyapunov energy function, and E_bound is an energy bound; and
-  (d) declaring the candidate runtime-stable when R > 0 and
-      returning the candidate for modification when R <= 0.
+epsilon_rec is reconstruction error on held-out trajectory, eta_max
+is a reconstruction error threshold, V(x(t)) is a quadratic Lyapunov
+function, E_bound is a Lyapunov energy bound, and eigenvalues are
+ordered by descending magnitude.
 
 CLAIM 3.  The method of claim 1, further comprising constructing a
 Lyapunov function from the linearized operator and monitoring the
@@ -531,7 +539,7 @@ the processors to:
   (b) construct a linear operator approximation and compute its
       spectral decomposition;
   (c) compute a composite robustness score from eigenvalue real
-      parts, spectral gap, reconstruction fidelity, and Lyapunov
+      parts, spectral separation, reconstruction fidelity, and Lyapunov
       energy headroom;
   (d) if the robustness score is below a threshold, return a
       feedback signal to the generating system;
@@ -541,20 +549,26 @@ the processors to:
   without requiring domain-specific stability analysis or exhaustive
   simulation.
 
-CLAIM 13.  The method of claim 1, applied in a closed loop with
-co-pending application [Provisional #3], comprising:
+CLAIM 13.  The method of claim 1, applied in a closed loop with a
+structural synthesis system that generates candidate programs by
+encoding structural features into a feature vector, computing a
+scalar structural energy metric, and constraining generation to a
+learned compilation-safe manifold defined by a scalar energy
+threshold D_sep; wherein the closed loop comprises:
 
-  (a) generating a candidate program using structural geometry
-      constraints (compilation manifold);
+  (a) generating a candidate program within the compilation-safe
+      manifold;
   (b) executing the candidate and collecting runtime trajectories;
-  (c) computing the composite robustness score;
-  (d) if the robustness score is below threshold, feeding back to
-      the structural synthesis system to adjust generation
-      parameters;
-  (e) iterating until both compilation success (E < D_sep) and
-      runtime stability (R > R_min) are achieved;
-  wherein the loop produces programs that are both structurally
-  compilation-safe and dynamically runtime-stable.
+  (c) computing the composite robustness score R;
+  (d) if R is below threshold, feeding back to the structural
+      synthesis system to tighten structural constraints and
+      regenerate; and
+  (e) iterating until both the structural manifold criterion and
+      runtime stability criterion are satisfied simultaneously;
+
+  wherein the loop produces programs that satisfy both structural
+  compilation safety and runtime dynamical stability requirements
+  before deployment.
 
 
 ======================================================================
@@ -571,7 +585,7 @@ signal.  Stable-certified candidates exit at right.
 
 FIG. 2 depicts a radar plot of composite robustness score
 components for three candidates.  Axes: R_1 (stability margin),
-R_2 (spectral gap), R_3 (reconstruction fidelity), R_4 (Lyapunov
+R_2 (spectral separation), R_3 (reconstruction fidelity), R_4 (Lyapunov
 headroom).  Stable candidate (blue polygon, all axes positive).
 Marginally stable (yellow, one axis near zero).  Unstable (red,
 one or more axes negative).

@@ -264,13 +264,11 @@ D_sep is learned from training data and is not generally zero.
 Classification:
 
     E(P) < D_sep  -->  P is in the compilation-safe region
-    E(P) > D_sep  -->  P is in the compilation-unsafe region   (Eq. 4)
+    E(P) >= D_sep -->  P is in the compilation-unsafe region   (Eq. 4)
 
-The compilation success probability for a candidate program P is:
-
-    p_compile(P) = sigma(-(E(P) - D_sep) / temperature)       (Eq. 5)
-
-where temperature controls the sharpness of the transition.
+At E(P) = D_sep, p_compile(P) = 0.5; the program is submitted for
+compilation and the outcome is used as additional training data
+regardless of result.
 
 
 3. GEOMETRIC GRADIENT AND SYNTHESIS CONSTRAINT
@@ -281,7 +279,7 @@ The gradient of the compilation success probability with respect to
 the structural feature vector is:
 
     grad_B p_compile = -w * p_compile(P) * (1 - p_compile(P))
-                        / temperature                          (Eq. 6)
+                        / temperature                          (Eq. 5)
 
 This gradient points in the direction of greatest increase in
 p_compile in structural feature space.
@@ -291,7 +289,7 @@ p_compile in structural feature space.
 A synthesis engine generates variants of a candidate program P by
 perturbing structural features in the direction of grad_B p_compile:
 
-    B' = B + alpha * grad_B p_compile                         (Eq. 7)
+    B' = B + alpha * grad_B p_compile                         (Eq. 6)
 
 where alpha is a step size.  The synthesis engine selects program
 variants whose structural features are closest to B' from a template
@@ -328,7 +326,21 @@ Hardware execution affinity is determined by E(P):
         -- Complex ownership patterns
         -- Hardware affinity deferred to runtime profiling
 
-4.2 Affinity Label
+4.2 Threshold Determination
+
+The energy thresholds E_low_threshold and E_mid_threshold partition
+the energy axis into three hardware affinity regions.
+E_low_threshold is the energy value below which programs exhibit high
+data-parallel regularity (low mutable reference density B_3 near zero,
+high pure-functional ratio B_6 near one) suited for SIMD or GPU
+execution.  E_mid_threshold is the value below which programs exhibit
+cache-resident sequential access suited for CPU cache-local execution.
+Default values calibrated from the training dataset:
+E_low_threshold = 0.08, E_mid_threshold = 0.30.  These values may be
+recalibrated for specific hardware architectures without departing
+from the invention.
+
+4.3 Affinity Label
 
     affinity(P) = hardware_class(E(P))                        (Eq. 9)
 
@@ -452,17 +464,12 @@ modification comprises selecting, from a template library, the
 template whose structural feature vector is closest to a target
 feature vector derived from the geometric gradient.
 
-CLAIM 8.  The method of claim 1, applied iteratively in a closed
-loop comprising:
-
-  (a) generating a candidate program;
-  (b) computing its structural feature vector and energy metric;
-  (c) if energy metric exceeds the separation boundary, applying the
-      gradient step and regenerating;
-  (d) if energy metric is within the safe region, compiling;
-  (e) if compilation fails, updating the classifier and repeating;
-  wherein the loop terminates when compilation succeeds or a maximum
-  iteration count is reached.
+CLAIM 8.  The method of claim 1, further comprising iterating the
+steps of claim 1 in a closed loop until either compilation succeeds
+or a maximum iteration count is reached, wherein each failed
+compilation attempt causes the structural feature vector and failure
+label to be added to the classifier training dataset and the
+classifier to be updated before the next iteration.
 
 CLAIM 9.  A system for geometry-constrained code synthesis,
 comprising:

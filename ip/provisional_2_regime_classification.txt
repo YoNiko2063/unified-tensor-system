@@ -186,8 +186,9 @@ BRIEF DESCRIPTION OF DRAWINGS
 
 FIG. 1 -- Spectral invariant coordinate space (s_1, s_2, s_3).
 Points from different physical systems (generators, RLC circuits,
-spring-mass systems) occupying the same region are dynamically
-equivalent.  Regime classification boundaries shown as surfaces.
+spring-mass systems, Duffing oscillators) occupying the same region
+are dynamically equivalent.  Regime classification boundaries shown
+as surfaces.
 
 FIG. 2 -- Dual-criterion trust gate.  Two-dimensional threshold
 space: reconstruction_error (horizontal) vs spectral_gap (vertical).
@@ -223,8 +224,10 @@ Special cases:
     C = mass matrix, G = damping matrix, h(x) = stiffness force,
     u = external force
 
-  Duffing oscillator:
-    C = 1, G = 0, h(x) = alpha*x + beta*x^3, u = F*cos(omega*t)
+  Duffing oscillator (state vector x = [x1, x2]^T, x1 = position, x2 = velocity):
+    C = I_2 (identity), G = [0, -1; alpha, delta],
+    h(x) = [0; beta*x1^3], u = [0; F*cos(omega*t)]
+    (delta is the damping coefficient; G encodes damping and linear stiffness)
 
 The unified form enables a single spectral analysis pipeline to
 operate across all domains.
@@ -287,6 +290,13 @@ For the dominant conjugate eigenvalue pair lambda = sigma +/- j*omega:
     s_2 = log(Q) = log(omega_0 / (2*|sigma|))   (log quality factor)
     s_3 = zeta  = |sigma| / omega_0   (damping ratio)         (Eq. 3)
 
+Note: For purely second-order systems, s_3 = zeta = 1/(2*exp(s_2)) is
+algebraically determined by s_2 = log(Q) = log(1/(2*zeta)).  The full
+three-coordinate representation (s_1, s_2, s_3) provides redundancy
+for numerical robustness and generalizes naturally to higher-order
+systems with multiple mode pairs, where s_2 and s_3 computed from the
+dominant pair carry independent information about modal interactions.
+
 3.2 Cross-Domain Equivalence
 
 Two systems A and B from different physical domains are spectrally
@@ -327,11 +337,14 @@ gamma_min = 1.2.
 
 4.2 Trust Score
 
-A scalar trust score T in [0, 1] is computed as:
+A scalar trust score T is computed as:
 
     T = min(1 - epsilon_rec/eta_max,  1 - gamma_min/gamma_gap) (Eq. 5)
 
-T = 1: fully trusted; T = 0: at threshold; T < 0: escalate.
+T approaches 1 as reconstruction error approaches zero and spectral gap
+grows large; T = 0 at the decision threshold (one criterion exactly
+at its bound); T < 0 when at least one criterion is violated.
+Semantics: T > 0: trusted; T <= 0: escalate.
 
 4.3 Escalation Policy
 
@@ -345,16 +358,32 @@ When T < 0:
 
 5.1 Classification Rule
 
-Given trusted K with eigenvalues {lambda_i}:
+The classification rule handles both trusted and untrusted operator cases:
+
+  Step 1 -- Trust gate:
+
+    If epsilon_rec >= eta_max:
+        Classify directly as Chaotic without further spectral analysis.
+        (High reconstruction error indicates the linear operator cannot
+         represent the system's dynamics -- a hallmark of chaotic behavior.)
+
+    If epsilon_rec < eta_max AND gamma_gap <= gamma_min:
+        Operator spectral structure is inadequate for classification;
+        escalate to direct numerical simulation.                (Eq. 6-pre)
+
+    If epsilon_rec < eta_max AND gamma_gap > gamma_min:
+        Operator is trusted (T >= 0); proceed to Step 2.
+
+  Step 2 -- Spectral classification (trusted K only):
 
     LCA (locally convergent attractor):
         max_i( Re(lambda_i) ) < 0                             (Eq. 6a)
 
     Transitional:
-        max_i( Re(lambda_i) ) >= 0  AND  epsilon_rec < eta_max (Eq. 6b)
-
-    Chaotic:
-        epsilon_rec >= eta_max                                 (Eq. 6c)
+        max_i( Re(lambda_i) ) >= 0                            (Eq. 6b)
+        (Combined conditions: epsilon_rec < eta_max, gamma_gap > gamma_min,
+         and max Re(lambda_i) >= 0 are all simultaneously required for
+         Transitional classification.)
 
 5.2 Transition Boundary Detection
 
@@ -459,12 +488,20 @@ CLAIM 3.  The method of claim 1, wherein the spectral invariant
 coordinates comprise the log of the dominant oscillation frequency,
 the log of the quality factor, and the damping ratio.
 
-CLAIM 4.  The method of claim 1, wherein two systems from different
-physical domains are declared spectrally equivalent when their
-spectral invariant coordinates differ by less than a tolerance
-epsilon_equiv, and wherein scalar correction parameters validated on
-one system are applied to a spectrally equivalent system without
-refitting.
+CLAIM 4.  The method of claim 1, applied to a first and a second
+nonlinear dynamical system from different physical domains, further
+comprising:
+
+  (a) applying steps (b) through (i) of claim 1 to each system to
+      obtain spectral invariant coordinates (s_1, s_2, s_3) for each;
+  (b) computing a dissonance metric between the two spectral embeddings
+      as the Euclidean distance in (s_1, s_2, s_3) space normalized by
+      a threshold tau;
+  (c) declaring the two systems spectrally equivalent when the
+      dissonance metric is below one; and
+  (d) applying scalar correction parameters validated on the first
+      system to the spectrally equivalent second system without
+      domain-specific refitting.
 
 CLAIM 5.  The method of claim 1, wherein the nonlinear dynamical
 system is expressible in the generalized form:
@@ -477,10 +514,17 @@ is an external input, and wherein the method applies without
 modification to power system generators, RLC circuits, spring-mass
 systems, and nonlinear oscillators expressible in said form.
 
-CLAIM 6.  The method of claim 1, further comprising detecting a
-transition boundary as the surface in system parameter space where
-the dominant real eigenvalue part changes sign, and outputting the
-proximity of the current operating point to said boundary.
+CLAIM 6.  The method of claim 1, further comprising detecting
+transition boundaries in system parameter space, wherein:
+
+  (a) the LCA-to-transitional boundary is detected as the locus
+      where the dominant real eigenvalue part changes sign; and
+  (b) the transitional-to-chaotic boundary is detected as the locus
+      where the reconstruction error crosses the threshold eta_max;
+
+  and outputting the signed distance from the current operating
+  point to the nearest transition boundary as a regime fragility
+  metric.
 
 CLAIM 7.  The method of claim 1, further comprising querying a
 library of calibrated systems using a dissonance metric on spectral
@@ -522,14 +566,12 @@ the processors to:
       equivalence results;
   without requiring domain-specific simulation models.
 
-CLAIM 11.  The method of claim 1, applied iteratively over a
-parameter space to produce a regime map, comprising:
-
-  (a) scanning system parameters over a grid or random sample;
-  (b) applying the classification method of claim 1 at each point;
-  (c) recording regime labels and trust scores;
-  (d) outputting a regime map identifying LCA, transitional, and
-      chaotic regions and their boundaries in parameter space.
+CLAIM 11.  The method of claim 1, further comprising iteratively
+scanning system parameters over a grid or random sample, applying
+the classification steps (a) through (i) at each parameter point,
+recording the resulting regime label and trust score at each point,
+and outputting a regime map that identifies LCA, transitional, and
+chaotic regions and their boundaries in the parameter space.
 
 CLAIM 12.  The method of claim 4, wherein cross-domain equivalence
 is used to accelerate stability assessment of a new physical system
@@ -544,10 +586,10 @@ ABSTRACT OF THE DRAWINGS
 
 FIG. 1 depicts the spectral invariant coordinate space (log_omega_0,
 log_Q, zeta).  Points from power system generators (circles), RLC
-circuits (squares), and spring-mass systems (triangles) occupying
-the same region are dynamically equivalent.  Shaded surfaces show
-regime classification boundaries: LCA region (blue), transitional
-region (yellow), chaotic region (red).
+circuits (squares), spring-mass systems (triangles), and Duffing
+oscillators (diamonds) occupying the same region are dynamically
+equivalent.  Shaded surfaces show regime classification boundaries:
+LCA region (blue), transitional region (yellow), chaotic region (red).
 
 FIG. 2 depicts the dual-criterion trust gate.  Horizontal axis:
 reconstruction error epsilon_rec.  Vertical axis: spectral gap
