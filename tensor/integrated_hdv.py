@@ -71,6 +71,7 @@ class IntegratedHDVSystem:
 
         # Equation parser for math dimension
         self._eq_parser = EquationParser()
+        self._orthogonalizer = None  # HDVOrthogonalizer, lazily created
 
         # Data paths
         Path("tensor/data").mkdir(parents=True, exist_ok=True)
@@ -321,3 +322,18 @@ class IntegratedHDVSystem:
         }
         obj._domain_dim_usage = np.array(state["dim_usage"], dtype=np.int32)
         return obj
+
+    # ── Orthogonal domain encoding ─────────────────────────────────────────────
+
+    def orthogonal_encode(self, text: str, domain: str) -> np.ndarray:
+        """structural_encode() + HDVOrthogonalizer.project() for domain isolation.
+
+        Additive extension — does NOT change existing structural_encode() behaviour.
+        Different domains produce vectors with zero overlap in their respective
+        fixed subspaces (circuit / semantic / market / code).
+        """
+        from tensor.semantic_observer import HDVOrthogonalizer  # lazy import
+        vec = self.structural_encode(text, domain)
+        if self._orthogonalizer is None:
+            self._orthogonalizer = HDVOrthogonalizer(hdv_dim=self.hdv_dim)
+        return self._orthogonalizer.project(vec, domain)
