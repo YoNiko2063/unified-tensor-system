@@ -2,6 +2,17 @@ __pycache__/
 *.pyc
 *.pyo
 .env
+# JSONL logs (but allow codegen/feedback.jsonl)
 *.jsonl
+!codegen/feedback.jsonl
 tensor/logs/
 .DS_Store
+
+# Generated visualizations (47MB+ of Plotly HTML)
+tensor/data/viz/*.html
+
+# Optuna/SQLite databases
+tensor/data/*.db
+
+# Claude agent state
+.claude/
