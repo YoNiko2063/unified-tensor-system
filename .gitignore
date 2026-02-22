@@ -23,3 +23,6 @@ whitepaper/*.log
 whitepaper/*.out
 whitepaper/*.toc
 whitepaper/*.synctex.gz
+investor_brief/*.aux
+investor_brief/*.log
+investor_brief/*.out
