@@ -57,7 +57,15 @@ def _load_math_patterns(
 
 
 def _load_behavioral_patterns(max_patterns: int = 50) -> List[Dict]:
-    """Load behavioral patterns from DeepWiki or capability maps."""
+    """Load behavioral patterns from DeepWiki, capability maps, or function library.
+
+    Sources (tried in order, first non-empty wins):
+      1. tensor/data/deepwiki_workflows.json  — full DeepWiki-derived workflows
+      2. tensor/data/capability_maps.json     — capability map entries
+      3. tensor/data/function_library.json    — synthetic behavioral patterns
+         derived from equation structure (operator terms, function type, domain)
+    """
+    # Source 1+2: dedicated behavioral pattern files
     candidates = [
         "tensor/data/deepwiki_workflows.json",
         "tensor/data/capability_maps.json",
@@ -78,12 +86,50 @@ def _load_behavioral_patterns(max_patterns: int = 50) -> List[Dict]:
                         "intent": cap.get("intent", ""),
                         "repo": url,
                     })
-                return patterns
+                if patterns:
+                    return patterns
             # list format
-            if isinstance(raw, list):
+            if isinstance(raw, list) and raw:
                 return raw[:max_patterns]
         except Exception:
             continue
+
+    # Source 3: synthesize behavioral patterns from the function library.
+    # Each equation's structural metadata (type, operator_terms, domain)
+    # becomes a behavioral workflow — this bridges the gap when DeepWiki
+    # data isn't available yet.
+    lib_path = Path("tensor/data/function_library.json")
+    if lib_path.exists():
+        try:
+            lib = json.loads(lib_path.read_text())
+            patterns = []
+            for name, entry in list(lib.items())[:max_patterns]:
+                func_type = entry.get("type", "unknown")
+                eq_type = entry.get("equation_type", "algebraic")
+                ops = entry.get("operator_terms", [])
+                domains = entry.get("domains", ["general"])
+                domain = domains[0] if isinstance(domains, list) else list(domains)[0]
+                params = entry.get("parameters", [])
+
+                workflow = [func_type]
+                if eq_type != "algebraic":
+                    workflow.append(eq_type)
+                if ops:
+                    workflow.extend(ops)
+                if params:
+                    workflow.extend([f"param_{p}" for p in params[:3]])
+                workflow.append(domain)
+
+                patterns.append({
+                    "workflow": workflow,
+                    "intent": f"{eq_type} {func_type}: {entry.get('symbolic_str', '')[:60]}",
+                    "repo": f"library:{name}",
+                })
+            if patterns:
+                return patterns
+        except Exception:
+            pass
+
     return []
 
 
@@ -457,8 +503,41 @@ def generate_discovery_scatter(
     behavioral_patterns = _load_behavioral_patterns(max_patterns=n_behavioral)
 
     if not math_patterns or not behavioral_patterns:
-        print("[Viz] Not enough patterns for discovery scatter — skipping")
-        return None
+        # Generate an empty chart showing 0 universals rather than returning None.
+        # This keeps the visual feedback loop alive so the user sees progress.
+        try:
+            fig = go.Figure()
+            n_m = len(math_patterns) if math_patterns else 0
+            n_b = len(behavioral_patterns) if behavioral_patterns else 0
+            missing = []
+            if not math_patterns:
+                missing.append("math (run populate_library_from_arxiv)")
+            if not behavioral_patterns:
+                missing.append("behavioral (run autonomous_training)")
+            fig.add_annotation(
+                text=f"Waiting for patterns: {', '.join(missing)}",
+                xref="paper", yref="paper", x=0.5, y=0.5,
+                showarrow=False, font=dict(size=16, color="gray"),
+            )
+            fig.update_layout(
+                title=dict(
+                    text=f"Cross-Dimensional Discovery Landscape<br>"
+                         f"<sub>{n_m} math x {n_b} behavioral = 0 pairs | "
+                         f"0 universals found</sub>",
+                    font=dict(size=16),
+                ),
+                xaxis_title="Overlap Cosine Similarity",
+                yaxis_title="MDL Score",
+                template="plotly_dark",
+                height=600,
+            )
+            Path(viz_dir).mkdir(parents=True, exist_ok=True)
+            path = str(Path(viz_dir) / "discovery_scatter.html")
+            fig.write_html(path)
+            print(f"[Viz] Saved: {path} (0 universals — waiting for patterns)")
+            return path
+        except Exception:
+            return None
 
     hdv = IntegratedHDVSystem(hdv_dim=hdv_dim, n_modes=10, embed_dim=64)
     discovery = CrossDimensionalDiscovery(

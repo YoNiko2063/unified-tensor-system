@@ -214,10 +214,17 @@ class FrequencyDependentLifter:
             spectral_radius_bound=spectral_radius_bound,
         )
 
-        # Per-cycle coefficient matrices A_k (low-rank: U_k @ V_k^T)
+        # Per-cycle coefficient matrices A_k (low-rank: U_k @ V_k^T) for S→M lifting
         self._cycle_U: List[Optional[np.ndarray]] = [None] * N_CHANNELS
         self._cycle_V: List[Optional[np.ndarray]] = [None] * N_CHANNELS
         self._cycle_fitted: List[bool] = [False] * N_CHANNELS
+
+        # Separate per-cycle matrices for M→L lifting (Gap 6)
+        self._cycle_U_ml: List[Optional[np.ndarray]] = [None] * N_CHANNELS
+        self._cycle_V_ml: List[Optional[np.ndarray]] = [None] * N_CHANNELS
+        self._cycle_fitted_ml: List[bool] = [False] * N_CHANNELS
+        # Baseline for M→L (fitted by fit_calendar_m_to_l)
+        self._baseline_ml: Optional["LiftingOperator"] = None
 
     def fit(
         self,
@@ -310,6 +317,92 @@ class FrequencyDependentLifter:
         # Verify worst-case spectral radius of A_0 + sum(A_k)
         self._enforce_worst_case_bound()
 
+    def fit_calendar_m_to_l(
+        self,
+        source_states: np.ndarray,
+        target_deltas: np.ndarray,
+        calendar_phases: List[CalendarPhase],
+        regularization: float = 1.0,
+        min_active_samples: int = 5,
+    ) -> None:
+        """Calendar-aware fitting for the M→L (regime → fundamental) operator.
+
+        Mirrors fit_calendar() but stores learned matrices in _cycle_U_ml,
+        _cycle_V_ml, _cycle_fitted_ml and a separate baseline in _baseline_ml.
+        Used by lift_regime_to_fundamental() when is_m_to_l_fitted is True.
+
+        Args:
+            source_states: (N, source_dim) regime feature vectors.
+            target_deltas: (N, target_dim) fundamental change vectors.
+            calendar_phases: List of N CalendarPhase objects.
+            regularization: Ridge regularization strength.
+            min_active_samples: Minimum active samples to fit a cycle.
+        """
+        n = source_states.shape[0]
+        if n < 3:
+            return
+
+        from tensor.timescale_state import LiftingOperator
+
+        # Fit M→L baseline using the same source/target dims
+        src_dim = source_states.shape[1]
+        tgt_dim = target_deltas.shape[1]
+        baseline_ml = LiftingOperator(
+            source_dim=src_dim,
+            target_dim=tgt_dim,
+            max_rank=self._max_rank,
+            spectral_radius_bound=self._sr_bound,
+        )
+        baseline_ml.fit(source_states, target_deltas, regularization)
+        if not baseline_ml.is_fitted:
+            return
+        self._baseline_ml = baseline_ml
+
+        # Residuals from M→L baseline
+        residuals = np.zeros_like(target_deltas)
+        for i in range(n):
+            residuals[i] = target_deltas[i] - baseline_ml.lift(source_states[i])
+
+        # Per-cycle regression (same logic as fit_calendar)
+        for k in range(N_CHANNELS):
+            phi_weights = np.array([
+                von_mises_basis(cp.theta[k], cp.amplitudes[k], KAPPA[k])
+                for cp in calendar_phases
+            ])
+            active_mask = phi_weights > 0.01
+            n_active = int(np.sum(active_mask))
+            if n_active < min_active_samples:
+                continue
+
+            active_sources = source_states[active_mask]
+            active_residuals = residuals[active_mask]
+            active_phi = phi_weights[active_mask]
+
+            sqrt_phi = np.sqrt(active_phi)[:, np.newaxis]
+            weighted_sources = active_sources * sqrt_phi
+            weighted_residuals = active_residuals * sqrt_phi
+
+            XtX = weighted_sources.T @ weighted_sources + regularization * np.eye(src_dim)
+            XtY = weighted_sources.T @ weighted_residuals
+
+            try:
+                A_k = np.linalg.solve(XtX, XtY).T
+            except np.linalg.LinAlgError:
+                continue
+
+            U, S, Vt = np.linalg.svd(A_k, full_matrices=False)
+            rank = min(self._max_rank, len(S), int(np.sum(S > 1e-10 * S[0])))
+            rank = max(rank, 1)
+            S_truncated = S[:rank].copy()
+            scale = self._sr_bound / max(S_truncated[0], 1e-15)
+            if scale < 1.0:
+                S_truncated *= scale
+
+            self._cycle_U_ml[k] = U[:, :rank] * S_truncated[np.newaxis, :]
+            self._cycle_V_ml[k] = Vt[:rank, :].T
+            self._cycle_fitted_ml[k] = True
+
+
     def _enforce_worst_case_bound(self) -> None:
         """Ensure rho(A_0 + sum_k A_k) < spectral_radius_bound."""
         if not self._baseline.is_fitted:
@@ -393,6 +486,11 @@ class FrequencyDependentLifter:
     def rank(self) -> int:
         return self._baseline.rank
 
+    @property
+    def is_m_to_l_fitted(self) -> bool:
+        """True when fit_calendar_m_to_l() has been called successfully."""
+        return self._baseline_ml is not None and self._baseline_ml.is_fitted
+
     def worst_case_spectral_radius(self) -> float:
         """Spectral radius of A_0 + sum_k A_k (all cycles active at max)."""
         if not self._baseline.is_fitted:
@@ -439,8 +537,10 @@ class FrequencyDependentLifter:
     ) -> np.ndarray:
         """Lift regime state to fundamental perturbation.
 
-        If encoder is provided, uses calendar-aware lift_at().
-        Otherwise falls back to baseline lift().
+        Uses the M→L-specific calendar-aware matrices (_baseline_ml, _cycle_*_ml)
+        when fit_calendar_m_to_l() has been called (is_m_to_l_fitted=True).
+        Falls back to the S→M matrices (lift_at) if only fit_calendar() was used,
+        or to the plain baseline if no calendar fitting has been done.
 
         Args:
             x_M: (source_dim,) regime feature vector.
@@ -450,10 +550,32 @@ class FrequencyDependentLifter:
         Returns:
             (target_dim,) fundamental perturbation vector.
         """
+        if self.is_m_to_l_fitted and encoder is not None:
+            # Use M→L-specific calendar-aware computation
+            phase = encoder.encode(dt)
+            return self._lift_ml_at(x_M, phase)
         if encoder is not None:
             phase = encoder.encode(dt)
             return self.lift_at(x_M, phase).delta
         return self.lift(x_M)
+
+    def _lift_ml_at(self, x_M: np.ndarray, phase: CalendarPhase) -> np.ndarray:
+        """Apply M→L calendar-aware lifting using fit_calendar_m_to_l() matrices.
+
+        delta = A_0_ml @ x + sum_k A_k_ml * phi_k(theta_k, a_k) @ x
+        """
+        if self._baseline_ml is None:
+            return np.zeros(self._target_dim)
+
+        delta = self._baseline_ml.lift(x_M).copy()
+        basis_weights = von_mises_vector(phase)
+
+        for k in range(N_CHANNELS):
+            if self._cycle_fitted_ml[k] and basis_weights[k] > 1e-10:
+                A_k_x = self._cycle_U_ml[k] @ (self._cycle_V_ml[k].T @ x_M)
+                delta += basis_weights[k] * A_k_x
+
+        return delta
 
     def fit_with_dates(
         self,

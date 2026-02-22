@@ -13,6 +13,8 @@ Phase convention: theta=0 means event is NOW, theta=pi means maximally far.
 from __future__ import annotations
 
 import calendar
+import json
+import os
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Dict, List, Optional
@@ -96,6 +98,11 @@ class CalendarRegimeEncoder:
         use_synthetic: If True, generate deterministic periodic cycles for testing.
     """
 
+    # Default path for bundled calendar data
+    _DEFAULT_DATA_FILE = os.path.join(
+        os.path.dirname(__file__), "data", "fed_dates.json"
+    )
+
     def __init__(
         self,
         fed_dates: Optional[List[date]] = None,
@@ -103,9 +110,56 @@ class CalendarRegimeEncoder:
         historical_anchors: Optional[List[HistoricalAnchor]] = None,
         earnings_dates: Optional[Dict[str, List[date]]] = None,
         use_synthetic: bool = False,
+        data_file: Optional[str] = None,
     ) -> None:
-        self._fed_dates = sorted(fed_dates) if fed_dates else []
-        self._holiday_dates = sorted(holiday_dates) if holiday_dates else []
+        """Initialize CalendarRegimeEncoder.
+
+        Args:
+            fed_dates: List of FOMC meeting dates. If None and data_file exists,
+                dates are loaded from the JSON file.
+            holiday_dates: List of market holiday dates. If None and data_file
+                exists, NYSE holidays are loaded from the JSON file.
+            historical_anchors: List of HistoricalAnchor for structural events.
+            earnings_dates: Dict[ticker, List[date]] for per-ticker earnings.
+            use_synthetic: If True, generate deterministic periodic cycles.
+            data_file: Path to JSON calendar data file. Defaults to
+                tensor/data/fed_dates.json. Pass empty string to disable.
+        """
+        # Resolve data_file path
+        if data_file is None:
+            data_file = self._DEFAULT_DATA_FILE
+
+        # Load from JSON file if no explicit dates provided
+        loaded_fed: List[date] = []
+        loaded_holidays: List[date] = []
+        if data_file and os.path.isfile(data_file):
+            try:
+                with open(data_file, "r") as fh:
+                    cal_data = json.load(fh)
+                loaded_fed = [
+                    date.fromisoformat(s)
+                    for s in cal_data.get("fomc_meeting_dates", [])
+                ]
+                # Merge all NYSE holiday years
+                for key in sorted(cal_data.keys()):
+                    if key.startswith("nyse_holidays"):
+                        loaded_holidays.extend(
+                            date.fromisoformat(s) for s in cal_data[key]
+                        )
+            except (json.JSONDecodeError, KeyError, ValueError):
+                pass  # Silently fall back to hardcoded defaults
+
+        # Explicit arguments override file-loaded values
+        if fed_dates is not None:
+            self._fed_dates = sorted(fed_dates)
+        else:
+            self._fed_dates = sorted(loaded_fed)
+
+        if holiday_dates is not None:
+            self._holiday_dates = sorted(holiday_dates)
+        else:
+            self._holiday_dates = sorted(loaded_holidays)
+
         self._historical_anchors = historical_anchors or []
         self._earnings_dates = earnings_dates or {}
         self._use_synthetic = use_synthetic

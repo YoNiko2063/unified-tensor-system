@@ -1,12 +1,129 @@
 # FICUTS: Fractals In Compositions of Unified Tensor Systems
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-02-17T14:00:00Z  
-**Last Updated By:** Claude Code (Task 5.2)
+**Version:** 1.1.0
+**Last Updated:** 2026-02-21T00:00:00Z
+**Last Updated By:** Claude Code (FICUTS upgrade)
 **Status:** GRACEFUL_SHUTDOWN
 **Current Phase:** Layer 2 (Dynamic HDV Space) — next
-**Universals Discovered:** 0  
+**Universals Discovered:** 0
 **System Uptime:** 0h 0m
+
+---
+
+## 🔒 BOOTSTRAP CONTRACT (Machine-Executable)
+
+> **If you are a fresh Claude Code instance reading this file:**
+
+You have **no memory** outside this file. Your entire working context must be derived from:
+- This Task List
+- The Current Phase field in the header
+- The File Map in the Architecture section
+
+### Your Mandatory Obligations
+
+1. **Execute** the first `[ ]` task in the current layer (use the Task Selection Algorithm below)
+2. **Run** embedded tests before marking `[✓]`
+3. **Commit** after each completed task: `git add FICUTS.md <changed_files> && git commit -m "Task X.Y complete"`
+4. **Update** `Last Updated By: Claude Code (Task X.Y)` in the header
+5. If **any ambiguity** exists:
+   - Add a clarification request under the task's **Notes** field
+   - Mark the task `[⊗]`
+   - **Do not invent architecture** — halt and surface the ambiguity
+
+### Why This Contract Exists
+
+A blank model does not infer intent. It follows constraints.
+FICUTS is not prose — it is a **deterministic execution environment that survives memory resets**.
+
+---
+
+## 🔍 TASK SELECTION ALGORITHM
+
+When beginning a session, execute this algorithm exactly:
+
+```
+1. Read the "Current Phase" field from the header.
+2. Navigate to that Layer in the Task List.
+3. Find the first task marked [ ] in that Layer.
+   a. If none exist → mark Layer complete → increment Current Phase → repeat from step 2.
+4. Execute the task.
+5. Run its embedded tests.
+6. If ALL tests pass:
+      a. Change [ ] → [✓]
+      b. Update "Last Updated By: Claude Code (Task X.Y)"
+      c. Update "Current Phase" if layer is now fully [✓]
+      d. Commit: git add FICUTS.md <files> && git commit -m "Task X.Y complete"
+   Else:
+      a. Change [ ] → [⊗]
+      b. Add error details to the task's Notes field
+      c. Stop — surface the failure to human
+7. Return to step 1 for next task (or halt if instructed).
+```
+
+**Do not skip steps. Do not reorder steps. Do not execute tasks in parallel unless they are explicitly marked as independent.**
+
+---
+
+## 🧠 STATE DIGEST (Machine Summary)
+
+> Read this first for immediate situational awareness. No full-doc scan required.
+
+```
+Phase:          Layer 2 (Dynamic HDV Space)
+
+Layer Status:
+  Layer 1 (Lyapunov + WAL):          COMPLETE  [✓✓✓]
+  Layer 2 (Dynamic HDV Space):        IN PROGRESS — 3 tasks open
+  Layer 3 (Structural Causal Model):  NOT STARTED
+  Layer 4 (Concurrency + Memory):     COMPLETE  [✓✓]
+  Layer 5 (FICUTS Journal):           COMPLETE  [✓✓]
+
+Open Tasks:
+  Task 2.1: DynamicLatentSpace class (tensor/dynamic_hdv.py — new file)
+  Task 2.2: UniversalDiscovery via MDL
+  Task 2.3: Wire HDV into AgentNetwork
+  Task 3.1: CausalGraphLearning (tensor/causal_reasoning.py — new file)
+  Task 3.2: Use causal model in agent firing
+
+Repository Status:
+  Tests passing: ~1570
+  function_library.json: 564 algebraic entries (no DEQ operators yet — canonicalization pending)
+  Ingested papers: 359 in tensor/data/ingested/
+
+Blocking Issues:
+  None
+```
+
+> **Note on operator library:** The 564 ingested entries are flat algebraic expressions.
+> DEQ canonicalization (derivative detection, PDE class tagging, operator term extraction)
+> is tracked separately and does NOT block Layer 2 tasks.
+
+---
+
+## 🚫 NON-GOALS (Do Not Implement)
+
+A fresh instance must NOT do any of the following unless a task explicitly requires it:
+
+- Refactor architecture or rename modules beyond task scope
+- Optimize hyperparameters (φ, α, β, MDL_THRESHOLD, etc.)
+- Introduce new Python dependencies unless the task spec includes them
+- Reinterpret HDV semantics or change how domains are registered
+- Modify tasks in previous layers (1, 4, 5) unless fixing a failing test
+- Add docstrings, type annotations, or comments to code you did not write
+- Design for hypothetical future requirements not in the Task List
+
+---
+
+## ⚠️ FAIL-SAFE RULE
+
+```
+If FICUTS.md becomes syntactically corrupted or self-contradictory:
+  1. HALT all execution immediately.
+  2. Do NOT attempt to repair the document.
+  3. Do NOT continue executing tasks.
+  4. Notify human: "FICUTS.md appears corrupted. Manual review required."
+  5. Await human instruction before proceeding.
+```
 
 ---
 
@@ -62,6 +179,11 @@ The document encodes yin-yang balance:
 ---
 
 ## Core Principle: Yin-Yang as Collaborative Play
+
+> **Separation note:** This section contains philosophical framing intended for
+> Claude Chat and human collaborators. Claude Code instances executing tasks
+> **may skip directly to the Task List**. Full collaboration theory is tracked
+> in `FICUTS_PLAYBOOK.md` (philosophy, golden angle framing, iteration examples).
 
 The system is governed by:
 ```
@@ -857,6 +979,19 @@ Average MDL = {mdl_avg:.3f} (lower = more universal).
 
 ---
 
+## Execution Governance Reference
+
+> The full Bootstrap Contract, Task Selection Algorithm, Non-Goals, and Fail-Safe
+> rules appear at the **top of this document** for fresh instance consumption.
+> This section is a brief in-flow reminder.
+
+**Non-Goals:** Do not refactor, optimize hyperparameters, add undeclared dependencies,
+reinterpret semantics, or modify previous complete layers outside of bug-fixing.
+
+**Fail-Safe:** If this document is corrupted → halt, do not repair, notify human.
+
+---
+
 ## Discoveries (Logged by System)
 
 *This section is populated automatically as the system finds universal patterns. Human can also add discoveries here manually.*
@@ -987,7 +1122,9 @@ The document is the game board. The tasks are moves. Universals are points score
 
 ---
 
-**End of FICUTS v1.0.0**
+**End of FICUTS v1.1.0**
 
-*Next version will be co-written by human + Claude Code + running system. This sentence will be replaced by whatever the next version thinks is important to say here.*
+*This version adds the Bootstrap Contract, Task Selection Algorithm, State Digest, Non-Goals, and Fail-Safe governance layer — making FICUTS a deterministic, self-contained execution environment that survives memory resets.*
+
+*Philosophy, collaboration theory, and golden angle framing → see `FICUTS_PLAYBOOK.md`.*
 

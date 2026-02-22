@@ -8,6 +8,7 @@ Gates:
   4. Templates A and B pass with P(ok) > 0.90
   5. ΔE_total for passing templates is positive and ordered A < B
   6. Summary dict fields are complete and consistent
+  7. B6 body_mut_borrows extraction (if extractor binary present)
 """
 
 import os
@@ -18,6 +19,7 @@ sys.path.insert(0, _ROOT)
 
 import pytest
 from optimization.code_gen_experiment import (
+    EXTRACTOR_BIN,
     METRICS_JSONL,
     TEMPLATES,
     D_SEP,
@@ -25,6 +27,7 @@ from optimization.code_gen_experiment import (
     compute_summary,
     delta_e_total,
     e_borrow,
+    extract_borrow_vector,
     feature_vec,
     load_classifier,
     predict,
@@ -60,6 +63,12 @@ class TestTemplateDefinitions:
         assert "A_pure_functional"  in names
         assert "B_shared_reference" in names
         assert "C_mutable_aliasing" in names
+
+    def test_bv_six_components(self):
+        """All templates must now carry 6-component BorrowVectors."""
+        for tmpl in TEMPLATES:
+            assert len(tmpl.bv) == 6, \
+                f"{tmpl.name} bv has {len(tmpl.bv)} components (expected 6)"
 
     def test_e_borrow_ordering(self):
         """A < B < C in E_borrow."""
@@ -184,15 +193,87 @@ class TestSummary:
 
 class TestHelpers:
     def test_e_borrow_pure_functional(self):
-        bv = (0.10, 0.00, 0.00, 0.00, 0.00)
+        """Template A design BV: B1=0.10, rest 0. E = 0.10 * 0.25 = 0.025."""
+        bv = (0.10, 0.00, 0.00, 0.00, 0.00, 0.00)
         assert abs(e_borrow(bv) - 0.025) < 1e-9
 
     def test_feature_vec_length(self):
-        bv = (0.1, 0.1, 0.0, 0.1, 0.0)
+        """7D feature vector: B1..B6 + E_borrow."""
+        bv = (0.1, 0.1, 0.0, 0.1, 0.0, 0.0)
         fv = feature_vec(bv)
-        assert fv.shape == (6,)
-        assert abs(fv[5] - e_borrow(bv)) < 1e-9
+        assert fv.shape == (7,)
+        assert abs(fv[6] - e_borrow(bv)) < 1e-9
 
     def test_delta_e_formula(self):
         assert abs(delta_e_total(0.0, 0.025) - 0.025) < 1e-9
         assert abs(delta_e_total(0.0, 0.080) - 0.080) < 1e-9
+
+    def test_weights_sum_to_one(self):
+        """B1..B6 weights must sum to 1.0."""
+        from optimization.code_gen_experiment import WEIGHTS
+        import numpy as np
+        assert abs(float(np.sum(WEIGHTS)) - 1.0) < 1e-9
+
+
+# ── 7. B6 extraction (requires extractor binary) ──────────────────────────────
+
+class TestB6Extraction:
+    def test_template_c_has_body_mut_borrows(self):
+        """Template C body has two &mut a[0] exprs → B6 > 0."""
+        if not os.path.exists(EXTRACTOR_BIN):
+            pytest.skip("borrow_extractor binary not found")
+        c_code = TEMPLATES[2].rust_code
+        bv = extract_borrow_vector(c_code)
+        assert bv is not None
+        assert bv[5] > 0, f"B6={bv[5]:.3f} should be > 0 for mutable body exprs"
+
+    def test_template_a_b6_zero(self):
+        """Template A has no &mut expressions in body → B6 = 0."""
+        if not os.path.exists(EXTRACTOR_BIN):
+            pytest.skip("borrow_extractor binary not found")
+        bv = extract_borrow_vector(TEMPLATES[0].rust_code)
+        assert bv is not None
+        assert bv[5] == 0.0, f"Template A B6={bv[5]:.3f} should be 0"
+
+    def test_template_b_b6_zero(self):
+        """Template B uses only shared refs, no &mut expr → B6 = 0."""
+        if not os.path.exists(EXTRACTOR_BIN):
+            pytest.skip("borrow_extractor binary not found")
+        bv = extract_borrow_vector(TEMPLATES[1].rust_code)
+        assert bv is not None
+        assert bv[5] == 0.0, f"Template B B6={bv[5]:.3f} should be 0"
+
+    def test_template_c_b6_positive(self):
+        """Template C raw_b6 = 2 (&mut a[0] twice) → B6 = 2/3 ≈ 0.667."""
+        if not os.path.exists(EXTRACTOR_BIN):
+            pytest.skip("borrow_extractor binary not found")
+        bv = extract_borrow_vector(TEMPLATES[2].rust_code)
+        assert bv is not None
+        assert abs(bv[5] - 2/3) < 0.01, f"B6={bv[5]:.3f}, expected ≈0.667"
+
+    def test_ast_accuracy_three_of_three(self, clf_scaler):
+        """With B6, AST extraction must correctly classify all 3 templates."""
+        if not os.path.exists(EXTRACTOR_BIN):
+            pytest.skip("borrow_extractor binary not found")
+        clf, scaler = clf_scaler
+        n_correct = 0
+        for tmpl in TEMPLATES:
+            bv = extract_borrow_vector(tmpl.rust_code)
+            assert bv is not None
+            pred_ok, _ = predict(clf, scaler, bv)
+            if pred_ok == tmpl.expected_compile:
+                n_correct += 1
+        assert n_correct == 3, f"AST accuracy {n_correct}/3 (expected 3/3)"
+
+    def test_template_c_e_borrow_above_dsep(self, clf_scaler):
+        """With B6, classifier boundary (not raw E) blocks Template C via AST."""
+        if not os.path.exists(EXTRACTOR_BIN):
+            pytest.skip("borrow_extractor binary not found")
+        clf, scaler = clf_scaler
+        bv = extract_borrow_vector(TEMPLATES[2].rust_code)
+        assert bv is not None
+        pred_ok, prob = predict(clf, scaler, bv)
+        assert not pred_ok, (
+            f"Template C AST pred_ok={pred_ok} (P={prob:.4f}), "
+            f"expected FAIL: B4={bv[3]:.3f} B6={bv[5]:.3f} push past boundary"
+        )

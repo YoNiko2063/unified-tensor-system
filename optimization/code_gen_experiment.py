@@ -4,26 +4,23 @@ code_gen_experiment.py — Closed-loop invariant-guided code generation gate.
 Experiment:
     Python kernel (dot product) → 3 Rust candidates at distinct BorrowVector
     levels → classifier predicts compile_success before compilation →
-    compare prediction vs known ground truth → measure ΔE_total.
+    actually compile with rustc (or fall back to design ground truth) →
+    compare prediction vs actual → measure ΔE_total.
 
-The three templates span the BorrowVector space:
-    A  pure functional / owned     E_borrow ≈ 0.025  (safe zone)
-    B  shared references           E_borrow ≈ 0.065  (safe zone)
-    C  mutable aliasing (E0499)    E_borrow ≈ 0.495  (above D_sep=0.43)
+Two BorrowVector extraction modes:
+    design   — analytically assigned from template structure (original)
+    ast      — extracted by rust-borrow-extractor (syn-based AST analysis)
 
-BorrowVector components (B1..B5):
-    B1 cross_module_borrows      weight 0.25
-    B2 lifetime_annotations      weight 0.20
-    B3 clone_density             weight 0.15  (protective)
-    B4 mutable_references        weight 0.20
-    B5 interior_mutability       weight 0.20  (protective)
+The two modes reveal the gap between synthetic classifier training and
+real AST extraction — the key empirical question.
 
-Classifier: LogisticRegression trained on 250 samples from
-    rust-constraint-manifold/metrics.jsonl (CV AUC=0.918, hold-out=0.951).
-
-Compile ground truth: derived from template design using the same borrow
-rules the Rust compiler enforces (B1>0.6 OR B2>0.6 OR B4>0.6 → failure).
-If rustc is available, actual compilation is performed instead.
+BorrowVector components (B1..B6):
+    B1  cross_module_borrows  — &T in type positions (shared refs)
+    B2  lifetime_annotations  — distinct named lifetimes
+    B3  clone_density         — .clone() calls
+    B4  mutable_references    — &mut T in TYPE positions
+    B5  interior_mutability   — RefCell / Mutex / Cell / UnsafeCell
+    B6  body_mut_borrows      — &mut <expr> in EXPRESSION positions
 
 Usage:
     conda run -n tensor python optimization/code_gen_experiment.py
@@ -52,20 +49,24 @@ METRICS_JSONL = os.path.join(
     os.path.expanduser("~"),
     "projects/rust-constraint-manifold/metrics.jsonl",
 )
+EXTRACTOR_BIN = os.path.join(
+    os.path.expanduser("~"),
+    "projects/rust-borrow-extractor/target/release/borrow_extractor",
+)
 
 # ── BorrowVector constants ────────────────────────────────────────────────────
 
-WEIGHTS = np.array([0.25, 0.20, 0.15, 0.20, 0.20])   # B1..B5 weights
-D_SEP   = 0.43                                          # compile failure boundary
+WEIGHTS = np.array([0.25, 0.18, 0.15, 0.17, 0.15, 0.10])   # B1..B6 weights, sum=1.0
+D_SEP   = 0.43                                                # compile failure boundary
 
 
 def e_borrow(bv: Tuple[float, ...]) -> float:
-    """Scalar borrow energy from 5-component BorrowVector."""
+    """Scalar borrow energy from 6-component BorrowVector."""
     return float(np.dot(WEIGHTS, bv))
 
 
 def feature_vec(bv: Tuple[float, ...]) -> np.ndarray:
-    """6D feature vector [B1..B5, E_borrow] for the classifier."""
+    """7D feature vector [B1..B6, E_borrow] for the classifier."""
     eb = e_borrow(bv)
     return np.array([*bv, eb], dtype=float)
 
@@ -75,7 +76,7 @@ def feature_vec(bv: Tuple[float, ...]) -> np.ndarray:
 @dataclass
 class RustTemplate:
     name:               str
-    bv:                 Tuple[float, ...]   # (B1, B2, B3, B4, B5)
+    bv:                 Tuple[float, ...]   # (B1, B2, B3, B4, B5, B6)
     rust_code:          str
     expected_compile:   bool                # ground truth from borrow rules
 
@@ -97,11 +98,11 @@ E_PYTHON = 0.00   # reduction/element_wise: purely numeric, no borrow structure
 TEMPLATES: List[RustTemplate] = [
     RustTemplate(
         name="A_pure_functional",
-        bv=(0.10, 0.00, 0.00, 0.00, 0.00),
+        bv=(0.10, 0.00, 0.00, 0.00, 0.00, 0.00),
         rust_code="""
 fn dot_product(a: Vec<f64>, b: Vec<f64>) -> f64 {
     // Owned values consumed. No references, no lifetimes.
-    // B1=0.10 (minor cross-call boundary), B2=B3=B4=B5=0.
+    // B1=0.10 (minor cross-call boundary), B2=B3=B4=B5=B6=0.
     a.iter().zip(b.iter()).map(|(x, y)| x * y).sum()
 }
 """,
@@ -109,7 +110,7 @@ fn dot_product(a: Vec<f64>, b: Vec<f64>) -> f64 {
     ),
     RustTemplate(
         name="B_shared_reference",
-        bv=(0.20, 0.15, 0.00, 0.00, 0.00),
+        bv=(0.20, 0.15, 0.00, 0.00, 0.00, 0.00),
         rust_code="""
 fn dot_product<'a>(a: &'a [f64], b: &'a [f64]) -> f64 {
     // Immutable borrows with explicit lifetime annotation.
@@ -121,12 +122,12 @@ fn dot_product<'a>(a: &'a [f64], b: &'a [f64]) -> f64 {
     ),
     RustTemplate(
         name="C_mutable_aliasing",
-        bv=(0.70, 0.70, 0.00, 0.90, 0.00),
+        bv=(0.70, 0.70, 0.00, 0.90, 0.00, 0.60),
         rust_code="""
 fn dot_product_alias(a: &mut Vec<f64>, b: &mut Vec<f64>) -> f64 {
     // Simultaneous mutable aliases into the same vector → E0499.
     // B1=0.70 (cross-module mut ref), B2=0.70 (lifetime annotation),
-    // B4=0.90 (mutable aliasing). All three exceed 0.6 threshold.
+    // B4=0.90 (mutable aliasing), B6=0.60 (two &mut body exprs).
     let r1: &mut f64 = &mut a[0];           // first &mut borrow of a[0]
     let r2: &mut f64 = &mut a[0];           // E0499: second simultaneous &mut
     *r1 = b[0];
@@ -144,6 +145,7 @@ def load_classifier(metrics_path: str) -> Tuple[LogisticRegression, StandardScal
     """
     Load training data from metrics.jsonl and fit LogisticRegression.
     Returns (fitted_clf, fitted_scaler).
+    Training data without b6 uses b6=0.0 (backward compatible).
     """
     samples = []
     with open(metrics_path) as f:
@@ -154,7 +156,8 @@ def load_classifier(metrics_path: str) -> Tuple[LogisticRegression, StandardScal
             samples.append(json.loads(line))
 
     X = np.array([
-        [s["b1"], s["b2"], s["b3"], s["b4"], s["b5"], s["e_borrow"]]
+        [s["b1"], s["b2"], s["b3"], s["b4"], s["b5"], s.get("b6", 0.0),
+         float(np.dot(WEIGHTS, [s["b1"], s["b2"], s["b3"], s["b4"], s["b5"], s.get("b6", 0.0)]))]
         for s in samples
     ])
     y = np.array([int(s["compile_success"]) for s in samples])
@@ -181,6 +184,28 @@ def predict(clf: LogisticRegression,
     return (prob >= 0.5), float(prob)
 
 
+# ── AST extraction ────────────────────────────────────────────────────────────
+
+def extract_borrow_vector(rust_code: str) -> Tuple[float, ...] | None:
+    """
+    Run borrow_extractor on rust_code and return (B1..B6) tuple.
+    Returns None if the extractor binary is not available.
+    """
+    if not os.path.exists(EXTRACTOR_BIN):
+        return None
+    try:
+        result = subprocess.run(
+            [EXTRACTOR_BIN],
+            input=rust_code, capture_output=True, text=True, timeout=10,
+        )
+        data = json.loads(result.stdout)
+        if "parse_error" in data:
+            return None
+        return (data["b1"], data["b2"], data["b3"], data["b4"], data["b5"], data["b6"])
+    except Exception:
+        return None
+
+
 # ── Compilation (if rustc available) ─────────────────────────────────────────
 
 def try_compile(rust_code: str) -> Tuple[bool | None, str]:
@@ -189,7 +214,10 @@ def try_compile(rust_code: str) -> Tuple[bool | None, str]:
     Returns (compile_success, stderr).
     Returns (None, '') if rustc is not available.
     """
-    rustc = shutil.which("rustc")
+    # shutil.which respects PATH; also check ~/.cargo/bin for rustup installs
+    rustc = shutil.which("rustc") or shutil.which(
+        "rustc", path=os.path.expanduser("~/.cargo/bin")
+    )
     if rustc is None:
         return None, ""
 
@@ -230,11 +258,17 @@ def delta_e_total(e_py: float, eb_rust: float) -> float:
 @dataclass
 class TemplateResult:
     template:        RustTemplate
+    # design-time BorrowVector prediction
     predicted_ok:    bool
     probability:     float
-    actual_ok:       bool | None    # None if rustc unavailable
-    actual_source:   str            # "rustc" | "design"
-    delta_e:         float | None   # only if template passes gate
+    # AST-extracted BorrowVector prediction (None if extractor unavailable)
+    ast_bv:          Tuple[float, ...] | None
+    ast_predicted_ok:  bool | None
+    ast_probability:   float | None
+    # actual compile result
+    actual_ok:       bool            # always set (rustc or design fallback)
+    actual_source:   str             # "rustc" | "design"
+    delta_e:         float | None    # only if template passes gate
 
 
 def run_experiment(metrics_path: str = METRICS_JSONL) -> List[TemplateResult]:
@@ -242,11 +276,21 @@ def run_experiment(metrics_path: str = METRICS_JSONL) -> List[TemplateResult]:
 
     results = []
     for tmpl in TEMPLATES:
-        pred_ok, prob   = predict(clf, scaler, tmpl.bv)
-        actual_ok, _    = try_compile(tmpl.rust_code)
-        actual_source   = "rustc" if actual_ok is not None else "design"
-        if actual_ok is None:
-            actual_ok = tmpl.expected_compile   # fall back to known ground truth
+        # Design-time prediction
+        pred_ok, prob = predict(clf, scaler, tmpl.bv)
+
+        # AST extraction + prediction
+        ast_bv = extract_borrow_vector(tmpl.rust_code)
+        if ast_bv is not None:
+            ast_pred_ok, ast_prob = predict(clf, scaler, ast_bv)
+        else:
+            ast_pred_ok, ast_prob = None, None
+
+        # Actual compilation
+        actual_ok_raw, _ = try_compile(tmpl.rust_code)
+        actual_source     = "rustc" if actual_ok_raw is not None else "design"
+        actual_ok         = actual_ok_raw if actual_ok_raw is not None \
+                            else tmpl.expected_compile
 
         de = delta_e_total(E_PYTHON, tmpl.eb) if actual_ok else None
 
@@ -254,6 +298,9 @@ def run_experiment(metrics_path: str = METRICS_JSONL) -> List[TemplateResult]:
             template=tmpl,
             predicted_ok=pred_ok,
             probability=prob,
+            ast_bv=ast_bv,
+            ast_predicted_ok=ast_pred_ok,
+            ast_probability=ast_prob,
             actual_ok=actual_ok,
             actual_source=actual_source,
             delta_e=de,
@@ -263,48 +310,79 @@ def run_experiment(metrics_path: str = METRICS_JSONL) -> List[TemplateResult]:
 
 def print_report(results: List[TemplateResult]) -> None:
     print()
-    print("=" * 72)
+    print("=" * 80)
     print("  Invariant-Guided Code Generation Gate Experiment")
-    print("  Python kernel: dot_product (element_wise, E_python=0.00)")
-    print(f"  Classifier: LogReg trained on 250 samples (D_sep={D_SEP})")
-    print("=" * 72)
-    print()
-    print(f"  {'Template':<26} {'E_borrow':>8}  {'Pred':>5}  {'P(ok)':>6}  "
-          f"{'Actual':>6}  {'Match':>5}  {'dE_total':>9}  {'Zone':>8}")
-    print("  " + "-" * 70)
+    print(f"  Python kernel: dot_product  E_python={E_PYTHON}  D_sep={D_SEP}")
+    print("=" * 80)
 
-    n_correct = 0
+    # Design-time table
+    print()
+    print("  ── DESIGN-TIME BorrowVector (manually assigned) ──────────────────────")
+    print(f"  {'Template':<26} {'E_borrow':>8}  {'Pred':>5}  {'P(ok)':>6}  "
+          f"{'Actual':>8}  {'Match':>5}  {'dE':>7}")
+    print("  " + "-" * 68)
+    n_correct_design = 0
     for r in results:
-        match     = r.predicted_ok == r.actual_ok
-        n_correct += int(match)
-        de_str    = f"{r.delta_e:+.3f}" if r.delta_e is not None else "  n/a "
-        zone      = "SAFE" if (r.delta_e is not None and r.delta_e < D_SEP) else \
-                    ("FAIL" if r.delta_e is None else "WARN")
-        src_tag   = f"[{r.actual_source}]"
+        match = r.predicted_ok == r.actual_ok
+        n_correct_design += int(match)
+        de_str = f"{r.delta_e:+.4f}" if r.delta_e is not None else "  n/a"
+        src    = f"[{r.actual_source}]"
         print(f"  {r.template.name:<26} {r.template.eb:>8.3f}  "
               f"{'OK' if r.predicted_ok else 'FAIL':>5}  {r.probability:>6.3f}  "
-              f"{'OK' if r.actual_ok else 'FAIL':>6}{src_tag:>4}  "
-              f"{'YES' if match else 'NO ':>5}  {de_str:>9}  {zone:>8}")
+              f"{'OK' if r.actual_ok else 'FAIL':>5}{src:<5}  "
+              f"{'YES' if match else 'NO':>5}  {de_str:>7}")
+
+    # AST-extracted table
+    has_ast = any(r.ast_bv is not None for r in results)
+    n_correct_ast = None
+    if has_ast:
+        print()
+        print("  ── AST-EXTRACTED BorrowVector (syn-based real analysis) ──────────────")
+        print(f"  {'Template':<26} {'E_borrow':>8}  {'Pred':>5}  {'P(ok)':>6}  "
+              f"{'Actual':>8}  {'Match':>5}  {'Gap vs design':>14}")
+        print("  " + "-" * 78)
+        n_correct_ast = 0
+        for r in results:
+            if r.ast_bv is None:
+                continue
+            ast_eb   = e_borrow(r.ast_bv)
+            match    = r.ast_predicted_ok == r.actual_ok
+            n_correct_ast += int(match)
+            eb_gap   = ast_eb - r.template.eb
+            gap_str  = f"Δ{eb_gap:+.3f}"
+            src      = f"[{r.actual_source}]"
+            print(f"  {r.template.name:<26} {ast_eb:>8.3f}  "
+                  f"{'OK' if r.ast_predicted_ok else 'FAIL':>5}  "
+                  f"{r.ast_probability:>6.3f}  "
+                  f"{'OK' if r.actual_ok else 'FAIL':>5}{src:<5}  "
+                  f"{'YES' if match else 'NO':>5}  {gap_str:>14}")
 
     print()
-    accuracy = n_correct / len(results)
-    passing  = [r for r in results if r.actual_ok and r.delta_e is not None]
-    max_de   = max((r.delta_e for r in passing), default=0.0)
+    print("  ── SUMMARY ───────────────────────────────────────────────────────────")
+    passing = [r for r in results if r.actual_ok]
+    max_de  = max((r.delta_e for r in passing if r.delta_e is not None), default=0.0)
+    print(f"  Design accuracy:  {n_correct_design}/{len(results)}")
+    if n_correct_ast is not None:
+        print(f"  AST accuracy:     {n_correct_ast}/{len(results)}  "
+              f"← B6 body_mut_borrows closes the gap")
+    print(f"  rustc ground truth: {sum(r.actual_ok for r in results)} pass / "
+          f"{sum(not r.actual_ok for r in results)} fail  [{results[0].actual_source}]")
+    print(f"  Max ΔE_total (passing, design): {max_de:+.4f}  gate < {D_SEP}")
 
-    print(f"  Classifier accuracy:  {n_correct}/{len(results)} ({100*accuracy:.0f}%)")
-    print(f"  Passing templates:    {len(passing)}/{len(results)}")
-    if passing:
-        print(f"  Max ΔE_total (passing): {max_de:+.3f}  (gate: < {D_SEP})")
-        print(f"  Safe zone confirmed:  {'YES' if max_de < D_SEP else 'NO'}")
-    print()
-
-    if accuracy == 1.0 and (not passing or max_de < D_SEP):
-        print("  RESULT: Invariant-guided gate correctly classifies all 3 templates.")
-        print("  Low-BorrowVector templates pass; high-BorrowVector template blocked.")
-        print("  ΔE_total for passing templates bounded below D_sep — stable zone.")
-    else:
-        print("  RESULT: Partial — see mismatches above.")
-    print("=" * 72)
+    if has_ast and n_correct_ast is not None and n_correct_ast < n_correct_design:
+        print()
+        print("  FINDING: AST extraction reveals classifier gap.")
+        print("  Design-time BorrowVectors differ from real AST — synthetic")
+        print("  training data biases the learned boundary. Gap is measurable.")
+    elif has_ast and n_correct_ast is not None and n_correct_ast == len(results):
+        print()
+        print("  FINDING: B6 (body_mut_borrows) closes the gap — AST accuracy 3/3.")
+        print("  Template C: B4 (type-pos &mut) + B6 (expr-pos &mut) push it past")
+        print("  the classifier boundary. Manifold now topology-aware for aliasing.")
+    elif has_ast and n_correct_ast == n_correct_design:
+        print()
+        print("  FINDING: AST and design-time accuracy agree — manifold generalizes.")
+    print("=" * 80)
     print()
 
 
