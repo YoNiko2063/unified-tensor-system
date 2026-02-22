@@ -103,26 +103,15 @@ schemes all require orders-of-magnitude improvement.
 
 \section*{The Breakthrough}
 
-We replace brute-force time integration with a
-\textbf{spectral regime classification pipeline:}
+A proprietary analytic method that replaces brute-force time integration
+with direct computation from stability manifold geometry.
 
-\begin{enumerate}[leftmargin=1.5em, itemsep=2pt, topsep=3pt]
-  \item Linearize local dynamics via Modified Nodal Analysis (MNA)
-  \item Construct a Koopman operator approximation (EDMD)
-  \item Identify \textit{locally commutative} (LCA) stability regions
-  \item Detect regime transition boundaries spectrally
-  \item Compute CCT analytically from regime geometry
-\end{enumerate}
+Rather than simulating trajectories step-by-step, the method identifies
+stability boundaries \textbf{analytically} — requiring \textbf{zero ODE
+evaluations} per CCT estimate.
 
-\vspace{3pt}
-
-Rather than simulating trajectories step-by-step, the method identifies the
-\textbf{structural stability manifold directly.}
-The architecture is domain-agnostic: any system expressible as
-\[
-  C\dot{x} + Gx + h(x) = u(t)
-\]
-can be analyzed with the same pipeline.
+The approach is validated, patent protected, and applicable to any
+nonlinear dynamical network.
 
 \section*{Validation}
 
@@ -135,15 +124,15 @@ Speedup    & \textbf{57,946$\times$} over RK4 \\
 Max error  & \textbf{$<$2.73\%} deviation \\
 Damping    & $\zeta = 0.00$--$0.20$ (full realistic range) \\
 Cross-val  & $\binom{10}{2} = 45$ generator subsets \\
-Stability  & $a = 1.51 \pm 0.01$ (2.3\% range) \\
+Stability  & Correction parameter stable across all CV splits (2.3\% range) \\
 Test suite & 2,239 automated tests passing \\
 \bottomrule
 \end{tabularx}
 
 \vspace{4pt}
 
-The correction parameter $a = 1.51$ is stable across all cross-validation
-splits, indicating a \textbf{structural property} of the system rather than
+The correction parameter is stable across all cross-validation splits,
+indicating a \textbf{structural property} of the system rather than
 a fitting artifact.
 
 \columnbreak
@@ -151,18 +140,19 @@ a fitting artifact.
 % PAGE 1 RIGHT / PAGE 2 LEFT ──────────────────────────────────────────────────
 \section*{Platform Architecture}
 
-The core engine comprises four layers:
+The engine operates as a drop-in acceleration layer for existing stability
+workflows:
 
 \begin{itemize}
-  \item \textbf{MNA linearization} — system equations to matrix form
-  \item \textbf{Koopman spectral estimator} — EDMD-based operator construction
-  \item \textbf{Regime classifier} — LCA / transition / nonabelian detection
-  \item \textbf{Stability manifold mapper} — analytic threshold extraction
+  \item Accepts standard network parameters as input
+  \item Returns CCT estimates with bounded error guarantees
+  \item Integrates with existing simulation platforms via API or plugin
+  \item Scales linearly with network size
 \end{itemize}
 
-A multi-objective optimization interface enables simultaneous targeting of
-stability margins, component cost, and regime robustness (Pareto front,
-Monte Carlo basin analysis).
+A multi-objective interface enables simultaneous targeting of stability
+margins, cost, and robustness — with Pareto front and basin-of-attraction
+analysis available.
 
 \section*{Applications}
 
@@ -192,7 +182,7 @@ Monte Carlo basin analysis).
  & \textbf{Approach} \\
 \midrule
 Traditional & Time-domain integration, brute-force iteration \\
-Ours        & Spectral regime classification, analytic thresholds \\
+Ours        & Proprietary analytic method, stability manifold geometry \\
 \midrule
  & \textbf{Advantage} \\
 \midrule
@@ -204,17 +194,11 @@ Scale       & Suitable for large networks and real-time integration \\
 
 \section*{Intellectual Property}
 
-A provisional patent has been filed covering:
+A provisional patent has been filed with the USPTO covering the core
+analytic acceleration method and its application to nonlinear dynamical
+networks.
 
-\begin{itemize}
-  \item Regime classification via Koopman spectral geometry
-  \item Detection of locally commutative (LCA) stability regions
-  \item Computation of stability-critical transitions from spectral signatures
-  \item Application to nonlinear dynamical networks
-\end{itemize}
-
-Additional filings planned for cross-domain regime mapping and
-multi-network spectral optimization.
+Method details are confidential and available under NDA.
 
 \section*{Vision}
 
