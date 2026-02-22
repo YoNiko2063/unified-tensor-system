@@ -1,0 +1,855 @@
+PROVISIONAL PATENT APPLICATION
+
+
+TITLE:    INTEGRATED MULTI-LAYER STABILITY ASSURANCE PLATFORM
+          FOR AUTONOMOUS SYNTHESIS AND OPTIMIZATION USING
+          CROSS-LAYER SPECTRAL FEEDBACK
+
+
+INVENTOR: Nikolas Yoo
+          [26 Rider Terrace]
+          [Princeton, NJ, 08540]
+          [yoonikolas@gmail.com]
+
+FILING DATE: [assigned by USPTO]
+
+
+======================================================================
+ABSTRACT
+======================================================================
+
+Autonomous synthesis and optimization systems for programs,
+physical systems, and dynamical networks require coordinated
+assurance across multiple stability dimensions: structural
+geometry, runtime dynamics, and regime classification.  This
+invention discloses an integrated three-layer stability assurance
+platform comprising a regime classification layer, a structural
+synthesis layer, and a runtime validation layer, each contributing
+a distinct stability condition, with cross-layer information flows
+enabling coordinated feedback and adaptive reconfiguration.  A
+unified stability certificate is issued only when all four
+conditions are simultaneously satisfied: the structural energy
+metric falls within the compilation-safe manifold, the composite
+runtime robustness score exceeds a nominal threshold, the
+basin-of-attraction fraction exceeds a confidence level, and
+the dominant eigenvalue real parts of the runtime operator are
+strictly negative.  Cross-layer information flows transmit
+spectral invariant coordinates, structural feature vectors,
+hardware affinity labels, and robustness scores between layers
+to eliminate redundant computation and enable coordinated
+convergence.  Adaptive reconfiguration protocols escalate
+constraint tightening across layers when any single layer
+reports failure, and trigger regime reclassification when
+failure persists.  The platform applies without modification to
+code synthesis, power system optimization, circuit design, and
+any network of coupled dynamical systems expressible in the
+generalized form C*xdot + G*x + h(x) = u(t).
+
+
+======================================================================
+FIELD OF THE INVENTION
+======================================================================
+
+This invention relates to integrated stability assurance systems
+for autonomous synthesis and optimization, specifically to
+computer-implemented multi-layer platforms that combine structural
+geometric constraints, runtime spectral validation, and dynamical
+regime classification in a unified feedback architecture producing
+stability-certified outputs across multiple physical and
+computational domains.
+
+
+======================================================================
+BACKGROUND
+======================================================================
+
+A. The Multi-Dimensional Stability Gap
+
+Existing stability assurance methods address individual dimensions
+of stability in isolation:
+
+  (i)   Structural constraints (e.g., compilation manifolds,
+        grammar constraints) ensure static syntactic or geometric
+        validity but cannot predict runtime dynamical behavior.
+
+  (ii)  Runtime monitoring validates dynamical stability of
+        executing programs but provides no pre-execution filter
+        and does not leverage structural geometry information.
+
+  (iii) Regime classification identifies qualitative dynamical
+        behavior (stable, transitional, chaotic) but is not
+        connected to synthesis constraint generation or runtime
+        certification.
+
+No prior system integrates all three dimensions simultaneously
+in a unified feedback architecture with cross-layer information
+flows.
+
+B. The Coordination Problem
+
+When multiple stability assurance layers operate independently,
+they produce conflicting signals and redundant computation.  A
+candidate program may pass structural geometry screening but fail
+runtime validation; without cross-layer coordination, the
+synthesis system lacks information about which structural
+modifications would improve runtime stability.  A regime
+classification identifying a transitional operating point does
+not automatically tighten synthesis constraints or lower the
+runtime acceptance threshold.
+
+A coordinated multi-layer platform eliminates these gaps by:
+
+  (a) Transmitting spectral invariant coordinates from the regime
+      classification layer to the synthesis layer to pre-select
+      structurally compatible templates.
+  (b) Transmitting structural feature vectors from the synthesis
+      layer to the runtime validation layer for certificate
+      traceability.
+  (c) Transmitting runtime robustness scores from the validation
+      layer back to the synthesis layer to tighten generation
+      constraints when runtime instability is detected.
+  (d) Transmitting runtime failure signals to the regime
+      classification layer to trigger reclassification with
+      updated trajectory data.
+
+C. The Unified Certificate Gap
+
+No prior system issues a single stability certificate that
+simultaneously certifies:
+  -- Structural compilation safety (geometric manifold criterion)
+  -- Runtime dynamical stability (spectral eigenvalue criterion)
+  -- Basin-of-attraction margin (Monte Carlo fraction criterion)
+  -- Regime classification (locally convergent attractor
+     confirmed at the operating point)
+
+Such a unified certificate enables hardware deployment decisions
+to be made from a single authoritative signal rather than
+reconciling outputs from multiple independent systems.
+
+
+======================================================================
+SUMMARY OF THE INVENTION
+======================================================================
+
+The invention discloses four connected results:
+
+(1) THREE-LAYER STABILITY ASSURANCE PIPELINE.  The platform
+comprises three sequential layers with bidirectional feedback:
+
+  Layer 1 (Regime Classification):  Constructs a linear operator
+  approximation of the system at the target operating point,
+  computes spectral invariant coordinates (s_1, s_2, s_3), and
+  classifies the dynamical regime.  Outputs: regime label, trust
+  score T, spectral coordinates, cross-domain equivalence result.
+
+  Layer 2 (Structural Synthesis):  Receives intent specification
+  and Layer 1 outputs.  Encodes candidate programs as structural
+  feature vectors B, computes scalar energy metric E, and
+  iteratively generates candidates within the compilation-safe
+  manifold (E < D_sep_effective).  Outputs: compiled program,
+  BorrowVector B, energy metric E, hardware affinity label.
+
+  Layer 3 (Runtime Validation):  Receives compiled candidate from
+  Layer 2.  Executes the candidate, collects runtime state
+  trajectories, constructs a linear operator from trajectories,
+  and computes composite robustness score R = min(R_1, R_2, R_3,
+  R_4).  Outputs: R, basin fraction beta, certificate conditions,
+  and feedback signals.
+
+(2) CROSS-LAYER INFORMATION PROTOCOL.  Six cross-layer signals
+are defined:
+
+  S_{1->2}: Spectral coordinates (s_1, s_2, s_3) from Layer 1
+    to Layer 2.  Used to pre-filter templates to those compatible
+    with the system's spectral class.
+
+  S_{1->2b}: Regime label from Layer 1 to Layer 2.  Used to set
+    effective energy threshold (transitional regime reduces
+    D_sep_effective by a cautious offset).
+
+  S_{2->3}: BorrowVector B and energy E from Layer 2 to Layer 3.
+    Included in certificate for full traceability.
+
+  S_{3->2}: Robustness score R from Layer 3 to Layer 2.  If
+    R < R_min, Layer 2 reduces D_sep_effective and regenerates.
+
+  S_{3->1}: Runtime trajectories and failure count from Layer 3
+    to Layer 1.  Triggers regime reclassification with updated
+    data when failure persists.
+
+  S_{2->1}: Hardware affinity label from Layer 2 to Layer 1 for
+    cross-domain library update.
+
+(3) UNIFIED STABILITY CERTIFICATE.  A candidate receives a
+unified stability certificate when all four conditions are
+simultaneously satisfied:
+
+    C_1: E(P) < D_sep_effective    (structural manifold)
+    C_2: R(theta_0) > R_min        (nominal runtime robustness)
+    C_3: beta > beta_min           (basin-of-attraction fraction)
+    C_4: max_i(Re(lambda_i)) < 0   (runtime LCA confirmed)
+
+    CERT(P) = C_1 AND C_2 AND C_3 AND C_4              (Eq. 1)
+
+The certificate record contains: program identifier, BorrowVector
+B, energy E, robustness score R, basin fraction beta, spectral
+coordinates (s_1, s_2, s_3), hardware affinity label, regime
+label, Layer 1 trust score T, and timestamp.
+
+(4) ADAPTIVE RECONFIGURATION.  When any layer reports failure,
+the platform executes a layered reconfiguration protocol:
+
+  Single-layer failure: tighten constraints in the failing layer
+    and retry within that layer (up to N_retry iterations).
+
+  Persistent Layer 3 failure: transmit S_{3->2} to Layer 2;
+    reduce D_sep_effective; regenerate candidate from Layer 2.
+
+  Persistent failure across Layers 2 and 3: transmit S_{3->1}
+    to Layer 1; reclassify regime using runtime trajectories;
+    restart pipeline from Layer 1.
+
+  All-layer failure after reclassification: issue failure report
+    with current (B, R, regime label) for operator review; do
+    not issue certificate.
+
+
+======================================================================
+BRIEF DESCRIPTION OF DRAWINGS
+======================================================================
+
+FIG. 1 -- Three-layer platform architecture.  Layer 1 (Regime
+Classification), Layer 2 (Structural Synthesis), Layer 3
+(Runtime Validation) shown as horizontal bands.  Forward signals
+S_{1->2}, S_{2->3} shown as downward arrows.  Feedback signals
+S_{3->2}, S_{3->1} shown as upward arrows.  Unified certificate
+exits at bottom right.
+
+FIG. 2 -- Cross-layer information protocol table.  Rows: six
+signals.  Columns: source layer, destination layer, content,
+triggering condition, action in receiving layer.
+
+FIG. 3 -- Unified stability certificate structure.  Fields:
+C_1 through C_4, BorrowVector B, spectral coordinates, energy E,
+robustness score R, basin fraction beta, hardware affinity label,
+regime label, trust score T, timestamp.
+
+FIG. 4 -- Adaptive reconfiguration state machine.  States:
+NOMINAL, L2_RETRY, L3_RETRY, SYNTHESIS_TIGHTEN, RECLASSIFY,
+FAIL.  Transitions labeled by failure conditions and retry counts.
+
+FIG. 5 -- Multi-objective Pareto surface.  Three axes: domain
+performance J_domain, robustness score R, structural energy E.
+Certified candidates (solid points) on Pareto front.
+Uncertified or dominated candidates (hollow points).
+
+
+======================================================================
+DETAILED DESCRIPTION
+======================================================================
+
+1. PLATFORM ARCHITECTURE
+
+1.1 Overview
+
+The integrated stability assurance platform comprises three
+computational layers operating in sequential order with
+bidirectional feedback signals:
+
+  Layer 1: Regime Classification Engine (see co-pending
+    application [Provisional #2])
+  Layer 2: Structural Synthesis Engine (see co-pending
+    application [Provisional #3])
+  Layer 3: Runtime Validation Engine (see co-pending
+    application [Provisional #4])
+
+Each layer is autonomous in its internal computation but exchanges
+information with adjacent layers via the cross-layer information
+protocol defined in Section 2.
+
+1.2 Layer 1 -- Regime Classification Engine
+
+Receives: system parameters or trajectory data for the target
+operating point.
+
+Computes:
+  (a) Linear operator approximation K from system representation.
+  (b) Spectral decomposition: eigenvalues {lambda_i}.
+  (c) Reconstruction error epsilon_rec and spectral gap gamma_gap.
+  (d) Dual-criterion trust gate: trusted iff
+        epsilon_rec < eta_max AND gamma_gap > gamma_min.
+  (e) Spectral invariant coordinates:
+        s_1 = log(omega_0), s_2 = log(Q), s_3 = zeta.
+  (f) Regime label: LCA (max Re(lambda_i) < 0), transitional,
+      or chaotic.
+  (g) Cross-domain library query using dissonance metric d_tau.
+
+Outputs: regime label, trust score T, spectral coordinates
+(s_1, s_2, s_3), cross-domain match, Signals S_{1->2},
+S_{1->2b}.
+
+1.3 Layer 2 -- Structural Synthesis Engine
+
+Receives: intent specification, S_{1->2} (spectral coordinates),
+S_{1->2b} (regime label), S_{3->2} (robustness feedback, if
+present from prior iteration).
+
+Computes:
+  (a) Template pre-filtering using S_{1->2}: retain templates
+      whose structural class is compatible with received spectral
+      coordinates.
+  (b) Effective energy threshold:
+        D_sep_effective = D_sep - delta_tighten * k_L3
+      where k_L3 is the retry count received via S_{3->2} and
+      delta_tighten is a step size (default 0.05 * D_sep).
+      If regime label is transitional:
+        D_sep_effective -= delta_cautious (default 0.10 * D_sep).
+  (c) Structural feature vector B(P) and energy E(P).
+  (d) Geometric gradient toward compilation-safe region.
+  (e) Template selection or structural modification.
+  (f) Compilation of candidate.
+
+Outputs: compiled program P, BorrowVector B(P), energy E(P),
+hardware affinity label, Signals S_{2->3}, S_{2->1}.
+
+1.4 Layer 3 -- Runtime Validation Engine
+
+Receives: compiled candidate P, S_{2->3} (BorrowVector B,
+energy E from Layer 2).
+
+Computes:
+  (a) Runtime state trajectories from executing P.
+  (b) Linear operator K_runtime from trajectories by
+      least-squares fit.
+  (c) Eigendecomposition of K_runtime.
+  (d) Composite robustness score:
+        R = min(R_1, R_2, R_3, R_4)
+      where R_1, R_2, R_3, R_4 are as defined in co-pending
+      application [Provisional #4].
+  (e) Lyapunov energy monitoring; R_4 computation.
+  (f) Monte Carlo basin fraction beta.
+  (g) Certificate condition check: C_2, C_3, C_4.
+
+Outputs: R, beta, C_2/C_3/C_4, Signal S_{3->2} (if R < R_min),
+Signal S_{3->1} (if persistent failure exceeds N_L3_retry).
+
+
+2. CROSS-LAYER INFORMATION PROTOCOL
+
+2.1 Signal Definitions
+
+Signal S_{1->2}:
+  Content: spectral coordinates (s_1, s_2, s_3)
+  Trigger: Layer 1 trust gate passed
+  Action in Layer 2: filter template library to templates whose
+    structural class is compatible with the received spectral
+    class; set B_init to median BorrowVector of compatible
+    templates.
+  If Layer 1 trust gate fails: Layer 2 proceeds with default
+    B_init (no pre-filtering); certificate notes Layer 1 as
+    untrusted.
+
+Signal S_{1->2b}:
+  Content: regime label (LCA / transitional / chaotic)
+  Trigger: Layer 1 completes (trusted or untrusted)
+  Action in Layer 2:
+    LCA: use D_sep_effective = D_sep (standard threshold).
+    Transitional: D_sep_effective = D_sep - delta_cautious.
+    Chaotic: flag to operator; Layer 2 does not synthesize
+      without explicit operator override.
+
+Signal S_{2->3}:
+  Content: BorrowVector B(P), energy metric E(P), hardware
+    affinity label
+  Trigger: Layer 2 produces a compiled candidate
+  Action in Layer 3: include B and E in certificate fields;
+    use hardware affinity to select Lyapunov basis appropriate
+    to the execution target.
+
+Signal S_{3->2}:
+  Content: composite robustness score R, index of failing
+    component (R_1, R_2, R_3, or R_4)
+  Trigger: Layer 3 reports R < R_min
+  Action in Layer 2: increment retry counter k_L3; reduce
+    D_sep_effective by delta_tighten; regenerate candidate.
+
+Signal S_{3->1}:
+  Content: runtime trajectory data X_runtime, failure count
+  Trigger: k_L3 exceeds N_L3_retry
+  Action in Layer 1: incorporate X_runtime into operator
+    training data; recompute K; reissue spectral coordinates
+    and regime label; restart pipeline from Layer 1.
+
+Signal S_{2->1}:
+  Content: hardware affinity label, BorrowVector B(P)
+  Trigger: Layer 2 produces a certified candidate
+  Action in Layer 1: update cross-domain library at spectral
+    coordinates (s_1, s_2, s_3) with observed affinity label.
+
+2.2 Protocol Invariants
+
+  (I)  Every certificate includes B, E, R, beta, (s_1, s_2, s_3),
+       regime label, hardware affinity label, and timestamp.
+  (II) No candidate is certified unless C_1 through C_4 are
+       simultaneously satisfied.
+  (III) Layer 1 reclassification via S_{3->1} is triggered at
+       most once per synthesis request (prevents infinite loop).
+  (IV) If Layer 1 is untrusted, Layers 2 and 3 proceed without
+       spectral pre-filtering; Layer 3 applies full validation.
+
+
+3. UNIFIED STABILITY CERTIFICATE
+
+3.1 Certificate Conditions
+
+    C_1: E(P) < D_sep_effective
+         Structural manifold condition.  Verified by Layer 2.
+
+    C_2: R(theta_0) > R_min
+         Nominal runtime robustness.  Verified by Layer 3.
+
+    C_3: beta(P) > beta_min
+         Basin-of-attraction fraction above confidence level.
+         Verified by Layer 3.
+
+    C_4: max_i( Re(lambda_i(K_runtime)) ) < 0
+         Runtime operator Hurwitz; LCA regime confirmed.
+         Verified by Layer 3 from K_runtime eigendecomposition.
+
+    CERT(P) = C_1 AND C_2 AND C_3 AND C_4              (Eq. 1)
+
+3.2 Certificate Contents
+
+    -- Program or candidate identifier
+    -- BorrowVector B(P) = (B_1, ..., B_n)
+    -- Structural energy metric E(P)
+    -- Composite robustness score R
+    -- Basin-of-attraction fraction beta
+    -- Spectral invariant coordinates (s_1, s_2, s_3)
+    -- Regime label (LCA confirmed)
+    -- Hardware affinity label
+    -- Layer 1 trust score T
+    -- Retry count history (k_L2, k_L3)
+    -- Timestamp
+
+3.3 Certificate Transfer
+
+For a new system B spectrally equivalent to a previously certified
+system A (||coords_A - coords_B|| < epsilon_equiv):
+
+    CERT_B is issued by inheriting CERT_A without re-executing
+    Layers 2 and 3, provided:
+      -- coords_A and coords_B agree within epsilon_equiv.
+      -- The domain mapping (co-pending [Provisional #2],
+         Section 3.2) confirms cross-domain equivalence.
+      -- A new Layer 3 validation is run for system B to verify
+         that inherited parameters hold in the new domain.
+
+This transfer mechanism reduces re-certification cost for
+spectrally equivalent systems across physical domains.
+
+
+4. ADAPTIVE RECONFIGURATION
+
+4.1 Reconfiguration State Machine
+
+States:
+
+  NOMINAL: all layers operating; no failure.
+
+  L2_RETRY: Layer 2 failed (E >= D_sep_effective or compilation
+    failed); retrying within Layer 2 with gradient step.
+    Counter k_L2 incremented.
+
+  L3_RETRY: Layer 3 failed (R < R_min); retrying Layer 3 with
+    same candidate.  Counter k_L3 incremented.
+
+  SYNTHESIS_TIGHTEN: S_{3->2} received; Layer 2 regenerating
+    with reduced D_sep_effective.
+
+  RECLASSIFY: S_{3->1} received; Layer 1 reclassifying with
+    runtime trajectory data appended.
+
+  FAIL: all retries exhausted or reclassification triggered
+    twice; failure report issued.
+
+4.2 State Transitions
+
+  NOMINAL -> L2_RETRY:
+    E(P) >= D_sep_effective or compilation fails.
+    If k_L2 > N_L2_retry: FAIL.
+
+  NOMINAL -> L3_RETRY:
+    R < R_min on first Layer 3 execution.
+    If k_L3 > N_L3_retry: -> SYNTHESIS_TIGHTEN.
+
+  SYNTHESIS_TIGHTEN -> L2_RETRY:
+    Layer 2 regenerating; S_{3->2} applied.
+    If k_L2 > N_L2_retry after tightening: -> RECLASSIFY.
+
+  RECLASSIFY -> NOMINAL:
+    Layer 1 reissues updated spectral coordinates;
+    pipeline restarts from Layer 1.
+
+  RECLASSIFY -> FAIL:
+    Reclassification already triggered once (invariant III),
+    or Layer 1 trust gate fails after reclassification.
+
+4.3 Default Parameters
+
+    N_L2_retry  = 10   (max Layer 2 iterations per request)
+    N_L3_retry  = 3    (max Layer 3 retries before tightening)
+    delta_tighten   = 0.05 * D_sep per retry
+    delta_cautious  = 0.10 * D_sep (transitional regime offset)
+    R_min           = 0.1
+    beta_min        = 0.90
+
+
+5. MULTI-OBJECTIVE PARETO SURFACE
+
+5.1 Objective Space
+
+The platform operates in a three-dimensional objective space:
+
+    J = (J_domain, R, E)
+
+where:
+  J_domain: domain-specific performance objective (lower is better)
+  R:        composite runtime robustness score (higher is better)
+  E:        structural energy metric (lower is better)
+
+5.2 Pareto Front Construction
+
+Only candidates satisfying CERT(P) = TRUE are admitted.
+A certified candidate P dominates Q if:
+
+    J_domain(P) <= J_domain(Q)
+    AND R(P) >= R(Q)
+    AND E(P) <= E(Q)
+
+with at least one strict inequality.  The platform maintains the
+Pareto front of all non-dominated certified candidates across
+synthesis requests.
+
+5.3 Solution Selection
+
+An operator or downstream system selects from the Pareto front
+using a configurable preference weight vector:
+
+    P* = argmin_P [ w_J * J_domain(P) - w_R * R(P) +
+                    w_E * E(P) ]                           (Eq. 2)
+
+Default weights: w_J = 1.0, w_R = 0.5, w_E = 0.3.  Each Pareto
+point is output with its full certificate for downstream
+traceability and deployment.
+
+
+6. IMPLEMENTATION
+
+6.1 Computational Procedure
+
+For each synthesis or optimization request:
+
+  (a) Receive intent specification and target operating point.
+  (b) Layer 1: classify regime; issue spectral coordinates,
+      regime label, trust score.  Transmit S_{1->2}, S_{1->2b}.
+  (c) Layer 2: pre-filter templates; set D_sep_effective; generate
+      and compile candidate.  Transmit S_{2->3}, S_{2->1}.
+  (d) Layer 3: execute candidate; compute R, beta; check C_2-C_4.
+      Transmit S_{3->2} or S_{3->1} if needed.
+  (e) Check CERT(P) = C_1 AND C_2 AND C_3 AND C_4.
+  (f) If CERT = TRUE: add to Pareto front; output certificate.
+  (g) If CERT = FALSE: execute reconfiguration state machine
+      (Section 4).
+  (h) Output Pareto front with certificates, or failure report
+      with current (B, R, regime label).
+
+6.2 Domain Applications
+
+The platform applies without modification to:
+
+  Code synthesis:
+    Layer 1 classifies the execution environment regime.
+    Layer 2 generates Rust/C/C++ programs within the compilation
+    manifold.  Layer 3 validates execution trajectory stability.
+
+  Power system optimization:
+    Layer 1 classifies each generator's operating regime from
+    swing equation parameters.  Layer 2 generates control law
+    candidates.  Layer 3 validates closed-loop stability under
+    nominal and perturbed loading.
+
+  Circuit design:
+    Layer 1 classifies RLC/nonlinear circuit operating point.
+    Layer 2 selects component values using structural geometry.
+    Layer 3 validates transient response stability.
+
+  Optimization landscapes:
+    Layer 1 classifies optimizer trajectory regime.
+    Layer 2 selects update rule or step-size template.
+    Layer 3 validates convergence stability of the iterates.
+
+6.3 Computing System Description
+
+A system implementing this invention comprises:
+
+  (a) a memory storing: intent specifications, trajectory data,
+      spectral operator K, spectral coordinates (s_1, s_2, s_3),
+      structural feature extractors, weight vector w, separation
+      boundary D_sep, template library, runtime trajectory data,
+      Lyapunov matrices P, energy bounds, perturbation samples,
+      stability certificates, Pareto front, cross-domain library,
+      and cross-layer signal history;
+  (b) three or more processors or processor threads configured
+      to execute Layers 1, 2, and 3, with synchronization points
+      at each cross-layer signal exchange;
+  (c) a reconfiguration controller executing the state machine
+      of Section 4 and routing cross-layer signals; and
+  (d) an output interface transmitting unified stability
+      certificates, Pareto front solutions, hardware affinity
+      labels, regime labels, and reconfiguration state to
+      downstream deployment and operator systems.
+
+
+======================================================================
+CLAIMS
+======================================================================
+
+CLAIM 1.  A computer-implemented method for stability-certified
+autonomous synthesis and optimization, comprising:
+
+  (a) receiving, by one or more processors, an intent
+      specification and a target operating point for a system
+      to be synthesized or optimized;
+  (b) classifying, by a regime classification layer, the
+      dynamical regime of the system at the target operating
+      point, producing a regime label and spectral invariant
+      coordinates;
+  (c) synthesizing, by a structural synthesis layer receiving
+      the regime label and spectral invariant coordinates,
+      a candidate whose structural feature vector satisfies a
+      learned compilation-safe manifold criterion;
+  (d) validating, by a runtime validation layer, the candidate
+      by executing it and computing a composite runtime
+      robustness score from spectral metrics of the runtime
+      state trajectories;
+  (e) issuing a unified stability certificate when the
+      structural manifold criterion, the composite robustness
+      score, the basin-of-attraction fraction, and the runtime
+      regime classification simultaneously satisfy respective
+      thresholds; and
+  (f) if any condition is not satisfied, transmitting a
+      cross-layer feedback signal to tighten constraints in
+      the appropriate layer and regenerating the candidate.
+
+CLAIM 2.  The method of claim 1, wherein the cross-layer
+feedback signal from the runtime validation layer to the
+structural synthesis layer causes the structural synthesis layer
+to reduce its effective energy threshold by a step size
+proportional to the number of failed runtime validation attempts,
+regenerating candidates with progressively tighter structural
+geometry constraints.
+
+CLAIM 3.  The method of claim 1, wherein, upon persistent failure
+of the runtime validation layer after structural synthesis retry,
+a runtime failure signal incorporating runtime state trajectories
+is transmitted to the regime classification layer, which
+incorporates the trajectories into its operator training data,
+reissues updated spectral invariant coordinates, and causes the
+structural synthesis layer to restart template pre-filtering
+with the updated coordinates.
+
+CLAIM 4.  The method of claim 1, wherein the structural synthesis
+layer pre-filters a template library using the spectral invariant
+coordinates received from the regime classification layer,
+retaining only templates whose structural class is compatible
+with the spectral class of the target operating point, and
+wherein the initial structural feature vector is computed as the
+median feature vector of the retained templates.
+
+CLAIM 5.  The method of claim 1, wherein the unified stability
+certificate comprises all of:
+
+  (a) a structural manifold condition: the structural energy
+      metric is below a learned effective separation boundary;
+  (b) a nominal runtime robustness condition: the composite
+      runtime robustness score exceeds a minimum threshold;
+  (c) a basin-of-attraction condition: the fraction of parameter
+      perturbations yielding positive robustness score exceeds
+      a minimum confidence level; and
+  (d) a runtime regime condition: the dominant real eigenvalue
+      parts of the runtime spectral operator are strictly
+      negative;
+  wherein all four conditions must be simultaneously satisfied,
+  and the certificate record includes the structural feature
+  vector, energy metric, robustness score, basin fraction,
+  spectral invariant coordinates, hardware affinity label,
+  regime label, trust score, and timestamp.
+
+CLAIM 6.  The method of claim 1, wherein the regime
+classification layer outputs a transitional regime label, the
+structural synthesis layer reduces its effective energy threshold
+by a cautious offset, and the runtime validation layer increases
+the nominal robustness threshold, collectively tightening
+cross-layer constraints in response to proximity to a dynamical
+bifurcation boundary.
+
+CLAIM 7.  The method of claim 1, wherein the regime
+classification layer, if its linear operator does not satisfy a
+dual-criterion trust gate based on reconstruction error and
+spectral gap, transmits an untrusted signal to the structural
+synthesis layer, which proceeds without spectral pre-filtering
+using a default structural feature vector, while the runtime
+validation layer applies full validation regardless of the trust
+gate outcome, and the certificate records the untrusted status
+of the regime classification layer.
+
+CLAIM 8.  The method of claim 1, wherein the method operates
+across a plurality of physical and computational domains without
+modification, including automated code synthesis, power system
+control law synthesis, circuit component optimization, and
+dynamical system parameter optimization.
+
+CLAIM 9.  The method of claim 5, wherein a unified stability
+certificate issued for a first system is transferred to a second
+system from a different physical domain when the spectral
+invariant coordinates of the second system are within a tolerance
+of those of the first system, by inheriting the certificate
+fields of the first system without re-executing the structural
+synthesis layer, subject to a new runtime validation of the
+second system.
+
+CLAIM 10.  The method of claim 1, further comprising
+constructing a multi-objective Pareto front of non-dominated
+certified candidates in the space of domain performance
+objective, composite runtime robustness score, and structural
+energy metric, and outputting the Pareto front with associated
+certificates for operator or downstream system selection.
+
+CLAIM 11.  The method of claim 1, implemented as a finite-state
+reconfiguration machine comprising:
+
+  (a) a nominal state in which all three layers operate without
+      failure;
+  (b) a synthesis-tighten state in which the runtime validation
+      layer has failed and the structural synthesis layer
+      regenerates with a reduced energy threshold;
+  (c) a reclassification state in which persistent failure
+      triggers updated regime classification using runtime
+      trajectory data; and
+  (d) a failure state in which all retries are exhausted and
+      a failure report is issued without a stability certificate;
+  wherein transitions between states are governed by layer
+  failure conditions and retry count thresholds.
+
+CLAIM 12.  A system for integrated stability-certified synthesis
+and optimization, comprising:
+
+  (a) a memory storing intent specifications, trajectory data,
+      spectral coordinates, structural feature extractors, weight
+      vectors, template library, runtime trajectory data, Lyapunov
+      matrices, energy bounds, perturbation samples, stability
+      certificates, Pareto front, and cross-domain library;
+  (b) a regime classification processor configured to construct
+      a linear operator approximation, evaluate a dual-criterion
+      trust gate, extract spectral invariant coordinates, and
+      output regime labels and cross-layer signals;
+  (c) a structural synthesis processor configured to receive
+      spectral invariant coordinates and regime labels, pre-filter
+      templates, generate compilation-safe candidates, and
+      transmit structural feature vectors to the runtime
+      validation processor;
+  (d) a runtime validation processor configured to execute
+      candidates, compute composite robustness scores, perform
+      Monte Carlo basin analysis, and transmit feedback signals
+      to the structural synthesis and regime classification
+      processors; and
+  (e) a reconfiguration controller implementing a finite-state
+      machine that routes cross-layer signals and manages retry
+      and escalation logic; and
+  (f) an output interface transmitting unified stability
+      certificates, Pareto front solutions, hardware affinity
+      labels, and reconfiguration state to deployment and
+      operator systems.
+
+CLAIM 13.  A non-transitory computer-readable medium storing
+instructions that, when executed by one or more processors,
+cause the processors to:
+
+  (a) classify the dynamical regime of a target system and
+      extract spectral invariant coordinates;
+  (b) synthesize a candidate whose structural feature vector
+      satisfies a learned manifold criterion, using spectral
+      invariant coordinates to pre-filter a template library;
+  (c) execute the candidate and compute a composite runtime
+      robustness score from spectral metrics of the runtime
+      trajectories;
+  (d) issue a unified stability certificate when structural,
+      runtime robustness, basin-of-attraction, and runtime
+      regime conditions are simultaneously satisfied;
+  (e) if any condition fails, transmit cross-layer feedback
+      signals to tighten constraints and regenerate, escalating
+      to regime reclassification upon persistent failure;
+  (f) construct a Pareto front of certified candidates and
+      output it with associated full certificates;
+  without requiring domain-specific stability proofs, exhaustive
+  simulation, or separate stability assurance per layer.
+
+CLAIM 14.  The method of claim 1, applied to a power system
+network comprising a plurality of generators and loads, wherein:
+
+  (a) the regime classification layer classifies each generator's
+      operating regime from swing equation parameters and outputs
+      spectral invariant coordinates corresponding to the
+      generator's loading class;
+  (b) the structural synthesis layer generates control law
+      candidates satisfying structural manifold constraints
+      compatible with the generator's spectral class;
+  (c) the runtime validation layer validates closed-loop
+      stability of the control laws under nominal and perturbed
+      loading conditions, including N-1 contingency perturbations;
+      and
+  (d) the unified stability certificate is used to authorize
+      deployment of the control law to the power system network
+      without requiring a separate dynamic security assessment.
+
+
+======================================================================
+ABSTRACT OF THE DRAWINGS
+======================================================================
+
+FIG. 1 depicts the three-layer platform architecture.  Layer 1
+(Regime Classification), Layer 2 (Structural Synthesis), and
+Layer 3 (Runtime Validation) are shown as horizontal bands
+stacked vertically.  Forward signals S_{1->2} and S_{2->3} are
+shown as downward arrows.  Feedback signals S_{3->2} and S_{3->1}
+are shown as upward arrows to their respective destination layers.
+The unified stability certificate exits at the bottom right.
+
+FIG. 2 depicts the cross-layer information protocol as a six-row
+table.  Columns: signal identifier, source layer, destination
+layer, content, triggering condition, action in receiving layer.
+
+FIG. 3 depicts the unified stability certificate structure.
+Certificate fields are shown as labeled boxes arranged in two
+groups: condition group (C_1 through C_4 with pass/fail
+indicators) and traceability group (BorrowVector B, spectral
+coordinates (s_1, s_2, s_3), energy E, robustness score R,
+basin fraction beta, hardware affinity label, regime label, trust
+score T, timestamp).  An all-conditions-satisfied indicator
+(CERT = TRUE) is shown when all four C fields are satisfied.
+
+FIG. 4 depicts the adaptive reconfiguration state machine.
+States NOMINAL, L2_RETRY, L3_RETRY, SYNTHESIS_TIGHTEN,
+RECLASSIFY, and FAIL are shown as nodes.  Directed transitions
+are labeled by failure conditions (E >= D_sep, R < R_min,
+k_L2 > N_L2_retry, k_L3 > N_L3_retry) and success conditions
+(CERT = TRUE).
+
+FIG. 5 depicts the multi-objective Pareto surface.  Three axes:
+domain performance J_domain (horizontal), robustness score R
+(depth), structural energy E (vertical).  Non-dominated certified
+candidates are shown as solid points connected by the Pareto
+front curve.  Dominated or uncertified candidates are shown as
+hollow points.  Example weight vector P* selection shown as a
+dashed ray from the origin to the selected Pareto point.
