@@ -176,7 +176,7 @@ are defined:
     Included in certificate for full traceability.
 
   S_{3->2}: Robustness score R from Layer 3 to Layer 2.  If
-    R < R_min, Layer 2 reduces D_sep_effective and regenerates.
+    R < R_min_effective, Layer 2 reduces D_sep_effective and regenerates.
 
   S_{3->1}: Runtime trajectories and failure count from Layer 3
     to Layer 1.  Triggers regime reclassification with updated
@@ -358,7 +358,7 @@ where the composite robustness score components are:
       via S_{1->2b}; C_4 = TRUE iff classifications agree.
   (h) Certificate condition check: C_2, C_3, C_4.
 
-Outputs: R, beta, C_2/C_3/C_4, Signal S_{3->2} (if R < R_min),
+Outputs: R, beta, C_2/C_3/C_4, Signal S_{3->2} (if R < R_min_effective),
 Signal S_{3->1} (if persistent failure exceeds N_L3_retry).
 
 
@@ -445,7 +445,7 @@ Signal S_{2->1}:
     C_1: E(P) < D_sep_effective
          Structural manifold condition.  Verified by Layer 2.
 
-    C_2: R(theta_0) > R_min
+    C_2: R(theta_0) > R_min_effective
          Nominal runtime robustness.  Verified by Layer 3.
 
     C_3: beta(P) > beta_min
@@ -511,7 +511,7 @@ States:
     failed); retrying within Layer 2 with gradient step.
     Counter k_L2 incremented.
 
-  L3_RETRY: Layer 3 failed (R < R_min); retrying Layer 3 with
+  L3_RETRY: Layer 3 failed (R < R_min_effective); retrying Layer 3 with
     same candidate.  Counter k_L3 incremented.
 
   SYNTHESIS_TIGHTEN: S_{3->2} received; Layer 2 regenerating
@@ -944,7 +944,7 @@ score T, timestamp).  An all-conditions-satisfied indicator
 FIG. 4 depicts the adaptive reconfiguration state machine.
 States NOMINAL, L2_RETRY, L3_RETRY, SYNTHESIS_TIGHTEN,
 RECLASSIFY, and FAIL are shown as nodes.  Directed transitions
-are labeled by failure conditions (E >= D_sep, R < R_min,
+are labeled by failure conditions (E >= D_sep, R < R_min_effective,
 k_L2 > N_L2_retry, k_L3 > N_L3_retry) and success conditions
 (CERT = TRUE).
 
