@@ -19,8 +19,8 @@ ABSTRACT
 ======================================================================
 
 Nonlinear dynamical systems evolve through qualitatively distinct
-behavioral regimes -- locally convergent (LCA), transitional
-(nonabelian), and chaotic -- whose identification is essential for
+behavioral regimes -- locally convergent (LCA), transitional,
+and chaotic -- whose identification is essential for
 stability assessment, optimization, and safe operation.  This
 invention discloses a method for classifying the dynamical regime of
 any system expressible in the generalized form C*xdot + G*x + h(x) =
@@ -65,9 +65,10 @@ fundamental regime classes are:
         stable equilibrium contract, characterized by strictly
         negative real parts of dominant eigenvalues.
 
-  (ii)  Transitional (nonabelian): the system undergoes bifurcation
-        or exhibits sustained oscillatory behavior not captured by
-        linear approximation; operator commutativity fails.
+  (ii)  Transitional: the system undergoes bifurcation or exhibits
+        sustained oscillatory behavior where the dominant eigenvalue
+        real part is non-negative while reconstruction fidelity
+        remains below threshold.
 
   (iii) Chaotic: trajectories diverge exponentially, spectral
         decomposition loses reconstruction fidelity.
@@ -143,10 +144,10 @@ where J_h is the Jacobian of h at x_s, the eigenvalues of A_lin
 define spectral invariant coordinates:
 
     s_1 = log(|Im(lambda_dominant)|)   -- log oscillation frequency
-    s_2 = log(|Re(lambda_dominant)| / |Im(lambda_dominant)|)
-                                        -- log damping-to-frequency ratio
+    s_2 = log(Q)  where Q = omega_0 / (2 * |Re(lambda_dominant)|)
+                                        -- log quality factor
     s_3 = |Re(lambda_dominant)| / omega_0
-                                        -- normalized damping ratio
+                                        -- normalized damping ratio (zeta)
 
 Systems sharing (s_1, s_2, s_3) coordinates to within a tolerance
 epsilon_equiv are dynamically equivalent under the EAC map: any
@@ -170,7 +171,7 @@ direct simulation.
 with eigenvalues {lambda_i}:
 
     LCA (locally convergent):    max(Re(lambda_i)) < 0
-    Transitional (nonabelian):   max(Re(lambda_i)) >= 0
+    Transitional:                max(Re(lambda_i)) >= 0
                                  AND reconstruction_error < eta_max
     Chaotic:                     reconstruction_error >= eta_max
 
@@ -346,7 +347,7 @@ Given trusted K with eigenvalues {lambda_i}:
     LCA (locally convergent attractor):
         max_i( Re(lambda_i) ) < 0                             (Eq. 6a)
 
-    Transitional (nonabelian):
+    Transitional:
         max_i( Re(lambda_i) ) >= 0  AND  epsilon_rec < eta_max (Eq. 6b)
 
     Chaotic:

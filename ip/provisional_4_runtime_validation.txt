@@ -2,8 +2,8 @@ PROVISIONAL PATENT APPLICATION
 
 
 TITLE:    SPECTRAL RUNTIME VALIDATION AND STABILITY-CONSTRAINED
-          AUTONOMOUS OPTIMIZATION USING CLOSED-LOOP KOOPMAN
-          FEEDBACK
+          AUTONOMOUS OPTIMIZATION USING CLOSED-LOOP SPECTRAL
+          OPERATOR FEEDBACK
 
 
 INVENTOR: Nikolas Yoo
@@ -119,7 +119,7 @@ matrix, and Phi is a vector of observable functions.
 (2) COMPOSITE ROBUSTNESS SCORE.  Four spectral metrics are combined:
 
     R_1 = -max_i(Re(lambda_i(K)))      (stability margin)
-    R_2 = gamma_gap = |lambda_1|/|lambda_2|  (spectral separation)
+    R_2 = |lambda_1|/|lambda_2| - 1         (spectral separation)
     R_3 = 1 - epsilon_rec              (reconstruction fidelity)
     R_4 = 1 - E_Lyapunov / E_bound    (Lyapunov energy headroom)
 
