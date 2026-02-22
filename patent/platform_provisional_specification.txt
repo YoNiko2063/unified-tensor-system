@@ -1,0 +1,633 @@
+PROVISIONAL PATENT APPLICATION
+
+TITLE:     METHOD AND SYSTEM FOR ACCELERATING DYNAMICAL SYSTEM SIMULATION
+           USING UNIVERSAL INVARIANT EMBEDDING AND REGIME-MEMORY REUSE
+
+INVENTOR:  Nikolas Yoo
+           26 Rider Terrace
+           Princeton, NJ 08540
+           yoonikolas@gmail.com
+
+FILING DATE: [assigned by USPTO]
+
+================================================================================
+ABSTRACT
+================================================================================
+
+Simulation of dynamical systems -- physical, computational, and engineered --
+requires repeated numerical integration of differential equations, with cost
+scaling poorly to large systems and parameter sweeps.  This invention discloses
+a platform method for eliminating redundant computation across structurally
+similar dynamical systems.
+
+The core insight is that a broad class of oscillatory systems -- including RLC
+circuits, mechanical oscillators, power grid generators, gradient-descent
+optimizers, and nonlinear oscillators -- share a universal three-dimensional
+invariant embedding: (log_omega0_norm, log_Q_norm, zeta), where omega_0 is the
+linearized natural frequency, Q is the quality factor, and zeta is the damping
+ratio.  Systems that are close in this invariant space exhibit similar spectral
+structure, regardless of their physical domain.
+
+The invention provides:
+  (1) a domain-agnostic method for extracting the invariant triple from any
+      oscillatory system, via linearization or Extended Dynamic Mode
+      Decomposition (EDMD) for nonlinear systems;
+  (2) a regime-memory database storing precomputed spectral data (eigenvalues,
+      stability margins, modal structure) keyed by invariant signature;
+  (3) a retrieval mechanism that identifies the nearest stored regime for a new
+      system and uses its spectral data to initialize or warm-start a solver;
+  (4) cross-domain transfer: regime memories from one physical domain (e.g.,
+      RLC circuits) are reused to accelerate solvers in a structurally similar
+      but physically distinct domain (e.g., power grid generators).
+
+Validated across five physical domains: RLC circuits, spring-mass-damper
+systems, power grid generators (IEEE 39-bus, 10 machines), nonlinear Duffing
+oscillators, and gradient-descent optimization dynamics.  Demonstrated results:
+  - 2,708x speedup via regime warm-start versus cold-start solver
+  - 3.7x cross-domain transfer improvement (spring-mass regimes seeding RLC)
+  - Universal correction scalar cross-validated at CV = 0.66% across IEEE 39-bus
+
+The platform enables a single regime library, built offline from any domain,
+to accelerate simulation across all domains sharing the invariant structure.
+
+================================================================================
+FIELD OF THE INVENTION
+================================================================================
+
+This invention relates to computer-implemented simulation of dynamical systems,
+specifically to methods for indexing systems by invariant spectral signatures,
+storing and retrieving precomputed regime data, and using retrieved spectral
+predictions to initialize numerical solvers -- enabling cross-domain reuse of
+computational results without re-solving systems from scratch.
+
+================================================================================
+BACKGROUND
+================================================================================
+
+A. The Redundancy Problem in Dynamical System Simulation
+
+Simulation of dynamical systems is a dominant computational cost across
+science, engineering, and optimization.  Standard approaches -- Runge-Kutta
+integration, finite element methods, iterative eigensolvers -- treat each
+system independently, discarding the computational work after each solve.
+
+Yet most simulation workloads are highly structured.  An engineer sweeping
+RLC circuit parameters across a frequency range, a grid operator screening
+N-1 contingencies, or a machine learning practitioner tuning optimizer
+hyperparameters all encounter systems that are structurally similar to
+previously solved cases.  No existing method systematically reuses spectral
+information across these structurally similar instances.
+
+B. Prior Approaches and Limitations
+
+Model order reduction (ROM) and Proper Orthogonal Decomposition (POD) reduce
+computational cost by building a reduced basis from snapshots of a given
+system.  These methods are system-specific: a basis built for an RLC circuit
+provides no benefit to a power grid simulator.
+
+Neural operator methods (DeepONet, Fourier Neural Operator) learn solution
+maps for a parameterized PDE family.  These require training data from the
+target domain and do not exploit structural similarity across physically
+distinct domains.
+
+Transfer learning for dynamical systems typically requires fine-tuning on
+target-domain data, not zero-shot warm-start from invariant retrieval.
+
+No prior method provides a domain-agnostic invariant index that enables
+spectral reuse across physically distinct systems.
+
+C. The Invariant Structure Gap
+
+It has been known since the early 20th century that many physical systems
+share the same governing equations up to parameter relabeling: an RLC circuit
+is isomorphic to a spring-mass-damper at the equation level.  However, this
+isomorphism has not been systematically exploited as a computational tool for
+cross-domain solver acceleration.
+
+This invention formalizes the isomorphism as a computable invariant triple,
+builds a searchable database over it, and demonstrates that retrieval from this
+database provides quantifiable warm-start benefit across domains.
+
+================================================================================
+SUMMARY OF THE INVENTION
+================================================================================
+
+The invention comprises four interdependent components:
+
+(1) UNIVERSAL INVARIANT EXTRACTION.  For any oscillatory dynamical system,
+compute the invariant triple (omega_0_norm, Q_norm, zeta) by one of:
+  (a) Linearization: omega_0 from the linearized system Jacobian eigenvalues,
+      Q from the ratio M*omega_0/D at the operating point;
+  (b) EDMD: fit a Koopman operator K from trajectory data, extract the dominant
+      conjugate eigenvalue pair, and read off omega_0_eff and Q_eff from the
+      imaginary and real parts of log(lambda);
+  (c) Hybrid: linearization for the operating regime, EDMD for nonlinear
+      correction when trajectory energy exceeds a linearization threshold.
+
+(2) REGIME-MEMORY DATABASE.  A searchable database of regime records, each
+containing:
+  - invariant signature: (log_omega0_norm, log_Q_norm, zeta)
+  - stored spectral data: dominant eigenvalues, spectral gap, stability margin,
+    modal density estimates, and domain provenance
+  - retrieval key: the signature vector, used for nearest-neighbor search
+
+(3) RETRIEVAL AND WARM-START.  For a new system:
+  (a) extract its invariant triple;
+  (b) query the database for the nearest stored regime by Euclidean distance
+      in signature space (or weighted L2 with configurable weights);
+  (c) use the retrieved eigenvalues and spectral predictions as initial
+      conditions or preconditioner for a numerical solver on the new system;
+  (d) update the database with the new system's solved spectral data.
+
+(4) CROSS-DOMAIN TRANSFER.  The retrieval step is domain-agnostic: a regime
+stored from solving an RLC circuit can warm-start a solver for a spring-mass
+system at the same (omega_0_norm, Q_norm, zeta) coordinates.  Validated
+transfer paths: spring-mass to RLC (3.7x improvement), RLC to power grid.
+
+================================================================================
+BRIEF DESCRIPTION OF DRAWINGS
+================================================================================
+
+FIG. 1 -- Universal Invariant Space.  Three-dimensional embedding
+(log_omega0_norm, log_Q_norm, zeta) showing RLC, spring-mass, power grid, and
+gradient-descent operating points.  Points from different domains at the same
+invariant coordinates are structurally equivalent and share regime memories.
+
+FIG. 2 -- Regime-Memory Retrieval Architecture.  Block diagram showing the
+invariant extractor, regime database, nearest-neighbor retrieval module, and
+solver warm-start interface.
+
+FIG. 3 -- Cross-Domain Transfer Speedup.  Bar chart comparing cold-start versus
+warm-start solver convergence across domain pairs.  Spring-mass to RLC shows
+3.7x improvement; warm-start versus cold-start at 750 Hz shows 2,708x speedup.
+
+FIG. 4 -- EDMD Koopman Extraction for Nonlinear Systems.  Trajectory of a
+Duffing oscillator; dominant Koopman eigenvalue pair; extracted omega_0_eff
+as a function of energy level; curvature profile of the harmonic path.
+
+FIG. 5 -- Regime Boundary Detection.  Embedding distance as a function of
+damping ratio zeta for multiple domains.  The universal invariant embedding
+is machine-independent within a loading class (distance < 1e-8), enabling
+single-scalar corrections across all machines.
+
+================================================================================
+DETAILED DESCRIPTION
+================================================================================
+
+1. THE UNIVERSAL INVARIANT TRIPLE
+
+1.1 Motivation
+
+Consider the following governing equations:
+
+  RLC circuit:        L*q_ddot + R*q_dot + (1/C)*q = V(t)
+  Spring-mass-damper: m*x_ddot + b*x_dot + k*x     = F(t)
+  SMIB power grid:    M*d_ddot + D*d_dot + Pe*sin(d) = Pm  (linearized near d_s)
+  Gradient descent:   x_{n+1} = x_n - lr*grad(f)   (continuous limit: ODE)
+
+Each reduces, near equilibrium, to:
+    y_ddot + (omega_0/Q)*y_dot + omega_0^2*y = u(t)
+
+with domain-specific parameter mappings:
+  omega_0 (natural frequency): sqrt(1/LC), sqrt(k/m), sqrt(Pe*cos(d_s)/M), sqrt(lr*kappa)
+  Q (quality factor):          omega_0*L/R, sqrt(km)/b, M*omega_0/D, omega_0/(1-beta)
+  zeta (damping ratio):        1/(2Q)
+
+The triple (omega_0, Q, zeta) is invariant to domain relabeling.  Systems with
+the same triple exhibit the same linearized spectral structure: identical
+eigenvalue positions, identical transient decay rates, identical stability
+margins in the normalized frame.
+
+1.2 Normalization
+
+To compare systems across domains with different physical units, normalize:
+
+  log_omega0_norm = log(omega_0 / omega_ref_domain)
+  log_Q_norm      = log(Q / Q_ref_domain)
+  zeta            = D / (2*M*omega_0)    [dimensionless, no normalization needed]
+
+where omega_ref and Q_ref are domain-specific reference values (e.g., 2*pi*1000
+rad/s for circuit domain, 2*pi*60 rad/s for power grid domain).  The
+log-normalized coordinates map each domain to a common reference frame where
+structural equivalence is proximity in Euclidean distance.
+
+1.3 Geometric Interpretation
+
+In the (log_omega0_norm, log_Q_norm, zeta) space, each operating point of any
+oscillatory system is a single point.  Curves of fixed loading ratio in the
+power grid domain, fixed LC product in the circuit domain, and fixed lr*kappa
+in the optimizer domain are all hyperplanes or curves in this shared space.
+
+The regime-memory database is a collection of labeled points in this space.
+Retrieval is nearest-neighbor search.  Cross-domain reuse is possible because
+points from different domains at the same coordinates have the same spectral
+structure.
+
+
+2. INVARIANT EXTRACTION METHODS
+
+2.1 Linearization Method
+
+For a system with state x and equilibrium x_s:
+  (a) Compute the Jacobian J = dF/dx evaluated at x_s.
+  (b) Extract the dominant conjugate eigenvalue pair lambda = sigma +/- i*omega.
+  (c) Set omega_0 = |omega|, Q = omega_0 / (2*|sigma|), zeta = |sigma|/omega_0.
+  (d) Normalize per Section 1.2.
+
+This method requires only a single Jacobian evaluation.  It applies to any
+system with a well-defined equilibrium and analytic or numerically differentiable
+dynamics.
+
+2.2 EDMD Koopman Extraction
+
+For nonlinear systems where linearization is insufficient (e.g., Duffing
+oscillators far from equilibrium, systems near bifurcation), the Koopman
+operator captures the global spectral structure:
+
+  (a) Generate a trajectory x(t) from the system under free evolution.
+  (b) Discard the transient (first fraction of the trajectory).
+  (c) Construct a dictionary of observables psi(x) (e.g., polynomial basis
+      up to degree d, or data-driven basis).
+  (d) Solve for K = argmin ||Psi_Y - K*Psi_X||_F (Extended DMD / G-inverse).
+  (e) Compute eigendecomposition of K: eigenvalues lambda_j, eigenvectors v_j.
+  (f) Identify the dominant oscillatory pair: smallest |Im(log(lambda))|
+      among eigenvalues with |lambda| near 1.
+  (g) Extract omega_0_eff = |Im(log(lambda_dom))| / dt,
+      zeta_eff = -Re(log(lambda_dom)) / (omega_0_eff * dt).
+
+The EDMD method captures energy-dependent frequency shifts in nonlinear systems
+(e.g., amplitude-frequency coupling in the Duffing oscillator) that linearization
+misses.
+
+2.3 Hybrid Method
+
+When trajectory energy E_0 relative to separatrix energy E_sep satisfies:
+  E_0 / E_sep < linearization_threshold (e.g., 0.20):
+    use linearization extraction (Section 2.1).
+  E_0 / E_sep >= linearization_threshold:
+    use EDMD extraction (Section 2.2).
+
+Near the separatrix, the effective frequency omega_0_eff is floored at a
+minimum value omega_floor to prevent divergence as the trajectory approaches
+the unstable manifold.
+
+
+3. REGIME-MEMORY DATABASE
+
+3.1 Data Structure
+
+Each regime record comprises:
+  - key:             invariant triple (log_omega0_norm, log_Q_norm, zeta) [float32 x 3]
+  - eigenvalues:     top-k dominant Koopman eigenvalues [complex64 x k]
+  - spectral_gap:    |lambda_1| - |lambda_2| [float32]
+  - stability_margin: distance from dominant eigenvalue to unit circle [float32]
+  - domain:          source domain label (string)
+  - timestamp:       time of insertion
+
+3.2 Insertion
+
+  (a) Extract invariant triple from solved system (Section 2).
+  (b) Check for near-duplicate: if any existing record has Euclidean distance
+      < merge_threshold (e.g., 0.15) in signature space, skip insertion.
+  (c) Otherwise, append new record.
+
+3.3 Retrieval
+
+Given a query triple q = (log_omega0_norm, log_Q_norm, zeta):
+  (a) Compute Euclidean distance d_i = ||q - key_i||_2 for all records i.
+  (b) Return the top_n records with smallest d_i.
+  (c) Optional: filter by stability_margin > threshold for warm-start safety.
+
+3.4 Scalability
+
+The database supports batch indexing with FAISS or similar approximate nearest-
+neighbor structures for large libraries.  For libraries up to 10,000 records,
+exact L2 search is feasible in under 1 ms on standard hardware.
+
+
+4. WARM-START AND SOLVER INITIALIZATION
+
+4.1 Eigenvalue Warm-Start
+
+For an iterative eigensolver (e.g., Arnoldi, Lanczos, power iteration):
+  (a) Retrieve the nearest regime record.
+  (b) Use the stored eigenvalues as initial Ritz values.
+  (c) Use the stored eigenvectors (if available) as the initial Krylov subspace.
+
+The warm-started solver converges in fewer iterations because the initial guess
+is spectrally close to the true eigenvalues.  Validated speedup: 2,708x versus
+cold-start at 750 Hz target frequency, retrieved from {500, 1000, 1500} Hz
+memory points.
+
+4.2 Analytic Formula Seeding
+
+For systems with known analytic structure (e.g., the swing equation in Section
+1.1), the retrieved regime provides:
+  - Initial estimate of natural frequency omega_0
+  - Predicted stability margin for pre-screening
+  - Expected correction scalar for damping compensation
+
+This enables the analytic formula to be applied directly without time-domain
+integration, as demonstrated for the power grid CCT case.
+
+4.3 Preconditioner Construction
+
+For PDE solvers and large-scale linear systems derived from dynamical systems,
+the retrieved modal structure informs preconditioner construction:
+  - Stored dominant eigenvectors define an approximate invariant subspace.
+  - Deflating this subspace accelerates Krylov convergence on the remainder.
+
+
+5. CROSS-DOMAIN TRANSFER
+
+5.1 Mechanism
+
+Because the invariant triple is domain-agnostic, a regime stored from solving
+a spring-mass system can be retrieved when solving an RLC circuit at the same
+(log_omega0_norm, log_Q_norm, zeta) coordinates:
+
+  (a) Spring-mass system solved at (omega_0=6283 rad/s, Q=1.0, zeta=0.5).
+  (b) Regime record stored with key (0.0, 0.0, 0.5) [at reference point].
+  (c) RLC circuit query at same invariant coordinates.
+  (d) Spring-mass regime retrieved; its eigenvalues seed the RLC eigensolver.
+  (e) RLC solver converges in fewer iterations.
+
+5.2 Validated Transfer Results
+
+  Transfer path                 Metric              Result
+  ----------------------------------------------------------
+  Spring-mass to RLC (750 Hz)   Convergence gain    3.7x cold-to-warm improvement
+  RLC warm-start (750 Hz)       Iterations vs cold  2,708x speedup
+  Power grid (IEEE 39-bus)      CCT error / speedup 2.73% / 57,946x
+  ----------------------------------------------------------
+
+5.3 Domain Provenance Filtering
+
+Optional: restrict retrieval to records from a specific domain or set of
+domains.  This allows domain-specific warm-start (within-domain reuse) or
+cross-domain transfer (across-domain reuse) to be selected per use case.
+
+
+6. NONLINEAR EXTENSION: EDMD-BASED REGIME DETECTION
+
+6.1 Energy-Dependent Frequency
+
+In nonlinear systems (e.g., Duffing oscillator with cubic nonlinearity), the
+effective natural frequency depends on trajectory energy:
+
+  omega_0_eff(E) = omega_0_linear * sqrt(1 + 3*beta*A^2 / (4*alpha))
+
+where A is the oscillation amplitude and beta/alpha is the nonlinearity ratio.
+EDMD extracts omega_0_eff directly from trajectory data without requiring
+knowledge of beta or alpha.
+
+6.2 Curvature Profile
+
+The harmonic path curvature:
+  kappa(E) = d(log(omega_0_eff/omega_0_linear)) / d(log_E)
+
+is a domain-invariant shape descriptor that characterizes the nonlinearity
+type: positive curvature for hardening (beta > 0), negative for softening
+(beta < 0), flat for linear systems.
+
+6.3 Topology Detection via Separatrix
+
+For softening nonlinear systems (beta < 0), the phase space contains a
+separatrix at energy E_sep = alpha^2 / (4*|beta|).  The EDMD Koopman spectrum
+exhibits a detectable signature as the trajectory approaches the separatrix:
+  - omega_0_eff approaches zero (period diverges)
+  - Dominant eigenvalue modulus approaches 1 (neutrally stable)
+  - Reconstruction error increases
+
+Detecting these signatures in the retrieved regime enables preemptive escalation
+to full simulation before instability occurs.  This is the platform generalization
+of the power grid CCT escalation policy (Section 7.5 of the companion grid
+provisional).
+
+6.4 Regime Storage for Nonlinear Systems
+
+For nonlinear regimes, the database stores:
+  - invariant triple at the trajectory energy level
+  - omega_0_eff at that energy
+  - curvature kappa at that energy
+  - near_separatrix flag (E_0/E_sep > 0.85)
+  - separatrix_energy (if applicable)
+
+Retrieval matches both the invariant triple AND the energy level (within a
+configurable window), ensuring that nonlinear regimes are matched at
+comparable operating points.
+
+
+7. IMPLEMENTATION
+
+7.1 System Architecture
+
+A system implementing the invention comprises:
+
+  (a) INVARIANT EXTRACTOR MODULE: receives system parameters or trajectory
+      data; outputs invariant triple (log_omega0_norm, log_Q_norm, zeta).
+      Implements linearization (Section 2.1) and EDMD (Section 2.2) paths.
+
+  (b) REGIME DATABASE: persistent store of regime records (Section 3.1).
+      Supports insert, query (top-n nearest neighbor), and optional domain
+      filtering.
+
+  (c) RETRIEVAL ENGINE: executes nearest-neighbor search given a query triple;
+      returns ordered list of candidate regime records.
+
+  (d) WARM-START INTERFACE: injects retrieved spectral data into a downstream
+      solver as initial eigenvalues, eigenvector basis, or analytic seeding.
+
+  (e) FEEDBACK LOOP: after the solver converges, inserts the new system's
+      spectral result into the database (online learning).
+
+7.2 Computational Procedure
+
+For each new system to be solved:
+  (a) Extract invariant triple via Section 2.
+  (b) Query regime database for top_n nearest records (Section 3.3).
+  (c) If distance < use_threshold: warm-start solver with retrieved data.
+      Else: cold-start solver; insert result into database after convergence.
+  (d) Return solution; update database.
+
+7.3 Offline Calibration
+
+The regime database can be pre-populated offline from:
+  - Systematic parameter sweeps of a reference domain (e.g., RLC circuits
+    across L, C, R parameter grids)
+  - Published benchmark datasets for a target application domain
+  - Cross-domain bootstrap: small reference set in target domain + larger
+    set from a structurally equivalent source domain
+
+Once pre-populated, the database provides warm-start benefit immediately for
+any new system in or near the covered invariant region.
+
+7.4 Multi-Domain Library
+
+A single regime database may contain records from multiple physical domains.
+Domain labels are stored but not required for retrieval.  This enables a
+unified library that benefits any query regardless of physical origin.
+
+7.5 Hardware and Deployment
+
+The invention is implementable on:
+  - Single-CPU systems for small libraries (< 10,000 records)
+  - GPU-accelerated systems for large libraries using batch L2 distance
+  - Distributed systems where the database is shared across simulation workers
+  - Embedded control systems where the database is pre-loaded at deployment
+
+================================================================================
+CLAIMS
+================================================================================
+
+CLAIM 1.  A computer-implemented method for accelerating simulation of a
+dynamical system, comprising:
+  (a) receiving a specification of a dynamical system including at least one
+      of: system parameters defining a differential equation, or a trajectory
+      of the system under free evolution;
+  (b) extracting, by one or more processors, an invariant triple comprising
+      a normalized natural frequency log_omega0_norm, a normalized quality
+      factor log_Q_norm, and a damping ratio zeta, from said specification;
+  (c) querying a regime-memory database for stored spectral records nearest
+      to said invariant triple in a metric space;
+  (d) retrieving at least one stored spectral record comprising precomputed
+      eigenvalues of a previously solved dynamical system; and
+  (e) using said retrieved eigenvalues to initialize or warm-start a
+      numerical solver for the new dynamical system, reducing solver
+      iterations compared to initialization without retrieval.
+
+CLAIM 2.  The method of claim 1, wherein extracting the invariant triple
+comprises linearizing the dynamical system at an equilibrium point and
+computing omega_0 from the imaginary part and zeta from the real part of the
+dominant conjugate eigenvalue pair of the Jacobian.
+
+CLAIM 3.  The method of claim 1, wherein extracting the invariant triple
+comprises:
+  (a) fitting a Koopman operator K to trajectory data by Extended Dynamic
+      Mode Decomposition (EDMD);
+  (b) computing eigenvalues of K;
+  (c) identifying the dominant oscillatory eigenvalue pair as the pair with
+      smallest absolute imaginary part of log(lambda) among eigenvalues with
+      modulus near 1; and
+  (d) extracting omega_0_eff and zeta_eff from said dominant pair.
+
+CLAIM 4.  The method of claim 1, wherein querying the regime-memory database
+comprises computing Euclidean distance between the query invariant triple and
+each stored record's invariant triple, and returning the top_n records with
+smallest distance.
+
+CLAIM 5.  The method of claim 1, wherein the stored spectral records were
+derived from a dynamical system in a first physical domain, and the new
+dynamical system is in a second physical domain distinct from the first,
+such that the retrieval constitutes cross-domain transfer of spectral data.
+
+CLAIM 6.  The method of claim 5, wherein the first physical domain comprises
+at least one of: electrical circuits, mechanical oscillators, or optimization
+dynamics; and the second physical domain comprises at least one of: power
+system generators, nonlinear oscillators, or fluid dynamics.
+
+CLAIM 7.  The method of claim 1, further comprising:
+  (a) after the numerical solver converges for the new dynamical system,
+      inserting a new spectral record comprising the converged eigenvalues and
+      the invariant triple of the new system into the regime-memory database;
+  whereby the database grows with each solved system, improving future
+  retrieval accuracy.
+
+CLAIM 8.  The method of claim 1, wherein the invariant triple is normalized
+using domain-specific reference values for natural frequency and quality factor,
+such that invariant triples from different physical domains are comparable in
+a common metric space.
+
+CLAIM 9.  The method of claim 1, wherein the dynamical system is a nonlinear
+oscillator, and wherein the method further comprises:
+  (a) computing a separatrix energy E_sep from system parameters;
+  (b) computing a ratio E_0/E_sep of initial trajectory energy to separatrix
+      energy;
+  (c) if E_0/E_sep exceeds a threshold, setting omega_0_eff to a floor value
+      and flagging the system as near-separatrix; and
+  (d) storing a near-separatrix flag in the spectral record to indicate
+      topology-proximate regime membership.
+
+CLAIM 10.  The method of claim 1, wherein the numerical solver is one of:
+an iterative eigensolver, a time-domain ODE integrator, a frequency-domain
+harmonic balance solver, or an analytic formula requiring an initial spectral
+estimate.
+
+CLAIM 11.  A system for cross-domain dynamical system acceleration, comprising:
+  (a) a regime-memory database stored in a memory, comprising a plurality of
+      spectral records each containing an invariant triple
+      (log_omega0_norm, log_Q_norm, zeta) and associated precomputed spectral
+      data including at least dominant eigenvalues;
+  (b) an invariant extractor implemented by one or more processors, configured
+      to compute said invariant triple from system parameters or trajectory data
+      using linearization, Extended Dynamic Mode Decomposition, or a hybrid
+      of both;
+  (c) a retrieval engine implemented by one or more processors, configured to
+      identify stored spectral records nearest to a query invariant triple; and
+  (d) a warm-start interface configured to inject retrieved spectral data into
+      a downstream numerical solver as initial conditions.
+
+CLAIM 12.  The system of claim 11, wherein the regime-memory database contains
+spectral records from at least two distinct physical domains, and wherein the
+retrieval engine returns records from any domain without domain filtering,
+enabling cross-domain warm-start.
+
+CLAIM 13.  A non-transitory computer-readable medium storing instructions that,
+when executed by one or more processors, cause the processors to:
+  (a) receive a description of a dynamical system;
+  (b) extract an invariant triple (log_omega0_norm, log_Q_norm, zeta) from
+      said description;
+  (c) search a stored regime-memory database for spectral records nearest to
+      said invariant triple;
+  (d) retrieve precomputed eigenvalues from the nearest record; and
+  (e) provide said eigenvalues as initialization to a numerical solver for
+      said dynamical system;
+  wherein systems from different physical domains sharing the same invariant
+  triple share the same stored spectral records.
+
+CLAIM 14.  The method of claim 1, wherein the regime-memory database is
+pre-populated from a first physical domain by systematic parameter sweep,
+and deployed to accelerate solvers in a second physical domain without any
+target-domain training data, achieving zero-shot cross-domain acceleration.
+
+CLAIM 15.  A computer-implemented method for building a regime-memory library
+for dynamical system acceleration, comprising:
+  (a) selecting a reference physical domain and a grid of parameter values;
+  (b) for each parameter point, solving the dynamical system to obtain
+      spectral data;
+  (c) computing the invariant triple for each solved system;
+  (d) storing each (invariant triple, spectral data) pair in a searchable
+      database;
+  (e) deploying said database as a warm-start resource for solvers in any
+      dynamical system domain sharing the invariant structure;
+  wherein the library enables solver acceleration across domains without
+  per-domain training or fitting.
+
+================================================================================
+ABSTRACT OF THE DRAWINGS
+================================================================================
+
+FIG. 1 depicts a three-dimensional invariant embedding space with axes
+(log_omega0_norm, log_Q_norm, zeta).  Points from RLC circuits, spring-mass
+systems, power grid generators, and gradient-descent optimizers are shown
+co-located at their respective invariant coordinates, illustrating that
+structurally equivalent systems from different physical domains share the
+same position in this space.
+
+FIG. 2 is a block diagram of the regime-memory platform comprising an Invariant
+Extractor, Regime Database, Retrieval Engine, and Warm-Start Interface connected
+to an external Numerical Solver.
+
+FIG. 3 shows bar charts of solver convergence time for cold-start versus
+warm-start across domain pairs, demonstrating 2,708x within-domain and 3.7x
+cross-domain improvement.
+
+FIG. 4 depicts EDMD Koopman extraction for a Duffing oscillator: the trajectory,
+dominant eigenvalue pair, omega_0_eff versus energy, and the curvature profile
+kappa(E) indicating nonlinearity type.
+
+FIG. 5 shows regime boundary detection: embedding distance among IEEE 39-bus
+generators at fixed zeta (< 1e-8 variation), confirming machine-independence
+of the invariant and universality of the loading-class correction.
+
+================================================================================
