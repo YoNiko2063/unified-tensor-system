@@ -416,8 +416,9 @@ code using structural geometric constraints, comprising:
       pointing toward the compilation-safe region;
   (f) modifying or regenerating the candidate program to move its
       structural feature vector in the direction of said gradient; and
-  (g) outputting the candidate program when its energy metric falls
-      within the compilation-safe region.
+  (g) submitting the candidate program for compilation when its
+      energy metric falls within the compilation-safe region, and
+      outputting the compiled program upon compilation success.
 
 CLAIM 2.  The method of claim 1, wherein the structural features
 include one or more of: reference or borrow operation density,

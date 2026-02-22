@@ -143,7 +143,8 @@ form linearized around a stable equilibrium x_s:
 where J_h is the Jacobian of h at x_s, the eigenvalues of A_lin
 define spectral invariant coordinates:
 
-    s_1 = log(|Im(lambda_dominant)|)   -- log oscillation frequency
+    s_1 = log(omega_0)  where omega_0 = |Im(lambda_dominant)|
+                                        -- log oscillation frequency
     s_2 = log(Q)  where Q = omega_0 / (2 * |Re(lambda_dominant)|)
                                         -- log quality factor
     s_3 = |Re(lambda_dominant)| / omega_0
