@@ -360,10 +360,13 @@ Signal S_{1->2b}:
   Trigger: Layer 1 completes (trusted or untrusted)
   Destination: Layer 2 AND Layer 3
   Action in Layer 2:
-    LCA: use D_sep_effective = D_sep (standard threshold).
-    Transitional: D_sep_effective = D_sep - delta_cautious.
+    LCA: initialize D_sep_effective = D_sep (standard threshold).
+    Transitional: initialize D_sep_effective = D_sep - delta_cautious.
     Chaotic: flag to operator; Layer 2 does not synthesize
       without explicit operator override.
+    In all non-chaotic cases, D_sep_effective is further reduced
+    by delta_tighten per S_{3->2} retry counter k_L3, per the
+    combined formula in Section 1.3(b).
   Action in Layer 3:
     LCA: use R_min_effective = R_min_default (standard).
     Transitional: R_min_effective = R_min_default +
@@ -397,7 +400,7 @@ Signal S_{3->1}:
 
 Signal S_{2->1}:
   Content: hardware affinity label, BorrowVector B(P)
-  Trigger: Layer 2 produces a certified candidate
+  Trigger: CERT(P) = TRUE (platform certification succeeds)
   Action in Layer 1: update cross-domain library at spectral
     coordinates (s_1, s_2, s_3) with observed affinity label.
 
@@ -497,11 +500,25 @@ States:
 
   NOMINAL -> L2_RETRY:
     E(P) >= D_sep_effective or compilation fails.
-    If k_L2 > N_L2_retry: FAIL.
+
+  L2_RETRY -> L2_RETRY (self-loop):
+    Gradient step applied; new candidate generated; attempt
+    fails again.  k_L2 incremented each iteration.
+    While k_L2 <= N_L2_retry.
+
+  L2_RETRY -> FAIL:
+    k_L2 > N_L2_retry.
 
   NOMINAL -> L3_RETRY:
-    R < R_min on first Layer 3 execution.
-    If k_L3 > N_L3_retry: -> SYNTHESIS_TIGHTEN.
+    R < R_min_effective on first Layer 3 execution.
+
+  L3_RETRY -> L3_RETRY (self-loop):
+    Candidate re-executed; R < R_min_effective again.
+    k_L3 incremented each iteration.
+    While k_L3 <= N_L3_retry.
+
+  L3_RETRY -> SYNTHESIS_TIGHTEN:
+    k_L3 > N_L3_retry.
 
   SYNTHESIS_TIGHTEN -> L2_RETRY:
     Layer 2 regenerating; S_{3->2} applied.
@@ -643,12 +660,13 @@ autonomous synthesis and optimization, comprising:
       to be synthesized or optimized;
   (b) classifying, by a regime classification layer, the
       dynamical regime of the system at the target operating
-      point, producing a regime label and spectral invariant
+      point, producing a regime label and, when a linear
+      operator trust gate is satisfied, spectral invariant
       coordinates;
   (c) synthesizing, by a structural synthesis layer receiving
-      the regime label and spectral invariant coordinates,
-      a candidate whose structural feature vector satisfies a
-      learned compilation-safe manifold criterion;
+      the regime label and, when available, spectral invariant
+      coordinates, a candidate whose structural feature vector
+      satisfies a learned compilation-safe manifold criterion;
   (d) validating, by a runtime validation layer, the candidate
       by executing it and computing a composite runtime
       robustness score from spectral metrics of the runtime
@@ -748,17 +766,24 @@ energy metric, and outputting the Pareto front with associated
 certificates for operator or downstream system selection.
 
 CLAIM 11.  The method of claim 1, implemented as a finite-state
-reconfiguration machine comprising:
+reconfiguration machine comprising at least:
 
   (a) a nominal state in which all three layers operate without
       failure;
-  (b) a synthesis-tighten state in which the runtime validation
-      layer has failed and the structural synthesis layer
-      regenerates with a reduced energy threshold;
-  (c) a reclassification state in which persistent failure
-      triggers updated regime classification using runtime
-      trajectory data; and
-  (d) a failure state in which all retries are exhausted and
+  (b) a structural synthesis retry state in which the structural
+      synthesis layer iterates gradient steps and template
+      selection to find a candidate satisfying the effective
+      energy threshold;
+  (c) a runtime validation retry state in which the runtime
+      validation layer re-executes the candidate under the same
+      synthesis parameters;
+  (d) a synthesis-tighten state in which the runtime validation
+      layer has persistently failed and the structural synthesis
+      layer regenerates with a reduced energy threshold;
+  (e) a reclassification state in which persistent failure across
+      synthesis and validation triggers updated regime
+      classification using runtime trajectory data; and
+  (f) a failure state in which all retries are exhausted and
       a failure report is issued without a stability certificate;
   wherein transitions between states are governed by layer
   failure conditions and retry count thresholds.
@@ -784,7 +809,7 @@ and optimization, comprising:
       candidates, compute composite robustness scores, perform
       Monte Carlo basin analysis, and transmit feedback signals
       to the structural synthesis and regime classification
-      processors; and
+      processors;
   (e) a reconfiguration controller implementing a finite-state
       machine that routes cross-layer signals and manages retry
       and escalation logic; and
@@ -834,6 +859,18 @@ network comprising a plurality of generators and loads, wherein:
       deployment of the control law to the power system network
       without requiring a separate dynamic security assessment.
 
+CLAIM 15.  The system of claim 12, wherein the three processors
+communicate via a cross-layer signal bus implementing exactly six
+signals S_{1->2}, S_{1->2b}, S_{2->3}, S_{3->2}, S_{3->1}, and
+S_{2->1}, each signal having a defined content, triggering
+condition, destination, and receiving-layer action as specified in
+a stored cross-layer protocol table, and wherein S_{1->2b} is
+broadcast simultaneously to both the structural synthesis processor
+and the runtime validation processor, causing the structural
+synthesis processor to initialize an adjusted separation boundary
+D_sep_effective and causing the runtime validation processor to
+initialize an adjusted minimum robustness threshold R_min_effective.
+
 
 ======================================================================
 ABSTRACT OF THE DRAWINGS
@@ -845,7 +882,9 @@ Layer 3 (Runtime Validation) are shown as horizontal bands
 stacked vertically.  Forward signals S_{1->2} and S_{2->3} are
 shown as downward arrows.  Feedback signals S_{3->2} and S_{3->1}
 are shown as upward arrows to their respective destination layers.
-The unified stability certificate exits at the bottom right.
+Signal S_{2->1} (library update, triggered at CERT=TRUE) is shown
+as a thin upward arrow from Layer 2 to Layer 1.  The unified
+stability certificate exits at the bottom right.
 
 FIG. 2 depicts the cross-layer information protocol as a six-row
 table.  Columns: signal identifier, source layer, destination
