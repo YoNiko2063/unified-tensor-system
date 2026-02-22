@@ -137,7 +137,7 @@ threshold D_sep in E-space:
 
 D_sep is learned by binary classification on a reference dataset of
 compiled and failed programs.  The classifier achieves area-under-
-ROC-curve (AUC) exceeding 0.90 with fewer than 500 training examples.
+ROC-curve (AUC) exceeding 0.85 with fewer than 500 training examples.
 
 (4) HARDWARE AFFINITY MAPPING.  Program structural geometry predicts
 hardware execution suitability:
@@ -345,8 +345,13 @@ The synthesis pipeline comprises:
   Stage 1 (Pre-gate):
     -- Receive intent specification (target function, performance
        requirement, hardware target).
-    -- Compute initial structural feature vector B_init from intent.
-    -- Compute E_init and p_compile_init.
+    -- Compute initial structural feature vector B_init from intent:
+       B_init is the median structural feature vector of templates
+       whose category matches the intent specification, or a default
+       vector corresponding to the hardware affinity region of the
+       hardware target (e.g., low-E default for GPU targets, moderate-
+       E default for CPU targets).
+    -- Compute E_init = w^T * B_init and p_compile_init.
     -- If E_init >> D_sep, restructure intent before generation.
 
   Stage 2 (Generation):

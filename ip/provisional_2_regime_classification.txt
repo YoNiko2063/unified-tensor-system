@@ -190,8 +190,9 @@ equivalent.  Regime classification boundaries shown as surfaces.
 
 FIG. 2 -- Dual-criterion trust gate.  Two-dimensional threshold
 space: reconstruction_error (horizontal) vs spectral_gap (vertical).
-Trust region is lower-left quadrant.  Operating points classified
-as trusted (blue) or escalate (red).
+Trust region is the upper-left quadrant (low reconstruction_error,
+high spectral_gap).  Operating points classified as trusted (blue)
+or escalate (red).
 
 FIG. 3 -- Regime classification flow.  Input: system parameters.
 Output: regime label + trust score + transition boundary proximity.
@@ -304,7 +305,8 @@ refitting.
 
 For systems sharing a loading class (fixed Pe/Pm ratio in power
 systems, fixed k in spring-mass), the Euclidean distance among all
-machines in (s_1, s_2, s_3) space is less than 1e-6 at fixed s_3.
+machines in (s_1, s_2, s_3) space is less than epsilon_equiv at
+fixed s_3, for an application-appropriate tolerance epsilon_equiv.
 This is a structural property of the equal-area constraint geometry,
 not a numerical coincidence.
 
