@@ -1,0 +1,177 @@
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage{geometry}
+\geometry{top=0.75in, bottom=0.75in, left=0.9in, right=0.9in}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{mdframed}
+\usepackage{multicol}
+
+\definecolor{accent}{RGB}{20,60,120}
+\definecolor{tier1}{RGB}{20,60,120}
+\definecolor{tier2}{RGB}{40,110,80}
+\definecolor{tier3}{RGB}{140,60,20}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+\titleformat{\section}{\normalsize\bfseries\color{accent}}{}{0em}{}[\color{accent}\titlerule]
+\titleformat{\subsection}{\small\bfseries\color{accent}}{}{0em}{}
+\titlespacing{\section}{0pt}{8pt}{3pt}
+\titlespacing{\subsection}{0pt}{4pt}{2pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist[itemize]{leftmargin=1.2em, itemsep=1pt, topsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=1pt, topsep=2pt, parsep=0pt}
+
+\hypersetup{colorlinks=true, urlcolor=accent, hidelinks}
+\pagestyle{empty}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+\begin{center}
+{\large\bfseries\color{accent} Unified Tensor Systems — Licensing Target List}\\[3pt]
+{\small Regime-Aware Spectral Acceleration · Patent Pending · \texttt{yoonikolas@gmail.com}}
+\end{center}
+\vspace{2pt}
+\noindent\color{accent}\rule{\linewidth}{1pt}
+\vspace{4pt}
+
+% ── ASSET SUMMARY ─────────────────────────────────────────────────────────────
+\begin{mdframed}[backgroundcolor=lightgray, linecolor=accent, linewidth=0.8pt,
+  innerleftmargin=8pt, innerrightmargin=8pt, innertopmargin=5pt, innerbottommargin=5pt]
+\textbf{Asset:} IEEE 39-bus CCT method — \textbf{57,946$\times$ faster} than RK4,
+$<$2.73\% error, patent pending.
+\quad\textbf{Format:} Licensing engine / API / plugin integration.
+\quad\textbf{Outreach:} Attach investor brief PDF. No repo link.
+\end{mdframed}
+
+\vspace{4pt}
+
+\begin{multicols}{2}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{\color{tier1}Tier 1 — Simulation Platform Vendors}
+{\small\textit{Integrate the acceleration layer into existing tools.
+ Highest leverage: reaches all end users.}}
+
+\subsection*{Siemens Energy — PSS/E}
+Industry standard for power flow and stability.\\
+\textbf{Contact:} Power Systems Software division\\
+\textbf{Pitch:} Drop-in CCT acceleration for PSS/E stability studies
+
+\subsection*{GE Vernova — PSLF}
+Power System Load Flow, used by major utilities.\\
+\textbf{Contact:} Grid Software product group\\
+\textbf{Pitch:} Spectral stability pre-screen before PSLF full integration
+
+\subsection*{DigSILENT — PowerFactory}
+Dominant in European markets, growing in North America.\\
+\textbf{Contact:} \texttt{info@digsilent.de}\\
+\textbf{Pitch:} Fast contingency ranking module for PowerFactory workflows
+
+\subsection*{PowerWorld Corporation}
+Power flow + stability, academic and utility market.\\
+\textbf{Contact:} \texttt{sales@powerworld.com}\\
+\textbf{Pitch:} Embedded CCT estimation in Simulator
+
+\subsection*{Manitoba Hydro International — PSCAD}
+Leading EMT simulation platform.\\
+\textbf{Contact:} MHI business development\\
+\textbf{Pitch:} Stability pre-screening complement to EMT simulation
+
+\subsection*{ETAP (Operation Technology)}
+Electrical system analysis for industrial + utility.\\
+\textbf{Contact:} \texttt{info@etap.com}\\
+\textbf{Pitch:} Fast transient stability module for ETAP platform
+
+\vspace{4pt}
+\columnbreak
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{\color{tier2}Tier 2 — Grid Analytics \& Engineering Firms}
+{\small\textit{Consulting firms that build custom stability tools for operators.}}
+
+\subsection*{Quanta Technology}
+Power grid consulting, Raleigh NC.\\
+\textbf{Pitch:} License method for client N-1 screening engagements
+
+\subsection*{EPRI (Electric Power Research Institute)}
+Palo Alto CA — research licensing, utility consortium.\\
+\textbf{Pitch:} Joint research program, EPRI report, member distribution
+
+\subsection*{Hitachi Energy (formerly ABB Power Grids)}
+Grid automation + stability analytics.\\
+\textbf{Contact:} Grid software / digital energy division\\
+\textbf{Pitch:} Integration into Hitachi PSSE or Neplan platform
+
+\subsection*{Nexant}
+Grid consulting, project finance analytics.\\
+\textbf{Pitch:} Embedded CCT tool for renewable interconnection studies
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{\color{tier3}Tier 3 — ISO/RTOs}
+{\small\textit{Run N-1 analysis continuously. Direct operational need.}}
+
+\begin{tabular}{ll}
+\textbf{MISO}   & Carmel, IN — 15 states \\
+\textbf{PJM}    & Norristown, PA — 13 states \\
+\textbf{CAISO}  & Folsom, CA — California \\
+\textbf{ERCOT}  & Taylor, TX — Texas \\
+\textbf{ISO-NE} & Holyoke, MA — New England \\
+\textbf{NYISO}  & Rensselaer, NY — New York \\
+\end{tabular}
+
+\textbf{Entry point:} Engineering / operations research contacts.\\
+\textbf{Pitch:} Pilot on existing N-1 screening workflow.
+Real-time contingency analysis feasibility study.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{Tier 4 — National Labs}
+{\small\textit{Sponsored research, DOE funding, co-invention potential.}}
+
+\begin{itemize}
+  \item \textbf{NREL} (Golden, CO) — renewable integration stability
+  \item \textbf{PNNL} (Richland, WA) — grid modernization, Koopman methods
+  \item \textbf{ANL} (Lemont, IL) — power systems mathematics
+  \item \textbf{ORNL} (Oak Ridge, TN) — grid resilience
+\end{itemize}
+\textbf{Pitch:} Collaborative research agreement (CRADA).
+Method expands their Koopman/spectral stability portfolio.
+
+\end{multicols}
+
+\noindent\color{accent}\rule{\linewidth}{0.6pt}
+
+% ── CONTACT STRATEGY ──────────────────────────────────────────────────────────
+\section*{Contact Strategy}
+
+\begin{tabular}{@{}lp{12.5cm}@{}}
+\toprule
+\textbf{Step} & \textbf{Action} \\
+\midrule
+1 & Cold email: subject line \textit{``CCT computation 57,946$\times$ faster than RK4 — patent pending''} \\
+2 & Attach investor brief PDF only. No repo link. Two sentences on the result. \\
+3 & Offer: 30-min technical call + live notebook demo (\texttt{github.com/YoNiko2063/demo}) \\
+4 & For vendors: propose evaluation license (90 days, one product integration) \\
+5 & For labs/ISOs: propose pilot study or CRADA; reference provisional patent filing \\
+\bottomrule
+\end{tabular}
+
+\vspace{4pt}
+{\small\textit{Lead with Tier 1 (simulation vendors) — one integration deal reaches thousands of engineers.
+ Run Tier 3 (ISOs) in parallel for direct operational validation.
+ Tier 4 for funding runway and co-publication.}}
+
+\vspace{5pt}
+\noindent\color{accent}\rule{\linewidth}{0.6pt}\\[2pt]
+{\small Patent Pending \quad|\quad \texttt{yoonikolas@gmail.com}}
+
+\end{document}

@@ -26,3 +26,10 @@ whitepaper/*.synctex.gz
 investor_brief/*.aux
 investor_brief/*.log
 investor_brief/*.out
+technical_brief/*.aux
+technical_brief/*.log
+technical_brief/*.out
+technical_brief/*.toc
+licensing_targets/*.aux
+licensing_targets/*.log
+licensing_targets/*.out
