@@ -253,9 +253,6 @@ Key findings:
   frequency term.
 \item \textbf{After correction:} maximum error across all 50 (generator, $\zeta$)
   pairs is \textbf{2.73\%} --- well within the 5\% accuracy gate.
-\item \textbf{Invariant geometry:} The embedding distance in the 3D invariant
-  space $(\log\omega_0,\, \log Q,\, \zeta)$ is generator-independent (varies
-  by $< 10^{-8}$ across all 10 machines at the same $\zeta$).
 \end{enumerate}
 
 % ─────────────────────────────────────────────────────────────────────────────
@@ -294,31 +291,6 @@ The near-zero coefficient of variation (0.66\%) indicates that $a$ is
 determined by the geometry of the equal-area constraint --- specifically by
 Equation~\eqref{eq:universal} --- rather than by which machines appear in
 the training set.
-
-% ─────────────────────────────────────────────────────────────────────────────
-\section{Geometric Interpretation}
-
-The EAC\,+\,correction framework is a special case of a broader result from
-invariant manifold theory applied to dynamical systems.
-
-The SMIB swing equation linearises around $\delta_s$ to a damped harmonic
-oscillator with natural frequency $\omega_0 = \sqrt{P_e\cos(\delta_s)/M}$
-and quality factor $Q = M\omega_0/D$.  This places every generator in a
-three-dimensional invariant space $(\log\omega_0,\, \log Q,\, \zeta)$,
-shared with RLC circuits, spring-mass systems, and Duffing oscillators.
-
-The \emph{universal correction} arises because the product
-$\omega_0 \cdot \text{CCT}_{\text{EAC}}$ is constant across all generators
-at the same loading ratio --- a consequence of the equal-area geometry.
-When damping perturbs the trajectory, it perturbs the invariant embedding by
-a universal amount, independent of where in $(\omega_0, Q)$ space the
-generator sits.
-
-\textbf{Implication for screening architecture:}
-Because the correction is universal (one scalar, generator-independent),
-it can be applied post-hoc to any EAC-based estimate without re-fitting per
-machine.  A system with 1{,}000 generators at the same loading ratio uses
-the same $a = 1.51$, pre-computed once.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Scope and Limitations}
