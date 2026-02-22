@@ -106,9 +106,9 @@ Existing methods for damped CCT estimation either require:
   (ii) perturbative approximations without demonstrated cross-validation; or
   (iii) machine-specific fitting that does not generalize.
 
-No prior method achieves analytic CCT estimation with bounded error across
-realistic damping ranges validated by leave-out cross-validation on a standard
-benchmark system.
+To the inventor's knowledge, no prior method achieves analytic CCT estimation
+with bounded error across realistic damping ranges validated by leave-out
+cross-validation on a standard benchmark system.
 
 ================================================================================
 SUMMARY OF THE INVENTION
@@ -255,7 +255,10 @@ generators in the loading class.  Therefore the first-order correction
 coefficient is approximately 1.73/3 approx 0.577 -- the same for every machine.
 
 The fitted scalar a in the full correction formula absorbs higher-order terms.
-Its universality is guaranteed by the invariant structure of Eq. 5.
+Its generator-independence follows from the invariant structure of Eq. 5:
+because omega_0 * CCT_EAC is loading-class-determined rather than
+machine-specific, the first-order correction coefficient is the same for
+every generator in the class.
 
 4.3 Correction Formula
 
@@ -398,9 +401,14 @@ A system implementing this invention comprises:
     - Uniform loading Pe = 2*Pm, zeta in [0, 0.20], Q >= 2
 
   Boundary handling:
-    (i)  Partial faults (0 < Pe_fault < Pe): modified EAC construction with
-         refitted a for the partial-fault loading class; structure of Eq. 6
-         is preserved.
+    (i)  Partial faults (0 < Pe_fault < Pe): for a fault reducing electrical
+         power to Pe_fault = f * Pe (0 < f < 1), the equal-area construction
+         is modified: the accelerating area is computed using Pe_fault instead
+         of zero, and the decelerating area uses Pe (post-fault).  The critical
+         clearing angle delta_c satisfies the modified balance condition, and
+         CCT_EAC is recomputed from the fault-phase integral under Pe_fault.
+         The correction structure CCT_corrected = CCT_EAC / (1 - a*zeta) is
+         preserved with a refitted from a partial-fault reference set.
     (ii) Mixed loading: loading-class detection per Section 7.2; one scalar
          per class, fitted offline.
     (iii) Near-critical cases (CCT_corr within 5% of t_relay): escalate to
@@ -467,8 +475,9 @@ which CCT_corrected is within a safety margin of the relay clearance time as
 requiring escalation to full time-domain simulation.
 
 CLAIM 8.  The method of claim 6, wherein the total computation time for a
-full N-1 screening batch across a plurality of generators is less than one
-second on a single processor core.
+full N-1 screening batch across a plurality of generators is substantially
+reduced relative to time-domain integration, the analytic method requiring
+O(1) arithmetic operations per generator in place of iterative ODE evaluation.
 
 CLAIM 9.  A system for real-time critical clearing time estimation, comprising:
   (a) a memory storing generator parameters for a plurality of machines, at
