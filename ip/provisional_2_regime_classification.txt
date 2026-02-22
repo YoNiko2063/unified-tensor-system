@@ -369,7 +369,7 @@ The classification rule handles both trusted and untrusted operator cases:
 
     If epsilon_rec < eta_max AND gamma_gap <= gamma_min:
         Operator spectral structure is inadequate for classification;
-        escalate to direct numerical simulation.                (Eq. 6-pre)
+        escalate to direct numerical simulation.                (Eq. 6c)
 
     If epsilon_rec < eta_max AND gamma_gap > gamma_min:
         Operator is trusted (T >= 0); proceed to Step 2.
@@ -423,7 +423,9 @@ For each system presented to the regime classification engine:
   (b) Construct A_lin (Eq. 2) or data-driven K.
   (c) Compute eigenvalues {lambda_i}.
   (d) Compute epsilon_rec and gamma_gap.
-  (e) Apply trust gate (Eq. 4); if untrusted, escalate.
+  (e) Apply trust gate (Eq. 4): if epsilon_rec >= eta_max, classify
+      as Chaotic; if epsilon_rec < eta_max and gamma_gap <= gamma_min,
+      escalate to direct numerical simulation; otherwise trusted.
   (f) Compute spectral coordinates (s_1, s_2, s_3) (Eq. 3).
   (g) Apply classification rule (Eq. 6).
   (h) Query domain canonicalizer for cross-domain match.
@@ -473,10 +475,11 @@ regime of a nonlinear system, comprising:
       threshold and the spectral gap is above a second threshold;
   (g) if the operator is trusted, extracting spectral invariant
       coordinates from the eigenstructure;
-  (h) classifying the system into one of: locally convergent
-      attractor, transitional regime, or chaotic regime, based on
-      the sign of the dominant real eigenvalue part and the
-      reconstruction error; and
+  (h) classifying the system: if reconstruction error equals or
+      exceeds the first threshold, classifying as chaotic regime;
+      if the operator is trusted, classifying as locally convergent
+      attractor when the dominant real eigenvalue part is strictly
+      negative, and as transitional regime otherwise; and
   (i) outputting the regime classification and a trust score.
 
 CLAIM 2.  The method of claim 1, wherein the linear operator

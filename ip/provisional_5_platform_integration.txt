@@ -190,7 +190,7 @@ unified stability certificate when all four conditions are
 simultaneously satisfied:
 
     C_1: E(P) < D_sep_effective    (structural manifold)
-    C_2: R(theta_0) > R_min        (nominal runtime robustness)
+    C_2: R(theta_0) > R_min_effective  (nominal runtime robustness)
     C_3: beta > beta_min           (basin-of-attraction fraction)
     C_4: regime_class(K_runtime) = regime_label(S_{1->2b})  (cross-layer consistency)
          where regime_label(S_{1->2b}) is the regime label transmitted
@@ -622,7 +622,8 @@ For each synthesis or optimization request:
   (b) Layer 1: classify regime; issue spectral coordinates,
       regime label, trust score.  Transmit S_{1->2}, S_{1->2b}.
   (c) Layer 2: pre-filter templates; set D_sep_effective; generate
-      and compile candidate.  Transmit S_{2->3}, S_{2->1}.
+      and compile candidate.  Transmit S_{2->3}; transmit S_{2->1}
+      only if CERT(P) = TRUE.
   (d) Layer 3: execute candidate; compute R, beta; check C_2-C_4.
       Transmit S_{3->2} or S_{3->1} if needed.
   (e) Check CERT(P) = C_1 AND C_2 AND C_3 AND C_4.

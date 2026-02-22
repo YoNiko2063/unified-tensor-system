@@ -369,7 +369,7 @@ The synthesis pipeline comprises:
   Stage 2 (Generation):
     -- Select template or generate candidate P from intent.
     -- Compute B(P) and E(P).
-    -- If E(P) > D_sep: apply gradient step (Eq. 7), regenerate.
+    -- If E(P) >= D_sep: apply gradient step (Eqs. 5-6), regenerate.
     -- Iterate until E(P) < D_sep or max_iterations reached.
 
   Stage 3 (Post-gate):
